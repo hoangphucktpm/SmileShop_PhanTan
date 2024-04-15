@@ -4,9 +4,21 @@ package Entities;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.Instant;
+import java.sql.Timestamp;
+
 
 @Entity
 @NoArgsConstructor
+
+@NamedQueries({
+        @NamedQuery(name = "HoaDon.findAll", query = "SELECT hd FROM HoaDon hd"),
+        @NamedQuery(name = "HoaDon.findByMaHoaDon", query = "SELECT hd FROM HoaDon hd WHERE hd.maHoaDon = :maHoaDon"),
+        @NamedQuery(name = "HoaDon.findByNgayLapHoaDon", query = "SELECT hd FROM HoaDon hd WHERE hd.ngayLapHoaDon = :ngayLapHoaDon"),
+        @NamedQuery(name = "HoaDon.findByTongTien", query = "SELECT hd FROM HoaDon hd WHERE hd.tongTien = :tongTien"),
+        @NamedQuery(name = "HoaDon.findByDiemTichDuoc", query = "SELECT hd FROM HoaDon hd WHERE hd.diemTichDuoc = :diemTichDuoc"),
+})
+
+
 public class HoaDon {
     @Id
     @Column(name = "MaHoaDon", nullable = false, length = 50)
@@ -27,7 +39,9 @@ public class HoaDon {
     private Double tongTien;
 
     @Column(name = "NgayLapHoaDon", nullable = false)
-    private Instant ngayLapHoaDon;
+    private Timestamp ngayLapHoaDon;
+
+
 
     @Column(name = "DiemTichDuoc", nullable = false)
     private Double diemTichDuoc;
@@ -72,11 +86,11 @@ public class HoaDon {
         this.tongTien = tongTien;
     }
 
-    public Instant getNgayLapHoaDon() {
+    public Timestamp getNgayLapHoaDon() {
         return ngayLapHoaDon;
     }
 
-    public void setNgayLapHoaDon(Instant ngayLapHoaDon) {
+    public void setNgayLapHoaDon(Timestamp ngayLapHoaDon) {
         this.ngayLapHoaDon = ngayLapHoaDon;
     }
 
@@ -88,7 +102,7 @@ public class HoaDon {
         this.diemTichDuoc = diemTichDuoc;
     }
 
-    public HoaDon(String maHoaDon, Double tienKhachDua, KhachHang khachHang, NhanVien nhanVien, Double tongTien, Instant ngayLapHoaDon, Double diemTichDuoc) {
+    public HoaDon(String maHoaDon, Double tienKhachDua, KhachHang khachHang, NhanVien nhanVien, Double tongTien, Timestamp ngayLapHoaDon, Double diemTichDuoc) {
         this.maHoaDon = maHoaDon;
         this.tienKhachDua = tienKhachDua;
         this.khachHang = khachHang;
@@ -111,3 +125,5 @@ public class HoaDon {
                 '}';
     }
 }
+
+

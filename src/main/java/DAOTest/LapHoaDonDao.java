@@ -1,2 +1,12 @@
-package DAOTest;public interface LapHoaDonDao {
+package DAOTest;
+
+import Entities.HoaDon;
+
+import java.util.List;
+
+public interface LapHoaDonDao {
+
+    public List<HoaDon> getAllLapHoaDon();
 }
+
+
