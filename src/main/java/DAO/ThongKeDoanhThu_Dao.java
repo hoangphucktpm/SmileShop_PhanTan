@@ -76,42 +76,42 @@ public class ThongKeDoanhThu_Dao {
 //		}
 //		return list;
 //	}
-	public double tongDoanhThuTheoQuy (int quy, int  ca)
-	{
-		double s = 0;
-		try {
-			Connection con = ConnectDatabase.getInstance().getConnection();
-				String sql="SELECT sum (h.TongTien)\r\n"
-						+ "from HoaDon h\r\n"
-						+ "join NhanVien n on n.MaNhanvien=h.NhanVien\r\n"
-						+ "WHERE DATEPART(QUARTER, NgayLapHoaDon) = "+ quy +" AND DATEPART(HOUR, NgayLapHoaDon) >= ?  and DATEPART(HOUR, NgayLapHoaDon) < ? and year(NgayLapHoaDon) = YEAR(GETDATE())";
-				PreparedStatement preparedStatement = con.prepareStatement(sql);
-				if (ca == 0)
-				{
-					preparedStatement.setInt(1, 0);
-					preparedStatement.setInt(2, 23);
-				}
-				else if (ca == 1)
-				{
-					preparedStatement.setInt(1, 8);
-					preparedStatement.setInt(2, 15);
-				}
-				else if (ca == 2)
-				{
-					preparedStatement.setInt(1, 15);
-					preparedStatement.setInt(2, 22);
-				}
-				ResultSet rs = preparedStatement.executeQuery();
-			while (rs.next()) {
-				s = rs.getDouble(1);
-			}
-					} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return s;
-	}
-	
+//	public double tongDoanhThuTheoQuy (int quy, int  ca)
+//	{
+//		double s = 0;
+//		try {
+//			Connection con = ConnectDatabase.getInstance().getConnection();
+//				String sql="SELECT sum (h.TongTien)\r\n"
+//						+ "from HoaDon h\r\n"
+//						+ "join NhanVien n on n.MaNhanvien=h.NhanVien\r\n"
+//						+ "WHERE DATEPART(QUARTER, NgayLapHoaDon) = "+ quy +" AND DATEPART(HOUR, NgayLapHoaDon) >= ?  and DATEPART(HOUR, NgayLapHoaDon) < ? and year(NgayLapHoaDon) = YEAR(GETDATE())";
+//				PreparedStatement preparedStatement = con.prepareStatement(sql);
+//				if (ca == 0)
+//				{
+//					preparedStatement.setInt(1, 0);
+//					preparedStatement.setInt(2, 23);
+//				}
+//				else if (ca == 1)
+//				{
+//					preparedStatement.setInt(1, 8);
+//					preparedStatement.setInt(2, 15);
+//				}
+//				else if (ca == 2)
+//				{
+//					preparedStatement.setInt(1, 15);
+//					preparedStatement.setInt(2, 22);
+//				}
+//				ResultSet rs = preparedStatement.executeQuery();
+//			while (rs.next()) {
+//				s = rs.getDouble(1);
+//			}
+//					} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return s;
+//	}
+//
 //	Lấy ra khuyến mãi
 	public int khuyenMai (String ma)
 	{

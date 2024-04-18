@@ -496,7 +496,7 @@ public class FrmThongKeDoanhThu extends JFrame implements ActionListener{
 			ca = 2;
 		quy = (int) cboQuy.getSelectedItem();
 		List<ThongKeDoanhThu> list = daoTKDTImpl.getDTQuy(quy, ca);
-		tienBan = dao.tongDoanhThuTheoQuy(quy, ca);
+		tienBan = daoTKDTImpl.tongDoanhThuQuy(quy, ca);
 		if (list == null || list.isEmpty())
 		{
 			btnInThongKe.setEnabled(false);
