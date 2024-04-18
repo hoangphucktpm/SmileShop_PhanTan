@@ -7,19 +7,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import DAOTest.ThongKeDoanhThuDao;
 import DAOTest.impl.ThongKeDoanhThuImpl;
+import Entities.ThongKeDoanhThu;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
@@ -33,13 +31,11 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 
-import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,38 +43,19 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JTextArea;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 
-import com.toedter.calendar.JDateChooser;
-import com.toedter.calendar.JMonthChooser;
-import com.toedter.calendar.JYearChooser;
-
 import DAO.NhanVien_Dao;
-import DAO.ThongKeDoanhThu_Dao;
-import Entity.HoaDon;
 import Entity.NhanVien;
-import Entity.ThongKeDoanhThu;
 
-import javax.swing.JTextField;
-import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.JEditorPane;
-import javax.swing.JComboBox;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JButton;
 import javax.swing.ImageIcon;
-import javax.swing.border.EtchedBorder;
 
 public class FrmThongKeDoanhThu extends JFrame implements ActionListener{
 
@@ -123,8 +100,7 @@ public class FrmThongKeDoanhThu extends JFrame implements ActionListener{
 	
 	DecimalFormat tien = new DecimalFormat("#,##0");
 	DecimalFormat tienSo = new DecimalFormat("###0");
-	
-	public ThongKeDoanhThu_Dao dao = new ThongKeDoanhThu_Dao();
+
 	private NhanVien_Dao daoNV = new NhanVien_Dao();
 	private ButtonGroup gr;
 	private ButtonGroup grChuc;
@@ -795,7 +771,7 @@ public class FrmThongKeDoanhThu extends JFrame implements ActionListener{
 	        	if (tienMua != 0)
 	        	{
 	        		 	double formattedTienMua = Double.parseDouble(tienSo.format(tienMua)) / 1000000;
-	        	        String label = tien.format(tienMua);
+	        	        String label = tenKH + "\n" + tien.format(tienMua);
 	        	        dataset.addValue(formattedTienMua, "Số tiền", label);
 	        	}
 	        }    

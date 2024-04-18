@@ -1,13 +1,12 @@
 package DAOTest.impl;
 
 import DAOTest.ThongKeDoanhThuDao;
-import Entity.ThongKeDoanhThu;
+import Entities.NhanVien;
+import Entities.ThongKeDoanhThu;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +21,7 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
     }
 
     @Override
-    public List<Entity.ThongKeDoanhThu> getDTQuy(int quy, int ca) {
+    public List<ThongKeDoanhThu> getDTQuy(int quy, int ca) {
         int startHour, endHour;
         if (ca == 0) {
             startHour = 0;
@@ -322,29 +321,26 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
                 .getSingleResult();
         return (result != null) ? result : 0.0;
     }
-
     @Override
     public Double tongDoanhThuCuaKhachHang(int top) {
         LocalDate date = LocalDate.now();
         int month = date.getMonthValue();
         int year = date.getYear();
-        System.out.println(month);
         Query query = em.createQuery("SELECT k.sdt, SUM(h.tongTien) " +
-                        "FROM HoaDon h " +
-                        "JOIN CtHoadon ct ON h.maHoaDon = ct.id.maHoaDon " +
-                        "JOIN KhachHang k ON k.maKH = h.khachHang " +
-                        "WHERE MONTH(h.ngayLapHoaDon) = 12 AND YEAR(h.ngayLapHoaDon) = 2023 " +
-                        "GROUP BY k.sdt " +
-                        "ORDER BY SUM(h.tongTien) DESC")
-//                .setParameter("month", month)
-//                .setParameter("year", year)
-                .setMaxResults(top);
+                "FROM HoaDon h " +
+                "JOIN CtHoadon ct ON h.maHoaDon = ct.id.maHoaDon " +
+                "JOIN KhachHang k ON k.maKH = h.khachHang " +
+                "WHERE MONTH(h.ngayLapHoaDon) = :month AND YEAR(h.ngayLapHoaDon) = :year " +
+                "GROUP BY k.sdt " +
+                "ORDER BY SUM(h.tongTien) DESC")
+                .setParameter("month", month)
+                .setParameter("year", year);
         List<Object[]> results = query.getResultList();
-        Double result = 0.0;
-        for (Object[] obj : results) {
-            result += (Double) obj[1];
+        if (top <= results.size()) {
+            Object[] resultAtTop = results.get(top - 1);
+            return (Double) resultAtTop[1];
         }
-        return result;
+        return 0.0;
     }
 
     @Override
@@ -356,17 +352,17 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
                         "FROM HoaDon h " +
                         "JOIN CtHoadon ct ON h.maHoaDon = ct.id.maHoaDon " +
                         "JOIN KhachHang k ON k.maKH = h.khachHang " +
-                        "WHERE MONTH(h.ngayLapHoaDon) = 12 AND YEAR(h.ngayLapHoaDon) = 2023 " +
+                        "WHERE MONTH(h.ngayLapHoaDon) = :month AND YEAR(h.ngayLapHoaDon) = :year " +
                         "GROUP BY k.sdt " +
                         "ORDER BY SUM(h.tongTien) DESC")
-//                .setParameter("month", month)
-//                .setParameter("year", year)
+                .setParameter("month", month)
+                .setParameter("year", year)
                 .setMaxResults(top);
         List<Object[]> results = query.getResultList();
-        StringBuilder result = new StringBuilder();
-        for (Object[] obj : results) {
-            result.append(obj[0]).append("\n");
+        if (top <= results.size()) {
+            Object[] resultAtTop = results.get(top - 1);
+            return (String) resultAtTop[0];
         }
-        return result.toString();
+        return "";
     }
 }

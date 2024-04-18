@@ -3,7 +3,7 @@ package Entities;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
-import lombok.*;
+
 import java.time.LocalDate;
 
 @NoArgsConstructor
@@ -174,4 +174,6 @@ public class NhanVien {
                 ", diaChi='" + diaChi + '\'' +
                 '}';
     }
+
+
 }

@@ -1,6 +1,7 @@
 package DAOTest;
 
-import Entity.ThongKeDoanhThu;
+import Entities.NhanVien;
+import Entities.ThongKeDoanhThu;
 
 import java.util.List;
 
