@@ -500,7 +500,7 @@ public class FrmThongKeDoanhThu extends JFrame implements ActionListener{
 		if (list == null || list.isEmpty())
 		{
 			btnInThongKe.setEnabled(false);
-			JOptionPane.showMessageDialog(this, "Không doanh thu trong quý " + quy);
+			JOptionPane.showMessageDialog(this, "Không có doanh thu trong quý " + quy);
 			textTTBD.setText(String.valueOf(0 + " VNĐ"));
 			textTienNhap.setText(String.valueOf(0 + " VNĐ"));
 			textLoiNhuan.setText(String.valueOf(0 + " VNĐ"));
@@ -528,12 +528,12 @@ public class FrmThongKeDoanhThu extends JFrame implements ActionListener{
 			ca = 2;
 		thang = (int) cbMonth.getSelectedItem();
 	
-		List<ThongKeDoanhThu> list = dao.getDTThang(thang, ca);
-		tienBan = dao.tongDoanhThuTheoThang(thang, ca);
+		List<ThongKeDoanhThu> list = daoTKDTImpl.getDTThang(thang, ca);
+		tienBan = daoTKDTImpl.tongDoanhThuThang(thang, ca);
 		
 		if (list == null || list.isEmpty())
 		{
-			JOptionPane.showMessageDialog(this, "Không doanh thu trong tháng " + thang);
+			JOptionPane.showMessageDialog(this, "Không có doanh thu trong tháng " + thang);
 			btnInThongKe.setEnabled(false);
 			textTTBD.setText(String.valueOf(0 + " VNĐ"));
 			textTienNhap.setText(String.valueOf(0 + " VNĐ"));
@@ -573,12 +573,12 @@ public class FrmThongKeDoanhThu extends JFrame implements ActionListener{
 					txtNam.requestFocus();
 					return;
 				}
-				List<ThongKeDoanhThu> list = dao.getDTNam(nam, ca);
-				tienBan = dao.tongDoanhThuTheoNam(nam, ca);
+				List<ThongKeDoanhThu> list = daoTKDTImpl.getDTNam(nam, ca);
+				tienBan = daoTKDTImpl.tongDoanhThuNam(nam, ca);
 				
 				if (list == null || list.isEmpty())
 			{
-				JOptionPane.showMessageDialog(this, "Không doanh thu trong năm " + nam);
+				JOptionPane.showMessageDialog(this, "Không có doanh thu trong năm " + nam);
 				btnInThongKe.setEnabled(false);
 				textTTBD.setText(String.valueOf(0 + " VNĐ"));
 				textTienNhap.setText(String.valueOf(0 + " VNĐ"));
@@ -624,12 +624,12 @@ public class FrmThongKeDoanhThu extends JFrame implements ActionListener{
 				txtNam.requestFocus();
 				return;
 			}
-				List<ThongKeDoanhThu> list = dao.getDTBoth(thang, nam, ca);
-				tienBan = dao.tongDoanhThuBoth(thang ,nam, ca);
+				List<ThongKeDoanhThu> list = daoTKDTImpl.getDTThangNam(thang, nam, ca);
+				tienBan = daoTKDTImpl.tongDoanhThuThangNam(thang ,nam, ca);
 				
 				if (list == null || list.isEmpty())
 			{
-				JOptionPane.showMessageDialog(this, "Không doanh thu trong tháng " + thang + " năm " + nam);
+				JOptionPane.showMessageDialog(this, "Không có doanh thu trong tháng " + thang + " năm " + nam);
 				btnInThongKe.setEnabled(false);
 				textTTBD.setText(String.valueOf(0 + " VNĐ"));
 				textTienNhap.setText(String.valueOf(0 + " VNĐ"));
@@ -790,12 +790,12 @@ public class FrmThongKeDoanhThu extends JFrame implements ActionListener{
 	        final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 	        for (int i =1; i<= 5; i++)
 	        {
-	        	tienMua = dao.tongDoanhThuCuaKhachHang(i);
-	        	String tenKH = dao.khachHangTop(i);
+	        	tienMua = daoTKDTImpl.tongDoanhThuCuaKhachHang(i);
+	        	String tenKH = daoTKDTImpl.topKhachHang(i);
 	        	if (tienMua != 0)
 	        	{
 	        		 	double formattedTienMua = Double.parseDouble(tienSo.format(tienMua)) / 1000000;
-	        	        String label = tenKH + " \n" + tien.format(tienMua);
+	        	        String label = tien.format(tienMua);
 	        	        dataset.addValue(formattedTienMua, "Số tiền", label);
 	        	}
 	        }    
