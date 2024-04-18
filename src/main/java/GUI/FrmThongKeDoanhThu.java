@@ -11,6 +11,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import DAOTest.ThongKeDoanhThuDao;
+import DAOTest.impl.ThongKeDoanhThuImpl;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -139,6 +141,8 @@ public class FrmThongKeDoanhThu extends JFrame implements ActionListener{
 	private int nam;
 	private double tienMua;
 	private JLabel lblTienKhuyenMai;
+
+	private ThongKeDoanhThuDao daoTKDTImpl = new ThongKeDoanhThuImpl();
 	
 	public FrmThongKeDoanhThu() {
 		pnlThongTin = new JPanel();
@@ -491,7 +495,7 @@ public class FrmThongKeDoanhThu extends JFrame implements ActionListener{
 		else if ((int) cboCa.getSelectedItem() == 2) 
 			ca = 2;
 		quy = (int) cboQuy.getSelectedItem();
-		List<ThongKeDoanhThu> list = dao.getDTQuy(quy, ca);
+		List<ThongKeDoanhThu> list = daoTKDTImpl.getDTQuy(quy, ca);
 		tienBan = dao.tongDoanhThuTheoQuy(quy, ca);
 		if (list == null || list.isEmpty())
 		{

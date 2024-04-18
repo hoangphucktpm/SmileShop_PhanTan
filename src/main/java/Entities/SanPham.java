@@ -7,6 +7,15 @@ import java.time.LocalDate;
 
 @NoArgsConstructor
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "SanPham.getDTQuy", query = "SELECT s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai, s.gianhap, s.soluong, SUM(ct.soLuongSP) as tongSoLuong, s.giaBan\n" +
+                "FROM SanPham s \n" +
+                "JOIN CtHoadon ct ON s.maSp = ct.id.maSanPham \n" +
+                "JOIN HoaDon h ON h.maHoaDon = ct.id.maHoaDon\n" +
+                "JOIN NhanVien n ON n.maNhanvien = h.nhanVien\n" +
+                "WHERE QUARTER(h.ngayLapHoaDon) = :quy AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour and year(h.ngayLapHoaDon) = 2023\n" +
+                "GROUP BY s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai, s.gianhap, s.soluong, s.giaBan")
+})
 public class SanPham {
     @Id
     @Column(name = "maSp", nullable = false, length = 50)

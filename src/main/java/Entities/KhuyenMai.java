@@ -9,6 +9,11 @@ import java.time.LocalDate;
 
 @NoArgsConstructor
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "KhuyenMai.findAll", query = "SELECT km FROM KhuyenMai km"),
+        @NamedQuery(name = "KhuyenMai.findByMaKhuyenMai", query = "SELECT km FROM KhuyenMai km WHERE km.maKhuyenMai = :maKhuyenMai"),
+        @NamedQuery(name = "KhuyenMai.getPercent", query = "SELECT km.phanTramKhuyenMai FROM KhuyenMai km WHERE km.maKhuyenMai = :maKhuyenMai")
+})
 public class KhuyenMai {
     @Id
     @Column(name = "MaKhuyenMai", nullable = false, length = 50)

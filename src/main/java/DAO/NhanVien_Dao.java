@@ -18,11 +18,6 @@ import GUI.FrmDangNhap;
 
 
 public class NhanVien_Dao {
-	private static final ConnectDatabase ConectDatabase = null;
-	Connection con;
-	PreparedStatement preStm;
-	ResultSet rs;
-	private Statement statement;
 
 	public NhanVien_Dao() {
 		ConnectDatabase.getInstance().connect();
@@ -38,8 +33,9 @@ public class NhanVien_Dao {
 	public boolean themNhanVien(NhanVien nv) {
 		int n = 0;
 		try {
-			con = ConnectDatabase.getInstance().getConnection();
+			Connection con = ConnectDatabase.getInstance().getConnection();
 			String sql = "insert into NhanVien ([TenNhanVien], NgaySinh, CCCD, Sdt, GioiTinh, TrangThai, CaLamViec, ChucVu, HinhAnh,Email, DiaChi) values(?,?,?,?,?,?,?,?,?,?,?)";
+			PreparedStatement
 			preStm = con.prepareStatement(sql);
 			preStm.setString(1, nv.getTenNV());
 			preStm.setDate(2, (java.sql.Date) nv.getNgaySinh());
