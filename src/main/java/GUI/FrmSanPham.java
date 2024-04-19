@@ -17,6 +17,9 @@ import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
+import DAOTest.SanPhamDao;
+import DAOTest.impl.SanPhamImpl;
+import Entities.SanPham;
 import com.toedter.calendar.JDateChooser;
 
 import DAO.KhuyenMai_Dao;
@@ -143,6 +146,7 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 	private SanPham_Dao dao = new SanPham_Dao();
 	private KhuyenMai_Dao daoKM = new KhuyenMai_Dao();
 
+	private SanPhamDao sanPhamDao = new SanPhamImpl();
 	List<LoaiSanPham> listSP = dao.getLoaiSP();
 	List<ChatLieu> listCL = dao.getChatLieu();
 	List<NhaCungCap> listNCC = dao.getTenNCC();
@@ -841,50 +845,54 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 
 	public void docDuLieu() {
 		int d = 1;
-		List<sanPham> list = dao.getAllSP();
+		List<Entities.SanPham> list = sanPhamDao.getAllSP();
 
 		String sta = "";
 
 		rdKhongVAT.setSelected(true);
 
-		for (sanPham x : list) {
-			float VAT = x.getVAT();
-			String km = dao.getKMTheoTen(x.getKhuyenMai().getMaKhuyenMai());
-			int pt = dao.getKMTheoPhanTram(x.getMaSP());
-			if (x.isTinhTrang() == true) {
+		for (Entities.SanPham x : list) {
+			float VAT = x.getVat();
+			String km = x.getKhuyenMai().getTenKhuyenMai();
+			if(km == null) {
+				km = "None";
+			}
+			else {
+			int pt = dao.getKMTheoPhanTram(x.getMaSp());
+			if (x.getTinhTrang() == true) {
 				sta = "Còn hàng";
 			} else
 				sta = "Hết hàng";
-			if (dao.vat(x.getMaSP()) == 1) {
+			if (dao.vat(x.getMaSp()) == 1) {
 
-				VAT = (float) (tinhGiaBan(x.getGiaNhap()) * 0.05);
+				VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
 			} else
 				VAT = 0;
-			double giaBan = tinhGiaBan(x.getGiaNhap()) + VAT;
+			double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
 			double giaBanKM = giaBan - (float)(giaBan *  (float)((float) pt / 100));
-			if (x.getKhuyenMai().getMaKhuyenMai() == null) {
+			if (x.getKhuyenMai() == null) {
 //				Không có khuyến mãi
 
 				String maCL = x.getChatLieu().getMaChatLieu();
 
-				tablemodel.addRow(new Object[] { d++, x.getMaSP(), x.getTenSP(), x.getMaLoai().getMaLoai(),
-						tien.format(x.getGiaNhap()), x.getSoLuong(), x.getNgayNhap(),
+				tablemodel.addRow(new Object[] { d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getMaLoaiSP(),
+						tien.format(x.getGianhap()), x.getSoluong(), x.getNgaynhap(),
 						x.getNhaCungCap().getMaNhaCungCap(),
 						dao.getTenChatLieu(maCL) + "(" + dao.getMoTaChatLieu(maCL) + ")", x.getSize(), x.getMauSac(),
-						x.getDonVitinh(), 0, VAT, sta, tien.format(giaBan) });
+						x.getDonViTinh(), 0, VAT, sta, tien.format(giaBan) });
 			} else {
 //				có khuyến mãi
 
 				String maCL = x.getChatLieu().getMaChatLieu();
 
-				tablemodel.addRow(new Object[] { d++, x.getMaSP(), x.getTenSP(), x.getMaLoai().getMaLoai(),
-						tien.format(x.getGiaNhap()), x.getSoLuong(), x.getNgayNhap(),
+				tablemodel.addRow(new Object[] { d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getMaLoaiSP(),
+						tien.format(x.getGianhap()), x.getSoluong(), x.getNgaynhap(),
 						x.getNhaCungCap().getMaNhaCungCap(),
 						dao.getTenChatLieu(maCL) + "(" + dao.getMoTaChatLieu(maCL) + ")", x.getSize(), x.getMauSac(),
-						x.getDonVitinh(), km, VAT, sta, tien.format(giaBanKM) });
+						x.getDonViTinh(), km, VAT, sta, tien.format(giaBanKM) });
 			}
 
-		}
+		}}
 		tblDSSP.setModel(tablemodel);
 	}
 
@@ -1158,7 +1166,7 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 		cboNhaCungCap.removeAllItems();
 		cboColor.removeAllItems();
 		cboSize.removeAllItems();
-		List<sanPham> sp = dao.getAllSP();
+		List<Entities.SanPham> sp = sanPhamDao.getAllSP();
 
 		for (LoaiSanPham l : listSP) {
 			cboLoaiSP.addItem(l.getTenLoai());
@@ -1182,8 +1190,8 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 		// List<sanPham> sp = dao.getAllSP();
 		HashSet<String> dvt = new HashSet<>();
 
-		for (sanPham s : sp) {
-			String d = s.getDonVitinh();
+		for (SanPham s : sp) {
+			String d = s.getDonViTinh();
 			dvt.add(d);
 		}
 
@@ -1195,23 +1203,23 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 	public void updateCBBoxTim() {
 		cboTimKiem.removeAllItems();
 //get ma san pham			
-		List<sanPham> listsp = dao.getAllSP();
+		List<SanPham> listsp = sanPhamDao.getAllSP();
 		cboTimKiem.setEditable(true);
-		for (sanPham n : listsp) {
-			if (rdTimMa.isSelected() && n.getMaSP() != null) {
-				cboTimKiem.addItem(n.getMaSP());
+		for (SanPham n : listsp) {
+			if (rdTimMa.isSelected() && n.getMaSp() != null) {
+				cboTimKiem.addItem(n.getMaSp());
 			}
 //get ten san pham		
-			else if (rdTen.isSelected() && n.getTenSP() != null) {
-				cboTimKiem.addItem(n.getTenSP());
+			else if (rdTen.isSelected() && n.getTensp() != null) {
+				cboTimKiem.addItem(n.getTensp());
 			}
 //get loai san pham		
 			else if (rdTimLoai.isSelected()) {
 
 				HashSet<String> tenlsp = new HashSet<>();
 
-				for (sanPham x : listsp) {
-					String o = dao.getTenLoaiSP(x.getMaSP());
+				for (SanPham x : listsp) {
+					String o = dao.getTenLoaiSP(x.getMaSp());
 
 					tenlsp.add(o);
 				}
@@ -1225,8 +1233,8 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 
 				HashSet<String> tenncc = new HashSet<>();
 
-				for (sanPham x : listsp) {
-					String o = dao.getTenNhaCC(x.getMaSP());
+				for (SanPham x : listsp) {
+					String o = dao.getTenNhaCC(x.getMaSp());
 
 					tenncc.add(o);
 				}
@@ -1240,8 +1248,8 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 
 				HashSet<String> clieu = new HashSet<>();
 
-				for (sanPham x : listsp) {
-					String o = dao.getTenCL(x.getMaSP());
+				for (SanPham x : listsp) {
+					String o = dao.getTenCL(x.getMaSp());
 
 					clieu.add(o);
 				}
@@ -1377,18 +1385,18 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 		txtKhuyenMai.setText(String.valueOf(dao.getKMTheoPhanTram(tablemodel.getValueAt(row, 1).toString())));
 
 		// txtChonNgaynhap.setDate(ngayNhap);
-		txtChonNgaynhap.setDate(dao.getAllSP().get(row).getNgayNhap());
+		txtChonNgaynhap.setDate(sanPhamDao.getAllSP().get(row).getNgaynhap());
 		txtDonGia.setText(tablemodel.getValueAt(row, 15).toString());
-		List<sanPham> list = dao.getAllSP();
+		List<SanPham> list = sanPhamDao.getAllSP();
 
-		for (sanPham x : list) {
-			if (x.getMaSP().equals(tablemodel.getValueAt(row, 1).toString())) {
-				if (dao.vat(x.getMaSP()) == 1) {
+		for (SanPham x : list) {
+			if (x.getMaSp().equals(tablemodel.getValueAt(row, 1).toString())) {
+				if (dao.vat(x.getMaSp()) == 1) {
 					rdCoVAT.setSelected(true);
 				} else {
 					rdKhongVAT.setSelected(true);
 				}
-				if (x.isTinhTrang() == true) {
+				if (x.getTinhTrang() == true) {
 					rdConHang.setSelected(true);
 				} else
 					rdHetHang.setSelected(true);
@@ -1499,13 +1507,13 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 		xoaAllDataTable();
 		String tim = "";
 
-		List<sanPham> list = dao.getAllSP();
+		List<SanPham> list = sanPhamDao.getAllSP();
 		float VAT = 0;
 		String sta = "";
 		// int km = 0;
 		rdKhongVAT.setSelected(true);
 
-		for (sanPham sp : list) {
+		for (SanPham sp : list) {
 			int d = 1;
 			if (rdTimGia.isSelected()) {
 				double gia1 = Double.parseDouble(txtGiaDau.getText());

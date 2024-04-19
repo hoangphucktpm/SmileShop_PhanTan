@@ -4,10 +4,16 @@ package Entities;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.util.Date;
 
 @NoArgsConstructor
 @Entity
 @NamedQueries({
+//        @NamedQuery(name = "SanPham.findAllSP",query = "Select maSp, Tensp, ncc.TenNhaCungCap, KhuyenMai, Gianhap, Soluong, Ngaynhap, Hinhanh, MauSac, s.size, ChatLieu, s.TinhTrang, DonViTinh, lsp.TenLoaiSP ,s.VAT,s.giaBan\n" +
+//                "from SanPham s join NhaCungCap ncc on s.NhaCungCap = ncc.MaNhaCungCap \n" +
+//                "join LoaiSanPham lsp on s.LoaiSanPham = lsp.MaLoaiSP \n" +
+//                "join ChatLieu c on c.MaChatLieu=s.ChatLieu"),
+        @NamedQuery(name = "SanPham.findAllSP", query = "SELECT s FROM SanPham s"),
         @NamedQuery(name = "SanPham.getDTQuy", query = "SELECT s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai, s.gianhap, s.soluong, SUM(ct.soLuongSP) as tongSoLuong, s.giaBan\n" +
                 "FROM SanPham s \n" +
                 "JOIN CtHoadon ct ON s.maSp = ct.id.maSanPham \n" +
@@ -39,7 +45,7 @@ public class SanPham {
     private Integer soluong;
 
     @Column(name = "Ngaynhap", nullable = false)
-    private LocalDate ngaynhap;
+    private Date ngaynhap;
 
     @Column(name = "Hinhanh", nullable = false, length = 50)
     private String hinhanh;
@@ -118,11 +124,11 @@ public class SanPham {
         this.soluong = soluong;
     }
 
-    public LocalDate getNgaynhap() {
+    public Date getNgaynhap() {
         return ngaynhap;
     }
 
-    public void setNgaynhap(LocalDate ngaynhap) {
+    public void setNgaynhap(Date ngaynhap) {
         this.ngaynhap = ngaynhap;
     }
 
@@ -198,7 +204,7 @@ public class SanPham {
         this.giaBan = giaBan;
     }
 
-    public SanPham(String maSp, String tensp, NhaCungCap nhaCungCap, KhuyenMai khuyenMai, Double gianhap, Integer soluong, LocalDate ngaynhap, String hinhanh, String mauSac, String size, ChatLieu chatLieu, Boolean tinhTrang, String donViTinh, LoaiSanPham loaiSanPham, Short vat, Double giaBan) {
+    public SanPham(String maSp, String tensp, NhaCungCap nhaCungCap, KhuyenMai khuyenMai, Double gianhap, Integer soluong, Date ngaynhap, String hinhanh, String mauSac, String size, ChatLieu chatLieu, Boolean tinhTrang, String donViTinh, LoaiSanPham loaiSanPham, Short vat, Double giaBan) {
         this.maSp = maSp;
         this.tensp = tensp;
         this.nhaCungCap = nhaCungCap;
