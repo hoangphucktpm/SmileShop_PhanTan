@@ -58,7 +58,7 @@ public class LapHoaDonImpl implements LapHoaDonDao {
 
 
     @Override
-    public float getDiem(String Sdt){
+    public float getDiem(String Sdt) {
         float result = 0;
 
         try {
@@ -73,16 +73,16 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     }
 
     @Override
-        public int soLuongHD(){
-            int sum = 0;
-            try {
-                Query query = em.createNativeQuery("SELECT COUNT(*) FROM [dbo].[HoaDon] WHERE CAST(NgayLapHoaDon AS DATE) = CAST(GETDATE() AS DATE);");
-                sum = (int) query.getSingleResult();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return sum;
+    public int soLuongHD() {
+        int sum = 0;
+        try {
+            Query query = em.createNativeQuery("SELECT COUNT(*) FROM [dbo].[HoaDon] WHERE CAST(NgayLapHoaDon AS DATE) = CAST(GETDATE() AS DATE);");
+            sum = (int) query.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return sum;
+    }
 
     @Override
     public int soLuongSPDaBan(String masp) {
@@ -129,7 +129,7 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     //	}
 
     @Override
-    public boolean addCT_HoaDon(String maHoaDon,String maSP,int soLuong) {
+    public boolean addCT_HoaDon(String maHoaDon, String maSP, int soLuong) {
         try {
             Query query = em.createNativeQuery("INSERT INTO dbo.CT_HoaDon(MaHoaDon, MaSanPham, SoLuongSP) VALUES (?, ?, ?)");
             query.setParameter(1, maHoaDon);
@@ -281,9 +281,9 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     //        return true;
     //    }
 
-//    /{Còn lỗi}/
+    //    /{Còn lỗi}/
     @Override
-    public boolean upDateHoaDon(String mahd, double tienkd, float diemtichduoc,  String nhanvien, String khachhang, double tongtien ) {
+    public boolean upDateHoaDon(String mahd, double tienkd, float diemtichduoc, String nhanvien, String khachhang, double tongtien) {
         try {
             em.getTransaction().begin(); // Bắt đầu giao dịch
 

@@ -196,7 +196,7 @@ public class sanPham {
 		this.nhaCungCap = nhaCungCap;
 		this.khuyenMai = khuyenMai;
 		this.giaBan = giaBan;
-		VAT = vAT;
+		this.VAT = vAT;
 	}
 	public sanPham(String maSP, String tenSP) {
 		super();

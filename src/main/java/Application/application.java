@@ -2,6 +2,7 @@ package Application;
 
 import DAOTest.KhachHangDao;
 import DAOTest.LapHoaDonDao;
+import DAOTest.XemHoaDonDao;
 import DAOTest.impl.KhachHangImpl;
 import DAOTest.impl.LapHoaDonImpl;
 import Entities.KhachHang;
@@ -18,8 +19,8 @@ public class application {
 //        System.out.println(khachHangDao.getAllKH());
 
 
-        LapHoaDonDao lapHoaDonDao = new LapHoaDonImpl();
-        System.out.println(lapHoaDonDao.getKMTheoPhanTram("KM002")  );
+        XemHoaDonDao xemHoaDonDao = new DAOTest.impl.XemHoaDonImpl();
+        System.out.println(xemHoaDonDao.getHDTheoNgayLap(9, 12, 2023));
 
 
     }

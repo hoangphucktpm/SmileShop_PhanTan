@@ -3,12 +3,12 @@ package Entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.Instant;
+
 import java.sql.Timestamp;
+import java.util.Date;
 
 
 @Entity
-@NoArgsConstructor
 
 @NamedQueries({
         @NamedQuery(name = "HoaDon.findAll", query = "SELECT hd FROM HoaDon hd"),
@@ -110,6 +110,12 @@ public class HoaDon {
         this.tongTien = tongTien;
         this.ngayLapHoaDon = ngayLapHoaDon;
         this.diemTichDuoc = diemTichDuoc;
+    }
+
+    public HoaDon(String maHoaDon) {
+    }
+
+    public HoaDon() {
     }
 
     @Override

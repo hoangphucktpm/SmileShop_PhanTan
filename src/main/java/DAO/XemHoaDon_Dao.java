@@ -134,7 +134,7 @@ public class XemHoaDon_Dao {
 
 	/**
 	 * Lấy tên nhân viên khi biết mã nhân vien
-	 * @param ma
+	 * @param manv
 	 * @return tên nhân viên
 	 */
 	public String getTenNV(String manv){
@@ -157,7 +157,7 @@ public class XemHoaDon_Dao {
 	
 	/**
 	 * Lấy tên khách hàng khi biết mã khách hàng 
-	 * @param khachHang
+	 * @param makh
 	 * @return tên khách hàng
 	 */
 	public String getTenKH(String makh){

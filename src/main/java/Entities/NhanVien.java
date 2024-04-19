@@ -157,6 +157,9 @@ public class NhanVien {
         this.diaChi = diaChi;
     }
 
+    public NhanVien(String nhanVien) {
+    }
+
     @Override
     public String toString() {
         return "NhanVien{" +

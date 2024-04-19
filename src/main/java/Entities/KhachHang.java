@@ -3,7 +3,7 @@ package Entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDate;
+
 import java.util.Date;
 
 @NoArgsConstructor
@@ -150,6 +150,9 @@ public class KhachHang {
         this.loaiKH = loaiKH;
         this.email = email;
         this.diemTichLuy = diemTichLuy;
+    }
+
+    public KhachHang(String khachHang) {
     }
 
     @Override
