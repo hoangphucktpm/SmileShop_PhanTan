@@ -1,12 +1,11 @@
 package DAOTest.impl;
 
 import DAOTest.ThongKeHoaDonDao;
-import Entity.ThongKeHoaDon;
+import Entities.ThongKeHoaDon;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 
-import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
