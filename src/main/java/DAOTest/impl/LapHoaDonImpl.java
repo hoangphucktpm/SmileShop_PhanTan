@@ -3,6 +3,7 @@ package DAOTest.impl;
 import DAOTest.LapHoaDonDao;
 import Entities.HoaDon;
 import Entities.KhachHang;
+import Entities.SanPham;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
@@ -71,25 +72,6 @@ public class LapHoaDonImpl implements LapHoaDonDao {
         return result;
     }
 
-    //
-    //	public int soLuongHD(){
-    //		int sum = 0;
-    //		try {
-    //			Connection con = ConnectDatabase.getInstance().getConnection();
-    //			String sql="  SELECT COUNT(*) FROM [dbo].[HoaDon] WHERE CAST(NgayLapHoaDon AS DATE) = CAST(GETDATE() AS DATE);";
-    //			Statement statement = con.createStatement();
-    //			ResultSet rs = statement.executeQuery(sql);
-    //			while (rs.next()) {
-    //				sum = rs.getInt(1);
-    //			}
-    //		} catch (SQLException e) {
-    //			// TODO Auto-generated catch block
-    //			e.printStackTrace();
-    //		}
-    //		return sum;
-    //	}
-
-
     @Override
         public int soLuongHD(){
             int sum = 0;
@@ -101,47 +83,34 @@ public class LapHoaDonImpl implements LapHoaDonDao {
             }
             return sum;
         }
-        //
-    //	public static int soLuongSPDaBan(String masp) {
-    //		int soLuongSP =0;
-    //		try {
-    //			Connection con = ConnectDatabase.getInstance().getConnection();
-    //			PreparedStatement stmt = null;
-    //			String sql = "select soLuongSPDaBan = SUM(SoLuongSP)\r\n" +
-    //					"from dbo.CT_HoaDon\r\n" +
-    //					"where MaSanPham = ?\r\n" +
-    //					"group by MaSanPham";
-    //			stmt = con.prepareStatement(sql);
-    //			stmt.setString(1,masp);
-    //			ResultSet rs = stmt.executeQuery();
-    //			while(rs.next()) {
-    //				soLuongSP = rs.getInt(1);
-    //			}
-    //		} catch (Exception e) {
-    //			// TODO: handle exception
-    //		}
-    //		return soLuongSP;
-    //	}
-    //	public int soLuongNhap(String masp) {
-    //		int soLuongSP =0;
-    //		try {
-    //			Connection con = ConnectDatabase.getInstance().getConnection();
-    //			PreparedStatement stmt = null;
-    //			String sql = "select Soluong\r\n" +
-    //					"from dbo.SanPham\r\n" +
-    //					"where maSp = ?";
-    //			stmt = con.prepareStatement(sql);
-    //			stmt.setString(1,masp);
-    //			ResultSet rs = stmt.executeQuery();
-    //			while(rs.next()) {
-    //				soLuongSP = rs.getInt(1);
-    //			}
-    //		} catch (Exception e) {
-    //			// TODO: handle exception
-    //		}
-    //		return soLuongSP;
-    //	}
-    //
+
+    @Override
+    public int soLuongSPDaBan(String masp) {
+        int soLuongSP = 0;
+        try {
+            Query query = em.createNativeQuery("SELECT SUM(SoLuongSP) FROM dbo.CT_HoaDon WHERE MaSanPham = ?");
+            query.setParameter(1, masp);
+            soLuongSP = ((Number) query.getSingleResult()).intValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return soLuongSP;
+    }
+
+
+    @Override
+    public int soLuongNhap(String masp) {
+        int soLuongSP = 0;
+        try {
+            Query query = em.createNativeQuery("SELECT SoLuong FROM dbo.SanPham WHERE MaSp = ?");
+            query.setParameter(1, masp);
+            soLuongSP = ((Number) query.getSingleResult()).intValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return soLuongSP;
+    }
+
     //	public boolean addCT_HoaDon(String maHoaDon,String maSP,int soLuong) {
     //		Connection con = ConnectDatabase.getInstance().getConnection();
     //		PreparedStatement stmt = null;
@@ -158,25 +127,35 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     //		}
     //		return n>0;
     //	}
-    //	public String getTenNV(String ma) {
-    //		String tenDN1 = null;
-    //		try {
-    //			Connection con = ConnectDatabase.getInstance().getConnection();
-    //			PreparedStatement stmt = null;
-    //			String sql = "select TenNhanVien\r\n" +
-    //					"from dbo.TaiKhoan t join dbo.NhanVien n on t.TenTaiKhoan = n.MaNhanvien\r\n" +
-    //					"where t.TenTaiKhoan =?";
-    //			stmt = con.prepareStatement(sql);
-    //			stmt.setString(1,ma);
-    //			ResultSet rs = stmt.executeQuery();
-    //			while(rs.next()) {
-    //				tenDN1 = rs.getString(1).toString();
-    //			}
-    //		} catch (Exception e) {
-    //			// TODO: handle exception
-    //		}
-    //		return tenDN1;
-    //	}
+
+    @Override
+    public boolean addCT_HoaDon(String maHoaDon,String maSP,int soLuong) {
+        try {
+            Query query = em.createNativeQuery("INSERT INTO dbo.CT_HoaDon(MaHoaDon, MaSanPham, SoLuongSP) VALUES (?, ?, ?)");
+            query.setParameter(1, maHoaDon);
+            query.setParameter(2, maSP);
+            query.setParameter(3, soLuong);
+            query.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String getTenNV(String ma) {
+        String tenDN1 = null;
+        try {
+            Query query = em.createNativeQuery("SELECT TenNhanVien FROM dbo.NhanVien WHERE MaNhanvien = ?");
+            query.setParameter(1, ma);
+            tenDN1 = (String) query.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tenDN1;
+    }
+
     //	public sanPham laySP(String ten, String mau, String kt) {
     //	    sanPham sp = new sanPham();
     //
@@ -250,7 +229,27 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     //		}
     //		return sp;
     //	}
-    //
+
+    @Override
+    public SanPham laySP(String ten, String mau, String kt) {
+        SanPham sp = null;
+        try {
+            Query query = em.createQuery("SELECT s FROM SanPham s " +
+                    "JOIN s.nhaCungCap ncc " +
+                    "JOIN s.loaiSanPham lsp " +
+                    "JOIN s.chatLieu c " +
+                    "WHERE s.tensp = :ten AND s.mauSac = :mau AND s.size = :kt", SanPham.class);
+            query.setParameter("ten", ten);
+            query.setParameter("mau", mau);
+            query.setParameter("kt", kt);
+            sp = (SanPham) query.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sp;
+    }
+
+
     //	public boolean upDateHoaDon(String mahd, double tienkd, float diemtichduoc,  String nhanvien, String khachhang, double tongtien ) {
     //
     //		Connection con = ConnectDatabase.getInstance().getConnection();
@@ -281,24 +280,55 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     //
     //        return true;
     //    }
-    //	public boolean updateDiem(double diem, String sdt)
-    //	{
-    //		Connection con = ConnectDatabase.getInstance().getConnection();
-    //		String sql = "update KhachHang "
-    //				+ "set diemTichLuy =? where Sdt like ?\r\n";
-    //		PreparedStatement stmt = null;
-    //
-    //		int n =0;
-    //		try {
-    //			stmt = con.prepareStatement(sql);
-    //			stmt.setDouble(1, diem);
-    //			stmt.setString(2, sdt);
-    //			n= stmt.executeUpdate();
-    //		} catch (Exception e3) {
-    //			// TODO: handle exception
-    //		}
-    //		return n>0;
-    //	}
+
+//    /{Còn lỗi}/
+    @Override
+    public boolean upDateHoaDon(String mahd, double tienkd, float diemtichduoc,  String nhanvien, String khachhang, double tongtien ) {
+        try {
+            em.getTransaction().begin(); // Bắt đầu giao dịch
+
+            Query query = em.createNativeQuery("INSERT INTO dbo.HoaDon (MaHoaDon, TienKhachDua, KhachHang, NhanVien, TongTien, NgayLapHoaDon, DiemTichDuoc) VALUES (?, ?, ?, ?, ?, GETDATE(), ?)");
+            query.setParameter(1, mahd);
+            query.setParameter(2, tienkd);
+            query.setParameter(3, khachhang);
+            query.setParameter(4, nhanvien);
+            query.setParameter(5, tongtien);
+            query.setParameter(6, diemtichduoc);
+            query.executeUpdate();
+
+            em.getTransaction().commit(); // Cam kết giao dịch
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback(); // Hoàn tác giao dịch nếu có lỗi
+            }
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean updateDiem(double diem, String sdt) {
+        try {
+            em.getTransaction().begin(); // Bắt đầu giao dịch
+
+            Query query = em.createNativeQuery("UPDATE dbo.KhachHang SET DiemTichLuy = ? WHERE Sdt = ?");
+            query.setParameter(1, diem);
+            query.setParameter(2, sdt);
+            query.executeUpdate();
+
+            em.getTransaction().commit(); // Cam kết giao dịch
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback(); // Hoàn tác giao dịch nếu có lỗi
+            }
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+
     //	public int getKMTheoPhanTram(String ma) {
     //		int phanTram = 0;
     //
@@ -318,13 +348,24 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     //		return phanTram;
     //	}
     //
-    //}
 
+    // Can kiem tra lai
 
-
-
-
-
-
+    @Override
+    public int getKMTheoPhanTram(String ma) {
+        int phanTram = 0;
+        try {
+            Query query = em.createNativeQuery("SELECT PhanTramKhuyenMai FROM dbo.KhuyenMai WHERE MaKhuyenMai = ?");
+            query.setParameter(1, ma);
+            List<Integer> results = query.getResultList();
+            System.out.println("Results: " + results); // In ra kết quả
+            if (!results.isEmpty()) {
+                phanTram = results.get(0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return phanTram;
+    }
 
 }
