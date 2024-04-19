@@ -17,7 +17,6 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -26,8 +25,6 @@ import java.util.Locale;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JTextArea;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.JRadioButton;
@@ -36,19 +33,14 @@ import javax.swing.JScrollPane;
 import DAOTest.ThongKeHoaDonDao;
 import DAOTest.impl.ThongKeHoaDonImpl;
 import com.toedter.calendar.JDateChooser;
-import com.toedter.calendar.JMonthChooser;
-import com.toedter.calendar.JYearChooser;
 
 import DAO.NhanVien_Dao;
-import DAO.ThongKeHoaDon_Dao;
 
 import Entity.NhanVien;
 import Entity.ThongKeHoaDon;
 
 import javax.swing.JTextField;
-import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.JEditorPane;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -98,9 +90,6 @@ public class FrmThongKeHoaDon extends JFrame implements ActionListener {
 	private JTextField textHDDL;
 	private JTextField textSPDB;
 	private JTextField textTT;
-
-	private ThongKeHoaDon_Dao dao = new ThongKeHoaDon_Dao();
-
 	private NhanVien_Dao daoNV = new NhanVien_Dao();
 	private JPanel pnlBieuDo;
 	public ChartPanel chartPanel;
@@ -536,8 +525,8 @@ public class FrmThongKeHoaDon extends JFrame implements ActionListener {
 	public CategoryDataset createDataset() {
 		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		for (int i = 1; i <= 5; i++) {
-			int tongHoaDon = dao.tongHoaDon(i);
-			String nhanVienTop = dao.nhanVienTop(i);
+			int tongHoaDon = daoImpl.tongHoaDon(i);
+			String nhanVienTop = daoImpl.nhanVienTop(i);
 			if (tongHoaDon != 0) {
 				dataset.addValue(tongHoaDon, "Hóa Đơn", nhanVienTop + "\n" + tongHoaDon + " hóa đơn");
 			}

@@ -348,12 +348,12 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
         LocalDate date = LocalDate.now();
         int month = date.getMonthValue();
         int year = date.getYear();
-        Query query = em.createQuery("SELECT k.sdt, SUM(h.tongTien) " +
+        Query query = em.createQuery("SELECT k.tenKH, SUM(h.tongTien) " +
                         "FROM HoaDon h " +
                         "JOIN CtHoadon ct ON h.maHoaDon = ct.id.maHoaDon " +
                         "JOIN KhachHang k ON k.maKH = h.khachHang " +
                         "WHERE MONTH(h.ngayLapHoaDon) = :month AND YEAR(h.ngayLapHoaDon) = :year " +
-                        "GROUP BY k.sdt " +
+                        "GROUP BY k.tenKH " +
                         "ORDER BY SUM(h.tongTien) DESC")
                 .setParameter("month", month)
                 .setParameter("year", year)

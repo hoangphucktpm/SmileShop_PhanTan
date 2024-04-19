@@ -4,9 +4,11 @@ import DAOTest.ThongKeHoaDonDao;
 import Entity.ThongKeHoaDon;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.Query;
 
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,6 +106,50 @@ public class ThongKeHoaDonImpl implements ThongKeHoaDonDao {
             resultList.add(tk);
         }
         return resultList;
+    }
+
+    @Override
+    public int tongHoaDon(int top) {
+        LocalDate date = LocalDate.now();
+        int month = date.getMonthValue();
+        int year = date.getYear();
+        Query query = em.createQuery("select n.maNhanvien, count(h.maHoaDon) as HoaDon from HoaDon h " +
+                        "join CtHoadon ct on h.maHoaDon=ct.maHoaDon " +
+                        "join NhanVien n on n.maNhanvien = h.nhanVien " +
+                        "where MONTH(h.ngayLapHoaDon) = :month AND YEAR(h.ngayLapHoaDon) = :year " +
+                        "group by n.maNhanvien " +
+                        "order by HoaDon desc")
+                .setParameter("month", month)
+                .setParameter("year", year);
+        List<Object[]> result = query.getResultList();
+        if(top <= result.size()){
+            Object[] topResult = result.get(top - 1);
+            return ((Long) topResult[1]).intValue();
+        }
+
+        return 0;
+    }
+
+    @Override
+    public String nhanVienTop(int top) {
+        LocalDate date = LocalDate.now();
+        int month = date.getMonthValue();
+        int year = date.getYear();
+        Query query = em.createQuery("select n.tenNhanVien, count(h.maHoaDon) as HoaDon from HoaDon h " +
+                        "join CtHoadon ct on h.maHoaDon=ct.maHoaDon " +
+                        "join NhanVien n on n.maNhanvien = h.nhanVien " +
+                        "where MONTH(h.ngayLapHoaDon) = :month AND YEAR(h.ngayLapHoaDon) = :year " +
+                        "group by n.tenNhanVien " +
+                        "order by HoaDon desc")
+                .setParameter("month", month)
+                .setParameter("year", year)
+                .setMaxResults(top);
+        List<Object[]> results = query.getResultList();
+        if (top <= results.size()) {
+            Object[] resultAtTop = results.get(top - 1);
+            return (String) resultAtTop[0];
+        }
+        return "";
     }
 
 }
