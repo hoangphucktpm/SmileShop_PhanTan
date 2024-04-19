@@ -19,7 +19,7 @@ public class application {
 
 
         LapHoaDonDao lapHoaDonDao = new LapHoaDonImpl();
-        System.out.println(lapHoaDonDao.getAllLapHoaDon());
+        System.out.println(lapHoaDonDao.soLuongHD());
 
 
     }

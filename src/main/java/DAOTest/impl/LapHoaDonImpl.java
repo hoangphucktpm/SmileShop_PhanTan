@@ -2,8 +2,10 @@ package DAOTest.impl;
 
 import DAOTest.LapHoaDonDao;
 import Entities.HoaDon;
+import Entities.KhachHang;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,71 +27,50 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     }
 
 
+    @Override
+    public String maHoaDon(String maNhanVien) {
+        String maHoaDon = null;
+        try {
+            Query query = em.createNativeQuery("select 'HD'+convert(nvarchar,MAX(RIGHT(LEFT(MaHoaDon,7),5))+'NV'+ ? +CONVERT(nvarchar,GETDATE(),112)) from dbo.HoaDon");
+            query.setParameter(1, maNhanVien);
+
+            maHoaDon = (String) query.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return maHoaDon;
+    }
+
+    @Override
+    public List<KhachHang> timKhachHangBySDT(String Sdt) {
+        List<KhachHang> list = new ArrayList<KhachHang>();
+        try {
+            Query query = em.createNativeQuery("SELECT * FROM dbo.KhachHang WHERE Sdt = ?", KhachHang.class);
+            query.setParameter(1, Sdt);
+
+            list = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
 
-    //	// mã hóa đơn
-    //	public String maHoaDon(String maNhanVien) {
-    //		String maHoaDon = null;
-    //		try {
-    //			Connection con = ConnectDatabase.getInstance().getConnection();
-    //			PreparedStatement stmt = null;
-    //			String sql = "select 'HD'+convert(nvarchar,MAX(RIGHT(LEFT(MaHoaDon,7),5))+'NV'+ ? +CONVERT(nvarchar,GETDATE(),112))\r\n" +
-    //					"					from dbo.HoaDon";
-    //			stmt = con.prepareStatement(sql);
-    //			stmt.setString(1,maNhanVien);
-    //			ResultSet rs = stmt.executeQuery();
-    //			while(rs.next()) {
-    //				maHoaDon = rs.getString(1).toString();
-    //			}
-    //		} catch (Exception e) {
-    //			// TODO: handle exception
-    //		}
-    //		return maHoaDon;
-    //	}
-    //
-    //	public List<KhachHang> timKhachHangBySDT(String Sdt) {
-    //	    List<KhachHang> list = new ArrayList<KhachHang>();
-    //	    try {
-    //	        Connection con = ConnectDatabase.getInstance().getConnection();
-    //	        PreparedStatement stmt = null;
-    //	        String sql = "SELECT MaKH, TenKH FROM dbo.KhachHang WHERE Sdt = ?";
-    //	        stmt = con.prepareStatement(sql);
-    //	        stmt.setString(1, Sdt);
-    //	        ResultSet rs = stmt.executeQuery();
-    //	        while (rs.next()) {
-    //	            String maKH = rs.getString(1);
-    //	            String tenKH = rs.getString(2);
-    //	            KhachHang khachHang = new KhachHang();
-    //	            khachHang.setMaKH(maKH);
-    //	            khachHang.setTenKH(tenKH);
-    //
-    //	            list.add(khachHang);
-    //	        }
-    //	    } catch (Exception e) {
-    //	        e.printStackTrace();
-    //	    }
-    //	    return list;
-    //	}
-    //
-    //
-    //	public float getDiem(String Sdt){
-    //		float result = 0;
-    //
-    //		try {
-    //			Connection con = ConnectDatabase.getInstance().getConnection();
-    //			String sql = "select diemTichLuy from KhachHang where Sdt like '%" + Sdt +"%'";
-    //			PreparedStatement preStm = con.prepareStatement(sql);
-    //			ResultSet rs = preStm.executeQuery();
-    //
-    //			while (rs.next()) {
-    //				result = rs.getFloat(1);
-    //			}
-    //		} catch (Exception e) {
-    //			e.printStackTrace();
-    //		}
-    //		return result;
-    //	}
-    //
+    @Override
+    public float getDiem(String Sdt){
+        float result = 0;
+
+        try {
+            Query query = em.createNativeQuery("select diemTichLuy from dbo.KhachHang where Sdt = ?");
+            query.setParameter(1, Sdt);
+            Double queryResult = (Double) query.getSingleResult();
+            result = queryResult.floatValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     //
     //	public int soLuongHD(){
     //		int sum = 0;
@@ -107,7 +88,20 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     //		}
     //		return sum;
     //	}
-    //
+
+
+    @Override
+        public int soLuongHD(){
+            int sum = 0;
+            try {
+                Query query = em.createNativeQuery("SELECT COUNT(*) FROM [dbo].[HoaDon] WHERE CAST(NgayLapHoaDon AS DATE) = CAST(GETDATE() AS DATE);");
+                sum = (int) query.getSingleResult();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return sum;
+        }
+        //
     //	public static int soLuongSPDaBan(String masp) {
     //		int soLuongSP =0;
     //		try {
