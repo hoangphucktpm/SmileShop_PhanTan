@@ -18,6 +18,13 @@ import java.util.Date;
         @NamedQuery(name = "KhachHang.findKHByCCCD", query = "SELECT kh FROM KhachHang kh WHERE kh.cccd = :cccd"),
         @NamedQuery(name = "KhachHang.findByGender", query = "SELECT kh FROM KhachHang kh WHERE kh.gioiTinh = :gioiTinh"),
         @NamedQuery(name = "KhachHang.findByLoaiKH", query = "SELECT kh FROM KhachHang kh WHERE kh.loaiKH.tenLoaiKH = :tenLoaiKH"),
+        @NamedQuery(name = "KhachHang.findTop", query = "SELECT k.tenKH, SUM(h.tongTien) " +
+                "FROM HoaDon h " +
+                "JOIN CtHoadon ct ON h.maHoaDon = ct.id.maHoaDon " +
+                "JOIN KhachHang k ON k.maKH = h.khachHang " +
+                "WHERE MONTH(h.ngayLapHoaDon) = :month AND YEAR(h.ngayLapHoaDon) = :year " +
+                "GROUP BY k.tenKH " +
+                "ORDER BY SUM(h.tongTien) DESC"),
 })
 public class KhachHang {
     @Id

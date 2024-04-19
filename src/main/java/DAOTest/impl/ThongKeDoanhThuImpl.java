@@ -1,7 +1,7 @@
 package DAOTest.impl;
 
 import DAOTest.ThongKeDoanhThuDao;
-import Entities.NhanVien;
+import Entities.KhachHang;
 import Entities.ThongKeDoanhThu;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
@@ -326,13 +326,7 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
         LocalDate date = LocalDate.now();
         int month = date.getMonthValue();
         int year = date.getYear();
-        Query query = em.createQuery("SELECT k.sdt, SUM(h.tongTien) " +
-                "FROM HoaDon h " +
-                "JOIN CtHoadon ct ON h.maHoaDon = ct.id.maHoaDon " +
-                "JOIN KhachHang k ON k.maKH = h.khachHang " +
-                "WHERE MONTH(h.ngayLapHoaDon) = :month AND YEAR(h.ngayLapHoaDon) = :year " +
-                "GROUP BY k.sdt " +
-                "ORDER BY SUM(h.tongTien) DESC")
+        Query query = em.createNamedQuery("KhachHang.findTop")
                 .setParameter("month", month)
                 .setParameter("year", year);
         List<Object[]> results = query.getResultList();
@@ -348,13 +342,7 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
         LocalDate date = LocalDate.now();
         int month = date.getMonthValue();
         int year = date.getYear();
-        Query query = em.createQuery("SELECT k.tenKH, SUM(h.tongTien) " +
-                        "FROM HoaDon h " +
-                        "JOIN CtHoadon ct ON h.maHoaDon = ct.id.maHoaDon " +
-                        "JOIN KhachHang k ON k.maKH = h.khachHang " +
-                        "WHERE MONTH(h.ngayLapHoaDon) = :month AND YEAR(h.ngayLapHoaDon) = :year " +
-                        "GROUP BY k.tenKH " +
-                        "ORDER BY SUM(h.tongTien) DESC")
+        Query query = em.createNamedQuery("KhachHang.findTop")
                 .setParameter("month", month)
                 .setParameter("year", year)
                 .setMaxResults(top);
