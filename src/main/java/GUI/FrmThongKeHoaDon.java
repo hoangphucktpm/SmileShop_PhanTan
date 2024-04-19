@@ -33,6 +33,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 
+import DAOTest.ThongKeHoaDonDao;
+import DAOTest.impl.ThongKeHoaDonImpl;
 import com.toedter.calendar.JDateChooser;
 import com.toedter.calendar.JMonthChooser;
 import com.toedter.calendar.JYearChooser;
@@ -108,6 +110,8 @@ public class FrmThongKeHoaDon extends JFrame implements ActionListener {
 
 	private FrmXuatThongKe frmInTK = new FrmXuatThongKe();
 	private JButton btnInThongKe;
+
+	private ThongKeHoaDonDao daoImpl = new ThongKeHoaDonImpl();
 
 	public FrmThongKeHoaDon() {
 
@@ -406,7 +410,7 @@ public class FrmThongKeHoaDon extends JFrame implements ActionListener {
 			ca = 2;
 		if (cbNV.getSelectedItem().equals("Tất cả")) {
 			btnInThongKe.setEnabled(true);
-			List<ThongKeHoaDon> list = dao.getHoaDonTheoNgayVaCa(day, month, year, ca);
+			List<ThongKeHoaDon> list = daoImpl.getHoaDonTheoNgayVaCa(day, month, year, ca);
 			if (list != null && !list.isEmpty())
 				docDuLieu(list, n);
 			else {
@@ -420,7 +424,7 @@ public class FrmThongKeHoaDon extends JFrame implements ActionListener {
 		} else {
 			btnInThongKe.setEnabled(true);
 			String maNV = (String) cbNV.getSelectedItem();
-			List<ThongKeHoaDon> listNV = dao.getHoaDonTheoNV(day, month, year, maNV, ca);
+			List<ThongKeHoaDon> listNV = daoImpl.getHoaDonTheoNV(day, month, year, maNV, ca);
 			if (listNV != null && !listNV.isEmpty())
 				docDuLieu(listNV, n);
 			else {
