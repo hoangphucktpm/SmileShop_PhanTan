@@ -6,8 +6,11 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -20,23 +23,29 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-import DAOTest.KhuyenMaiDao;
 import DAOTest.impl.KhuyenMaiImpl;
-import Entity.sanPham;
+import DAOTest.impl.SanPhamImpl;
 import com.toedter.calendar.JDateChooser;
 
-import DAO.SanPham_Dao;
+import DAOTest.KhuyenMaiDao;
+import DAOTest.SanPhamDao;
 import Database.ConnectDatabase;
 import Entities.KhuyenMai;
+import Entities.NhaCungCap;
 import Entities.SanPham;
 
 import java.awt.event.ActionListener;
@@ -47,13 +56,19 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.awt.event.ActionEvent;
+import java.awt.Panel;
 import javax.swing.border.EtchedBorder;
+import javax.swing.JScrollBar;
+import java.awt.Component;
 import javax.swing.JCheckBox;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.awt.event.MouseAdapter;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 
@@ -118,7 +133,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
     boolean lock = false;
     boolean chkThem = false;
     boolean chkSua = false;
-    private SanPham_Dao daoSP = new SanPham_Dao();
+    private SanPhamDao daoSP = new SanPhamImpl();
     private JButton btnLamMoiTimKiem;
     private JButton btnLuu;
 
@@ -698,6 +713,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
         }
     }
 
+
     // Kiểm tra dữ liệu
     private KhuyenMai valiData() {
         String tenkm = txtTenKM.getText().trim();
@@ -726,6 +742,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
         return new KhuyenMai(txtMaKM.getText().trim(), tenkm, phanTram, ngaybdLocalDate, ngayktLocalDate, 0, 0);
     }
 
+
     private void ShowErrorField(String message, JTextField txtField) {
         JOptionPane.showMessageDialog(null, message);
         txtField.requestFocus();
@@ -744,16 +761,16 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
         for (KhuyenMai x : list) {
             String trangThaiText;
             kmDao.hetHan();
-            if (x.getNgayKetThuc().isBefore(LocalDate.now())) { // change the condition to check if the end date is before the current date
+            if (x.getNgayKetThuc().isBefore(LocalDate.now())) {
                 trangThaiText = "Hết hạn";
-                x.setTrangThai(0);
+                x.setTrangThai(1); // Cập nhật trạng thái là "Hết hạn"
             } else {
                 trangThaiText = "Đang áp dụng";
-                x.setTrangThai(1);
+                x.setTrangThai(0);
             }
 
-            // change the parameters passed to the tablemodel1.addRow method
-            tablemodel1.addRow(new Object[]{x.getMaKhuyenMai(), x.getTenKhuyenMai(), x.getPhanTramKhuyenMai(), x.getNgayBatDau(), x.getNgayKetThuc(), trangThaiText});
+            tablemodel1.addRow(new Object[]{x.getMaKhuyenMai(), x.getTenKhuyenMai(), x.getPhanTramKhuyenMai(),
+                    x.getNgayBatDau(), x.getNgayKetThuc(), trangThaiText, x.getSoLuongSanPhamKM()});
         }
         for (int i = 0; i <= 100; i += 5) {
             cboModelPhanTram.addElement(i);
@@ -762,36 +779,32 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
 
     // Đọc dữ liệu sản phẩm
     public void docDuLieuSP() {
-        List<sanPham> list = daoSP.getAllSP();
+        List<SanPham> list = daoSP.getAllSP();
         JCheckBox chkADD = new JCheckBox();
         tablemodel.setRowCount(0);
-        for (sanPham x : list) {
-            cbbTimKiemSP.addItem(x.getMaSP());
+        for (SanPham x : list) {
+            cbbTimKiemSP.addItem(x.getMaSp());
             table_SP.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(new JCheckBox()));
             table_SP.getColumnModel().getColumn(2).setCellRenderer(table_SP.getDefaultRenderer(Boolean.class));
 
-            // change the parameters passed to the tablemodel.addRow method
-            tablemodel.addRow(new Object[]{x.getMaSP(), x.getTenSP(), x.getKhuyenMai().getMaKhuyenMai() == null ? "No discount" : "Discounted"});
+            // Change the way the product's promotion status is determined
+            boolean isPromoted = x.getKhuyenMai() != null && x.getKhuyenMai().getTrangThai() == 1;
+
+            tablemodel.addRow(new Object[]{x.getMaSp(), x.getTensp(), isPromoted});
         }
     }
 
     // Đọc dữ liệu sản phẩm
     public void docDuLieuSPByMaKM(String makm) {
         flag = 0;
-        List<sanPham> list = daoSP.getAllSP();
+        List<SanPham> list = daoSP.getAllSP();
 
         tablemodel.setRowCount(0);
-        for (sanPham x : list) {
-//        	cbbTimKiemSP.addItem(x.getMaSP());
-            table_SP.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(new JCheckBox()));
-            table_SP.getColumnModel().getColumn(2).setCellRenderer(table_SP.getDefaultRenderer(Boolean.class));
-
-            tablemodel.addRow(new Object[]{x.getMaSP(), x.getTenSP(),
-                    x.getKhuyenMai().getMaKhuyenMai() != null && kmDao.layKhuyenMaiTuSanPham(x.getMaSP()).equals(makm)
-                            ? true
-                            : false});
+        for (SanPham x : list) {
+            KhuyenMai khuyenMai = x.getKhuyenMai();
+            boolean isKhuyenMaiApplied = khuyenMai != null && khuyenMai.getMaKhuyenMai().equals(makm);
+            tablemodel.addRow(new Object[]{x.getMaSp(), x.getTensp(), isKhuyenMaiApplied});
         }
-        flag = 1;
     }
 
     // Mã khuyến mãi tự động
@@ -816,17 +829,18 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
                 cbbTimKiem.addItem(n.getTenKhuyenMai());
             } else if (rdPhanTram.isSelected()) {
                 cbbTimKiem.removeAllItems();
-                for (int i = 0; i <= 100; i += 10) { // change the increment to 10
+                for (int i = 0; i <= 100; i += 5) {
                     cbbTimKiem.addItem(String.valueOf(i));
                 }
             } else if (rdTrangThai.isSelected()) {
 
-                String trangThaiText = n.getTrangThai() == 1 ? "Đang áp dụng" : "Hết hạn";
+                String trangThaiText = n.getTrangThai() == 0 ? "Đang áp dụng" : "Hết hạn";
 
                 // Kiểm tra xem giá trị trạng thái đã tồn tại trong danh sách chưa
                 if (!trangThaiList.contains(trangThaiText)) {
                     trangThaiList.add(trangThaiText);
                     cbbTimKiem.addItem(trangThaiText);
+
                 }
             }
         }
@@ -854,7 +868,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
         if (rdTen.isSelected()) {
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             KhuyenMai x = kmDao.getKMTheoTen(tim);
-            String trangThaiText = x.getTrangThai() == 1 ? "Đang áp dụng" : "Hết hạn";
+            String trangThaiText = x.getTrangThai() == 0 ? "Đang áp dụng" : "Hết hạn";
             tablemodel1.addRow(new Object[]{x.getMaKhuyenMai(), x.getTenKhuyenMai(), x.getPhanTramKhuyenMai(),
                     x.getNgayBatDau(), x.getNgayKetThuc(), trangThaiText, x.getSoLuongSanPhamKM()});
         }
@@ -862,7 +876,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
         if (rdMa.isSelected()) {
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             KhuyenMai x = kmDao.getKMTHeoMa(tim);
-            String trangThaiText = x.getTrangThai() == 1 ? "Đang áp dụng" : "Hết hạn";
+            String trangThaiText = x.getTrangThai() == 0 ? "Đang áp dụng" : "Hết hạn";
             tablemodel1.addRow(new Object[]{x.getMaKhuyenMai(), x.getTenKhuyenMai(), x.getPhanTramKhuyenMai(),
                     x.getNgayBatDau(), x.getNgayKetThuc(), trangThaiText, x.getSoLuongSanPhamKM()});
         }
@@ -874,7 +888,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
 
             for (KhuyenMai x : list) {
                 if (x.getPhanTramKhuyenMai() == Integer.parseInt(tim)) {
-                    String trangThaiText = x.getTrangThai() == 1 ? "Đang áp dụng" : "Hết hạn";
+                    String trangThaiText = x.getTrangThai() == 0 ? "Đang áp dụng" : "Hết hạn";
                     tablemodel1.addRow(new Object[]{x.getMaKhuyenMai(), x.getTenKhuyenMai(), x.getPhanTramKhuyenMai(),
                             x.getNgayBatDau(), x.getNgayKetThuc(), trangThaiText, x.getSoLuongSanPhamKM()});
 
@@ -893,13 +907,13 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             List<KhuyenMai> list = kmDao.getAllKhuyenMai();
             for (KhuyenMai x : list) {
-                String trangThaiText = x.getTrangThai() == 1 ? "Đang áp dụng" : "Hết hạn";
+                String trangThaiText = x.getTrangThai() == 0 ? "Đang áp dụng" : "Hết hạn";
 
-                // change the condition to check if the status is 1 and the search term is "Đang áp dụng"
-                if (("Đang áp dụng".equals(tim) && x.getTrangThai() == 1) || ("Hết hạn".equals(tim) && x.getTrangThai() != 1)) {
-                    // change the parameters passed to the tablemodel1.addRow method
+                if (("Đang áp dụng".equals(tim) && x.getTrangThai() == 0)
+                        || ("Hết hạn".equals(tim) && x.getTrangThai() == 1)) {
+                    // Thay đổi cách thức hiển thị thông tin khuyến mãi tại đây
                     tablemodel1.addRow(new Object[]{x.getMaKhuyenMai(), x.getTenKhuyenMai(), x.getPhanTramKhuyenMai(),
-                            x.getNgayBatDau(), x.getNgayKetThuc(), trangThaiText});
+                            df.format(x.getNgayBatDau()), df.format(x.getNgayKetThuc()), trangThaiText, x.getSoLuongSanPhamKM()});
                 }
             }
         }
@@ -995,10 +1009,13 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
         txtTenKM.setText(tablemodel1.getValueAt(row, 1).toString());
         int phanTram = (int) tablemodel1.getValueAt(row, 2);
         cboPhanTram.setSelectedItem(phanTram);
-        Date ngayBatDau = (Date) tablemodel1.getValueAt(row, 3);
-        Date ngayKetThuc = (Date) tablemodel1.getValueAt(row, 4);
-        txtChonNgayBD.setDate(ngayBatDau);
-        txtChonNgayKT.setDate(ngayKetThuc);
+
+        LocalDate ngayBatDau = (LocalDate) tablemodel1.getValueAt(row, 3);
+        LocalDate ngayKetThuc = (LocalDate) tablemodel1.getValueAt(row, 4);
+
+        txtChonNgayBD.setDate(java.sql.Date.valueOf(ngayBatDau));
+        txtChonNgayKT.setDate(java.sql.Date.valueOf(ngayKetThuc));
+
         table_SP.setEnabled(false);
         docDuLieuSPByMaKM(txtMaKM.getText());
         selectedRowsValues = kmDao.dsMaSPKM(txtMaKM.getText());
@@ -1017,14 +1034,14 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
 
     //	Tự động check các sản phẩm đã có khuyến mãi
     public void locDanhSachSanPhamApDung(String maKM) {
-        List<sanPham> list = daoSP.getAllSP();
+        List<SanPham> list = daoSP.getAllSP();
         // Kiểm tra giá trị cột 2 của mỗi dòng
-        for (sanPham x : list) {
-            String km = kmDao.layKhuyenMaiTuSanPham(x.getMaSP());
+        for (SanPham x : list) {
+            String km = kmDao.layKhuyenMaiTuSanPham(x.getMaSp());
             if (km != null && !km.equalsIgnoreCase(maKM)) {
                 for (int row = 0; row < tablemodel.getRowCount(); row++) {
                     String value = (String) tablemodel.getValueAt(row, 0);
-                    if (x.getMaSP().equalsIgnoreCase(value)) {
+                    if (x.getMaSp().equalsIgnoreCase(value)) {
                         tablemodel.removeRow(row);
                     }
                 }
@@ -1040,10 +1057,10 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
             DefaultTableModel tablemodel = (DefaultTableModel) table_SP.getModel();
             tablemodel.setRowCount(0); // Xóa dữ liệu hiện tại trong bảng
 
-            List<sanPham> list = daoSP.getAllSP();
-            for (sanPham x : list) {
-                if (x.getMaSP().equals(selectedMaSP)) {
-                    tablemodel.addRow(new Object[]{x.getMaSP(), x.getTenSP(), false});
+            List<SanPham> list = daoSP.getAllSP();
+            for (SanPham x : list) {
+                if (x.getMaSp().equals(selectedMaSP)) {
+                    tablemodel.addRow(new Object[]{x.getMaSp(), x.getTensp(), false});
                 }
             }
         }
@@ -1082,14 +1099,14 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
                     tablemodel.setValueAt(true, i, 2);
                 }
             } else {
-                List<sanPham> list = daoSP.getAllSP();
+                List<SanPham> list = daoSP.getAllSP();
                 selectedRowsValues.clear();
                 for (int i = 0; i < table_SP.getRowCount(); i++) {
 
-                    for (sanPham s : list) {
+                    for (SanPham s : list) {
 
-                        if (s.getMaSP().equalsIgnoreCase(table_SP.getValueAt(i, 0).toString())) {
-                            String km = kmDao.layKhuyenMaiTuSanPham(s.getMaSP());
+                        if (s.getMaSp().equalsIgnoreCase(table_SP.getValueAt(i, 0).toString())) {
+                            String km = kmDao.layKhuyenMaiTuSanPham(s.getMaSp());
                             if (km == null)
                                 tablemodel.setValueAt(false, i, 2);
 
