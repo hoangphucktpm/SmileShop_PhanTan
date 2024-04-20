@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
         @NamedQuery(name = "NhaCungCap.getNhaCungCaps", query = "select ncc from NhaCungCap ncc"),
      @NamedQuery(name = "NhaCungCap.sua", query = "update NhaCungCap ncc set ncc.tenNhaCungCap = :ten, ncc.sdt = :sdt, ncc.email = :email, ncc.diaChi = :diaChi, ncc.tinhTrang = :tinhTrang where ncc.maNhaCungCap = :maNCC"),
         @NamedQuery(name = "NhaCungCap.getTen", query = "select ncc from NhaCungCap ncc where ncc.tenNhaCungCap like :tenNCC" ),
-        @NamedQuery(name = "NhaCungCap.getMa", query = "select ncc from NhaCungCap ncc where ncc.maNhaCungCap like :MaNCC"),
+        @NamedQuery(name = "NhaCungCap.getMa", query = "select ncc from NhaCungCap ncc where ncc.maNhaCungCap = :MaNCC"),
         @NamedQuery(name = "NhaCungCap.getSDT",query = "select ncc from NhaCungCap ncc where ncc.sdt like :SDT"),
       @NamedQuery(name ="NhaCungCap.getEmail", query = "select ncc from NhaCungCap ncc where ncc.email like :em "),
     @NamedQuery(name ="NhaCungCap.soLuongNCC", query = "select count(ncc) from NhaCungCap ncc"),
@@ -104,4 +104,7 @@ public class NhaCungCap {
                 ", tinhTrang=" + tinhTrang +
                 '}';
     }
+
+
+
 }

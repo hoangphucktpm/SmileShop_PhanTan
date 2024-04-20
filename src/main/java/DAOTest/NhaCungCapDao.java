@@ -10,6 +10,7 @@ public interface NhaCungCapDao {
     public boolean sua(NhaCungCap nhaCungCap);
     public List<NhaCungCap> getTen (String tenNCC);
     public List<NhaCungCap> getMa (String MaNCC);
+
     public List<NhaCungCap> getSDT (String SDT);
     public List<NhaCungCap> getEmail(String email);
     public int soLuongNCC();

@@ -9,6 +9,10 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @NamedQueries({
+        @NamedQuery(name = "SanPham.getLSPTheoTenOne", query = "SELECT l FROM LoaiSanPham l WHERE l.maLoaiSP = :ma"),
+        @NamedQuery(name = "SanPham.getCLTheoTenOne", query = "SELECT c FROM ChatLieu c WHERE c.maChatLieu = :ma"),
+        @NamedQuery(name = "SanPham.getLoaiSPOne", query = "SELECT l FROM LoaiSanPham l WHERE l.maLoaiSP = :ma"),
+        @NamedQuery(name = "SanPham.getChatLieuOne", query = "SELECT c FROM ChatLieu c WHERE c.maChatLieu = :ma"),
         @NamedQuery(name = "SanPham.getMaChatLieu", query = "SELECT c.maChatLieu FROM ChatLieu c WHERE c.tenChatLieu = :ten AND c.moTa = :moTa"),
         @NamedQuery(name = "SanPham.getTenChatLieu", query = "SELECT c.tenChatLieu FROM ChatLieu c WHERE c.maChatLieu = :ma"),
         @NamedQuery(name = "SanPham.getMoTaChatLieu", query = "SELECT c.moTa FROM ChatLieu c WHERE c.maChatLieu = :ma"),
@@ -25,14 +29,16 @@ import java.util.Date;
         @NamedQuery(name = "SanPham.soLuongChatLieu", query = "SELECT COUNT(c) FROM ChatLieu c"),
         @NamedQuery(name = "SanPham.soLuongLSP", query = "SELECT COUNT(l) FROM LoaiSanPham l"),
         @NamedQuery(name = "SanPham.vat", query = "SELECT s.vat FROM SanPham s WHERE s.maSp = :ma"),
-        @NamedQuery(name="SanPham.soLuong", query = "SELECT COUNT(s) FROM SanPham s"),
+        @NamedQuery(name = "SanPham.soLuong", query = "SELECT COUNT(s) FROM SanPham s"),
         @NamedQuery(name = "SanPham.getKMTheoTen", query = "SELECT DISTINCT sp.khuyenMai FROM SanPham sp"),
+        @NamedQuery(name = "SanPham.getKMTheoTenOne", query = "SELECT km FROM KhuyenMai km WHERE km.maKhuyenMai = :ma"),
         @NamedQuery(name = "SanPham.getKMTheoPhanTram", query = "SELECT sp.khuyenMai.phanTramKhuyenMai FROM SanPham sp WHERE sp.maSp = :maSP"),
-        @NamedQuery(name = "SanPham.getTenNCC", query = "SELECT DISTINCT sp.nhaCungCap.tenNhaCungCap FROM SanPham sp"),
+        @NamedQuery(name = "SanPham.getTenNCC", query = "SELECT sp.nhaCungCap FROM SanPham sp"),
+        @NamedQuery(name = "SanPham.getTen", query = "SELECT ncc FROM NhaCungCap  ncc where ncc.tinhTrang = 1"),
         @NamedQuery(name = "SanPham.getChatLieu", query = "SELECT DISTINCT sp.chatLieu FROM SanPham sp"),
         @NamedQuery(name = "SanPham.getLoaiSP", query = "SELECT DISTINCT sp.loaiSanPham FROM SanPham sp"),
-         @NamedQuery(name = "SanPham.sua",query = "UPDATE SanPham s SET s.tensp = :tenSP, s.nhaCungCap = :nhaCungCap, s.khuyenMai = :km, s.giaBan = :giaBan, s.soluong = :soluong, s.ngaynhap = :ngayNhap, s.hinhanh = :hinhAnh, s.mauSac = :color, s.size = :size, s.chatLieu = :chatLieu, s.tinhTrang = :tinhTrang, s.donViTinh = :dvt, s.loaiSanPham = :loaiSP, s.vat = :VAT, s.giaBan = :giaBanRa WHERE s.maSp = :maSP"),
-        @NamedQuery(name = "SanPham.findAllSP", query = "SELECT s FROM SanPham s"),
+        @NamedQuery(name = "SanPham.sua",query = "UPDATE SanPham s SET s.tensp = :tenSP, s.nhaCungCap = :nhaCungCap, s.khuyenMai = :km, s.giaBan = :giaBan, s.soluong = :soluong, s.ngaynhap = :ngayNhap, s.hinhanh = :hinhAnh, s.mauSac = :color, s.size = :size, s.chatLieu = :chatLieu, s.tinhTrang = :tinhTrang, s.donViTinh = :dvt, s.loaiSanPham = :loaiSP, s.vat = :VAT, s.giaBan = :giaBanRa WHERE s.maSp = :maSP"),
+        @NamedQuery(name = "SanPham.getAllProducts", query = "SELECT s FROM SanPham s"),
         @NamedQuery(name = "SanPham.suaKhongAnh", query = "UPDATE SanPham s SET s.tensp = :tenSP, s.nhaCungCap = :nhaCungCap, s.khuyenMai = :km, s.giaBan = :giaBan, s.soluong = :soluong, s.ngaynhap = :ngayNhap, s.mauSac = :color, s.size = :size, s.chatLieu = :chatLieu, s.tinhTrang = :tinhTrang, s.donViTinh = :dvt, s.loaiSanPham = :loaiSP, s.vat = :VAT, s.giaBan = :giaBanRa WHERE s.maSp = :maSP"),
         @NamedQuery(name = "SanPham.timTheoGia", query = "SELECT s FROM SanPham s WHERE s.giaBan BETWEEN :gia1 AND :gia2"),
         @NamedQuery(name = "SanPham.getDTQuy", query = "SELECT s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai, s.gianhap, s.soluong, SUM(ct.soLuongSP) as tongSoLuong, s.giaBan\n" +
@@ -72,10 +78,12 @@ public class SanPham {
     private String hinhanh;
 
     @Column(name = "MauSac", nullable = false, length = 50)
-    private String mauSac;
+    @Enumerated(EnumType.STRING)
+    private MauSac mauSac;
 
-    @Column(name = "\"Size\"", nullable = false, length = 50)
-    private String size;
+    @Column(name = "Size", nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
+    private Size size;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ChatLieu", nullable = false)
@@ -92,7 +100,7 @@ public class SanPham {
     private LoaiSanPham loaiSanPham;
 
     @Column(name = "VAT", columnDefinition = "tinyint")
-    private Short vat;
+    private int vat;
 
     @Column(name = "GiaBan")
     private Double giaBan;
@@ -161,19 +169,19 @@ public class SanPham {
         this.hinhanh = hinhanh;
     }
 
-    public String getMauSac() {
+    public MauSac getMauSac() {
         return mauSac;
     }
 
-    public void setMauSac(String mauSac) {
+    public void setMauSac(MauSac mauSac) {
         this.mauSac = mauSac;
     }
 
-    public String getSize() {
+    public Size getSize() {
         return size;
     }
 
-    public void setSize(String size) {
+    public void setSize(Size size) {
         this.size = size;
     }
 
@@ -209,11 +217,11 @@ public class SanPham {
         this.loaiSanPham = loaiSanPham;
     }
 
-    public Short getVat() {
+    public int getVat() {
         return vat;
     }
 
-    public void setVat(Short vat) {
+    public void setVat(int vat) {
         this.vat = vat;
     }
 
@@ -225,7 +233,7 @@ public class SanPham {
         this.giaBan = giaBan;
     }
 
-    public SanPham(String maSp, String tensp, NhaCungCap nhaCungCap, KhuyenMai khuyenMai, Double gianhap, Integer soluong, Date ngaynhap, String hinhanh, String mauSac, String size, ChatLieu chatLieu, Boolean tinhTrang, String donViTinh, LoaiSanPham loaiSanPham, Short vat, Double giaBan) {
+    public SanPham(String maSp, String tensp, NhaCungCap nhaCungCap, KhuyenMai khuyenMai, Double gianhap, Integer soluong, Date ngaynhap, String hinhanh, MauSac mauSac, Size size, ChatLieu chatLieu, Boolean tinhTrang, String donViTinh, LoaiSanPham loaiSanPham, int vat, Double giaBan) {
         this.maSp = maSp;
         this.tensp = tensp;
         this.nhaCungCap = nhaCungCap;
@@ -243,7 +251,14 @@ public class SanPham {
         this.vat = vat;
         this.giaBan = giaBan;
     }
-
+    public SanPham(String maSP, String tenSP, Double giaNhap, int soLuong, Date ngayNhap) {
+        super();
+        this.maSp = maSP;
+        this.tensp = tenSP;
+        this.gianhap = giaNhap;
+        this.soluong = soLuong;
+        this.ngaynhap = ngayNhap;
+    }
     @Override
     public String toString() {
         return "SanPham{" +

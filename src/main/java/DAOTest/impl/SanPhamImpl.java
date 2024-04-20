@@ -1,10 +1,8 @@
 package DAOTest.impl;
 
 import DAOTest.SanPhamDao;
-import Entities.SanPham;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
+import Entities.*;
+import jakarta.persistence.*;
 
 import java.sql.Date;
 import java.util.List;
@@ -19,9 +17,8 @@ public class SanPhamImpl implements SanPhamDao {
 
     @Override
     public List<SanPham> getAllSP() {
-        List<SanPham> list = em.createNamedQuery("SanPham.findAllSP", SanPham.class).getResultList();
+        List<SanPham> list = em.createNamedQuery("SanPham.getAllProducts", SanPham.class).getResultList();
         return list;
-
     }
 
     @Override
@@ -34,11 +31,43 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public boolean them(SanPham sanPham) {
+    public boolean them(String maSP, String tenSP, String nhaCungCap, String km, double giaBan, int soluong, Date ngayNhap,
+                        String color, String size, String img, String chatLieu, int tinhTrang, String dvt, String loaiSP, int VAT,
+                        double giaBanRa) {
         EntityTransaction tx = em.getTransaction();
+        NhaCungCap ncc = getMaOne(nhaCungCap);
+        KhuyenMai km1 = em.find(KhuyenMai.class, km);
+        ChatLieu cl = em.find(ChatLieu.class, chatLieu);
+        LoaiSanPham lsp = em.find(LoaiSanPham.class, loaiSP);
+        boolean tt = false;
+        if(tinhTrang == 1){
+            tt = true;
+        } else {
+            tt = false;
+        }
         try{
             tx.begin();
-           em.merge(sanPham);
+            SanPham sp = new SanPham();
+            sp.setMaSp(maSP);
+            sp.setTensp(tenSP);
+            sp.setNhaCungCap(ncc);
+            sp.setKhuyenMai(km1);
+            sp.setGianhap(giaBan);
+            sp.setSoluong(soluong);
+            sp.setNgaynhap(ngayNhap);
+            sp.setMauSac(MauSac.valueOf(color));
+            sp.setSize(Size.valueOf(size));
+            if (img == null) {
+                img = "null";
+            }
+            sp.setHinhanh(img);
+            sp.setChatLieu(cl);
+            sp.setTinhTrang(tt);
+            sp.setDonViTinh(dvt);
+            sp.setLoaiSanPham(lsp);
+            sp.setVat(VAT);
+            sp.setGiaBan(giaBanRa);
+            em.persist(sp);
             tx.commit();
             return true;
         } catch (Exception e){
@@ -47,9 +76,21 @@ public class SanPhamImpl implements SanPhamDao {
         }
         return false;
     }
+    @Override
+    public NhaCungCap getMaOne(String MaNCC) {
+        return em.createNamedQuery("NhaCungCap.getMa", NhaCungCap.class)
+                .setParameter("MaNCC", MaNCC)
+                .getSingleResult();
+    }
 
     @Override
     public boolean sua(SanPham sanPham) {
+        // Check if chatLieu is null and handle it
+        if (sanPham.getChatLieu() == null) {
+            // Skip saving the SanPham entity if chatLieu is null
+            return false;
+        }
+
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin();
@@ -61,30 +102,6 @@ public class SanPhamImpl implements SanPhamDao {
             e.printStackTrace();
         }
         return false;
-    }
-
-    @Override
-    public boolean suaKhongAnh(String tenSP, String nhaCungCap, String km, double giaBan, int soluong, Date ngayNhap, String color, String size, String chatLieu, int tinhTrang, String dvt, String loaiSP, int VAT, double giaBanRa, String maSP) {
-        em.getTransaction().begin();
-        em.createNamedQuery("SanPham.suaKhongAnh")
-                .setParameter("tenSP", tenSP)
-                .setParameter("nhaCungCap", nhaCungCap)
-                .setParameter("km", km)
-                .setParameter("giaBan", giaBan)
-                .setParameter("soluong", soluong)
-                .setParameter("ngayNhap", ngayNhap)
-                .setParameter("color", color)
-                .setParameter("size", size)
-                .setParameter("chatLieu", chatLieu)
-                .setParameter("tinhTrang", tinhTrang)
-                .setParameter("dvt", dvt)
-                .setParameter("loaiSP", loaiSP)
-                .setParameter("VAT", VAT)
-                .setParameter("giaBanRa", giaBanRa)
-                .setParameter("maSP", maSP)
-                .executeUpdate();
-        em.getTransaction().commit();
-        return true;
     }
 
     @Override
@@ -100,8 +117,30 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
+    public ChatLieu getChatLieuOne(String ma) {
+        return em.createNamedQuery("SanPham.getChatLieuOne", ChatLieu.class)
+                .setParameter("ma", ma)
+                .getSingleResult();
+    }
+
+    @Override
+    public LoaiSanPham getLoaiSPOne(String ma) {
+        try {
+            TypedQuery<LoaiSanPham> query = em.createQuery("SELECT l FROM LoaiSanPham l WHERE l.maLoaiSP = :ma", LoaiSanPham.class);
+            query.setParameter("ma", ma);
+            List<LoaiSanPham> results = query.getResultList();
+            if (!results.isEmpty()) {
+                return results.get(0);
+            }
+        } catch (NoResultException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public List<Entities.NhaCungCap> getTenNCC() {
-        List<Entities.NhaCungCap> list = em.createNamedQuery("SanPham.getTenNCC", Entities.NhaCungCap.class).getResultList();
+        List<Entities.NhaCungCap> list = em.createNamedQuery("SanPham.getTen", Entities.NhaCungCap.class).getResultList();
         return list;
     }
 
@@ -109,6 +148,45 @@ public class SanPhamImpl implements SanPhamDao {
     public List<Entities.KhuyenMai> getKMTheoTen() {
         List<Entities.KhuyenMai> list = em.createNamedQuery("SanPham.getKMTheoTen", Entities.KhuyenMai.class).getResultList();
         return list;
+    }
+
+    @Override
+    public KhuyenMai getKMTheoTenOne(String ma) {
+        try {
+            Query query = em.createQuery("SELECT km FROM KhuyenMai km WHERE km.maKhuyenMai = :ma", KhuyenMai.class);
+            query.setParameter("ma", ma);
+            List<KhuyenMai> results = query.getResultList();
+            if (!results.isEmpty()) {
+                // ignores multiple results
+                return results.get(0);
+            }
+        } catch (NoResultException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public ChatLieu getCLTheoTenOne(String ma) {
+        try {
+            TypedQuery<ChatLieu> query = em.createQuery("SELECT c FROM ChatLieu c WHERE c.maChatLieu = :ma", ChatLieu.class);
+            query.setParameter("ma", ma);
+            List<ChatLieu> results = query.getResultList();
+            if (!results.isEmpty()) {
+                return results.get(0);
+            }
+        } catch (NoResultException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public LoaiSanPham getLSPTheoTenOne(String ma) {
+        LoaiSanPham lsp = em.createNamedQuery("SanPham.getLSPTheoTenOne", LoaiSanPham.class)
+                .setParameter("ma", ma)
+                .getSingleResult();
+        return lsp;
     }
 
     @Override
@@ -210,7 +288,6 @@ public class SanPhamImpl implements SanPhamDao {
                 .setParameter("Ma", Ma)
                 .getSingleResult();
         return sp;
-
     }
 
     @Override

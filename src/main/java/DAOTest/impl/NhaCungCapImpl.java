@@ -65,6 +65,8 @@ public class NhaCungCapImpl implements NhaCungCapDao {
                 .getResultList();
     }
 
+
+
     @Override
     public List<NhaCungCap> getSDT(String SDT) {
         return em.createNamedQuery("NhaCungCap.getSDT", NhaCungCap.class)
