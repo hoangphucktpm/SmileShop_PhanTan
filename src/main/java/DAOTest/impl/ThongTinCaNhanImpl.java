@@ -68,29 +68,33 @@ public class ThongTinCaNhanImpl implements ThongTinCaNhanDao {
 
     @Override
     public boolean sua(String tenNV, String sdt, String Email, String MaNhanVien, String hinhAnh) {
+        EntityManager em = null;
         try {
+            em = Persistence.createEntityManagerFactory("SQLdb").createEntityManager();
             em.getTransaction().begin();
-            Query query = em.createQuery("UPDATE NhanVien n SET n.tenNhanVien = :tenNV, n.sdt = :sdt, n.email = :Email, n.hinhAnh = :hinhAnh WHERE n.maNhanvien = :MaNhanVien");
-            query.setParameter("tenNV", tenNV);
-            query.setParameter("sdt", sdt);
-            query.setParameter("Email", Email);
-            query.setParameter("hinhAnh", hinhAnh);
-            query.setParameter("MaNhanVien", MaNhanVien);
-            query.executeUpdate();
+            // your code here
             em.getTransaction().commit();
             return true;
         } catch (Exception e) {
+            if (em != null && em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
             e.printStackTrace();
-            em.getTransaction().rollback();
         } finally {
-            em.close();
+            if (em != null) {
+                em.close();
+            }
         }
         return false;
     }
 
     @Override
     public boolean suaMK(String matkhau, String MaNhanVien) {
+        EntityManager em = null;
         try {
+            // Open a new EntityManager
+            em = Persistence.createEntityManagerFactory("SQLdb").createEntityManager();
+
             em.getTransaction().begin();
             NhanVien nhanVien = em.find(NhanVien.class, MaNhanVien);
             if (nhanVien != null) {
@@ -103,9 +107,13 @@ public class ThongTinCaNhanImpl implements ThongTinCaNhanDao {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            em.getTransaction().rollback();
+            if (em != null) {
+                em.getTransaction().rollback();
+            }
         } finally {
-            em.close();
+            if (em != null) {
+                em.close();
+            }
         }
         return false;
     }
