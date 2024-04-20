@@ -29,11 +29,12 @@ import javax.swing.table.DefaultTableModel;
 import DAOTest.KhachHangDao;
 import DAOTest.XemHoaDonDao;
 import DAOTest.impl.KhachHangImpl;
+import DAOTest.impl.SanPhamImpl;
 import DAOTest.impl.XemHoaDonImpl;
 import Entities.CtHoadonId;
 import com.toedter.calendar.JDateChooser;
 
-import DAO.SanPham_Dao;
+import DAOTest.SanPhamDao;
 import Entities.CtHoadon;
 import Entities.HoaDon;
 import Entities.SanPham;
@@ -71,7 +72,7 @@ public class FrmXemHoaDon extends JFrame implements ActionListener {
     private JTable table_CTHD;
     private XemHoaDonDao hd_dao = new XemHoaDonImpl();
     private KhachHangDao kh_dao = new KhachHangImpl();
-    private SanPham_Dao sp_Dao = new SanPham_Dao();
+    private SanPhamDao sp_Dao = new SanPhamImpl();
     public static DefaultTableModel tblModelHoaDon = new DefaultTableModel();
 
     private DefaultComboBoxModel cboModetenKH = new DefaultComboBoxModel();
@@ -349,7 +350,7 @@ public class FrmXemHoaDon extends JFrame implements ActionListener {
                 if (selectedRow >= 0) {
                     String selectedInvoiceCode = (String) tblHD.getValueAt(selectedRow, 1);
                     // change the way the CtHoadon objects are fetched
-                    List<CtHoadon> list = getModifiedInvoiceDetails(selectedInvoiceCode);
+                    List<CtHoadon> list = getInvoiceDetails(selectedInvoiceCode);
                     List<SanPham> listSP = sp_Dao.getAllSP();
                     xoaTableChiTiet();
 
@@ -358,20 +359,20 @@ public class FrmXemHoaDon extends JFrame implements ActionListener {
                     int soLuong = 0;
                     double tongTienSp = 0;
                     double vat = 0;
-                    for (CtHoadonId x : list) {
-                        vat = x.getSanPham().getVAT() == 1 ? (x.getSanPham().getGiaNhap() * 2.5 * 0.05) : 0;
+                    for (CtHoadon x : list) {
+                        vat = x.getMaSanPham().getVat() == 1 ? (x.getMaSanPham().getGianhap() * 2.5 * 0.05) : 0;
 
-                        soLuong += x.getSanPham().getSoLuong();
+                        soLuong += x.getSoLuongSP();
                         i++;
 
-                        tongTienSp += x.getSanPham().getGiaBan() != null ? x.getSanPham().getGiaBan() : 0;
+                        tongTienSp += x.getMaSanPham().getGiaBan() != null ? x.getMaSanPham().getGiaBan() : 0;
                         // change the parameters passed to the detailsModel.addRow method
-                        detailsModel.addRow(new Object[]{i, x.getSanPham().getTenSP(), x.getSanPham().getMauSac().nCo,
-                                x.getSanPham().getSize().nSiz, x.getSanPham().getChatLieu().getTenChatLieu(),
-                                tien.format(x.getSanPham().getGiaBan()), x.getSoLuongSP(), tien.format(vat),
+                        detailsModel.addRow(new Object[]{i, x.getMaSanPham().getTensp(), x.getMaSanPham().getMauSac().toString(),
+                                x.getMaSanPham().getSize().toString(), x.getMaSanPham().getChatLieu().getTenChatLieu(),
+                                tien.format(x.getMaSanPham().getGiaBan()), x.getSoLuongSP(), tien.format(vat),
 
-                                x.getSanPham().getKhuyenMai().getPhanTram(),
-                                tien.format(x.getSoLuongSP() * x.getSanPham().getGiaBan())});
+                                x.getMaSanPham().getKhuyenMai().getPhanTramKhuyenMai(),
+                                tien.format(x.getSoLuongSP() * x.getMaSanPham().getGiaBan())});
                     }
                     txtTongSL.setText(soLuong + "");
                 }

@@ -7,15 +7,12 @@ import lombok.*;
 @Entity
 @Table(name = "CT_HoaDon")
 public class CtHoadon {
-    @EmbeddedId
-    private CtHoadonId id;
-
-    @MapsId("maHoaDon")
+    @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "MaHoaDon", nullable = false)
     private HoaDon maHoaDon;
 
-    @MapsId("maSanPham")
+    @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "MaSanPham", nullable = false)
     private SanPham maSanPham;
@@ -23,13 +20,6 @@ public class CtHoadon {
     @Column(name = "SoLuongSP", nullable = false)
     private Integer soLuongSP;
 
-    public CtHoadonId getId() {
-        return id;
-    }
-
-    public void setId(CtHoadonId id) {
-        this.id = id;
-    }
 
     public HoaDon getMaHoaDon() {
         return maHoaDon;
@@ -55,8 +45,7 @@ public class CtHoadon {
         this.soLuongSP = soLuongSP;
     }
 
-    public CtHoadon(CtHoadonId id, HoaDon maHoaDon, SanPham maSanPham, Integer soLuongSP) {
-        this.id = id;
+    public CtHoadon(HoaDon maHoaDon, SanPham maSanPham, Integer soLuongSP) {
         this.maHoaDon = maHoaDon;
         this.maSanPham = maSanPham;
         this.soLuongSP = soLuongSP;
@@ -68,7 +57,6 @@ public class CtHoadon {
     @Override
     public String toString() {
         return "CtHoadon{" +
-                "id=" + id +
                 ", maHoaDon=" + maHoaDon +
                 ", maSanPham=" + maSanPham +
                 ", soLuongSP=" + soLuongSP +

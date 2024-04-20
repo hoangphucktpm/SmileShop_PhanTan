@@ -37,10 +37,7 @@ import DAOTest.XemHoaDonDao;
 import DAOTest.impl.LapHoaDonImpl;
 import DAOTest.impl.SanPhamImpl;
 import DAOTest.impl.XemHoaDonImpl;
-import Entities.HoaDon;
-import Entities.KhachHang;
-import Entities.SanPham;
-import Entities.TaiKhoan;
+import Entities.*;
 
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -833,8 +830,14 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
 
                             if ((slInt) <= soLuongNhap) {
                                 SanPham x = daoSP.getMa(masp1);
-                                String Tenkm = daoSP.getKMTheoTen(x.getKhuyenMai().getMaKhuyenMai());
-                                int km = LHD_dao.getKMTheoPhanTram(Tenkm);
+                                KhuyenMai khuyenMai = x.getKhuyenMai();
+                                String TenKm = null;
+                                if (khuyenMai != null) {
+                                    TenKm = LHD_dao.getKMTheoTen(khuyenMai.getMaKhuyenMai());
+                                } else {
+                                    // Handle the case where khuyenMai is null
+                                }
+                                int km = LHD_dao.getKMTheoPhanTram(TenKm);
                                 double giaBan = x.getGiaBan();
                                 double soTienKhuyenMai = ((giaBan * km) / 100);
                                 double tienKM = 0;
@@ -932,26 +935,32 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
     }
 
     public void docDuLieuSP() {
-        List<sanPham> list = daoSP.getAllSP();
+        List<SanPham> list = daoSP.getAllSP();
         DefaultTableModel tablemodel = (DefaultTableModel) table_SP.getModel();
 
-        for (sanPham x : list) {
-            String Tenkm = daoSP.getKMTheoTen(x.getKhuyenMai().getMaKhuyenMai());
-            int km = LHD_dao.getKMTheoPhanTram(Tenkm);
+        for (SanPham x : list) {
+            KhuyenMai khuyenMai = x.getKhuyenMai();
+            String tenKm = null;
+            if (khuyenMai != null) {
+                tenKm = LHD_dao.getKMTheoTen(khuyenMai.getMaKhuyenMai());
+            } else {
+                // Handle the case where khuyenMai is null
+            }
+            int km = LHD_dao.getKMTheoPhanTram(tenKm);
             double giaBan = x.getGiaBan();
-            float VAT = x.getVAT();
-            if (daoSP.vat(x.getMaSP()) == 1) {
+            float VAT = x.getVat();
+            if (daoSP.vat(x.getMaSp()) == 1) {
 
-                VAT = (float) (tinhGiaBan(x.getGiaNhap()) * 0.05);
+                VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
             } else
                 VAT = 0;
         }
     }
 
     public void updateComBoBox() {
-        List<sanPham> list = daoSP.getAllSP();
-        for (sanPham x : list) {
-            cboTimSP.addItem(x.getMaSP());
+        List<SanPham> list = daoSP.getAllSP();
+        for (SanPham x : list) {
+            cboTimSP.addItem(x.getMaSp());
         }
     }
 
@@ -1097,7 +1106,7 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
         String soLuongHDDformatted = String.format("%04d", n);
         String maHoaDon = "HD" + soLuongHDDformatted + tenNhanVien + ngayLap;
 
-        List<HoaDon> hd = LHD_dao.getAllHoaDon();
+        List<HoaDon> hd = LHD_dao.getAllLapHoaDon();
         model = (DefaultTableModel) table_dscho.getModel();
         int count = model.getRowCount();
         for (HoaDon x : hd) {
@@ -1147,19 +1156,25 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
         DefaultTableModel tablemodel = (DefaultTableModel) table_SP.getModel();
         tablemodel.setRowCount(0); // Xóa dữ liệu hiện tại trong bảng
 
-        List<sanPham> list = daoSP.getAllSP();
-        for (sanPham x : list) {
-            int soLuong = x.getSoLuong();
-            float vatValue = x.getVAT();
+        List<SanPham> list = daoSP.getAllSP();
+        for (SanPham x : list) {
+            int soLuong = x.getSoluong();
+            float vatValue = x.getVat();
             String vatStatus = (vatValue == 1) ? "Có (5%)" : "Không";
 
             double giaBan = x.getGiaBan();
-            String Tenkm = daoSP.getKMTheoTen(x.getKhuyenMai().getMaKhuyenMai());
-            int km = LHD_dao.getKMTheoPhanTram(Tenkm);
+            KhuyenMai khuyenMai = x.getKhuyenMai();
+            String TenKm = null;
+            if (khuyenMai != null) {
+                TenKm = LHD_dao.getKMTheoTen(khuyenMai.getMaKhuyenMai());
+            } else {
+                // Handle the case where khuyenMai is null
+            }
+            int km = LHD_dao.getKMTheoPhanTram(TenKm);
             for (int i = 0; i < table_CTHD.getRowCount(); i++) {
                 if (table_CTHD.getValueAt(i, 1).toString().equals(selectedMaSP)) {
                     try {
-                        soLuong = x.getSoLuong() - (int) table_CTHD.getValueAt(i, 7);
+                        soLuong = x.getSoluong() - (int) table_CTHD.getValueAt(i, 7);
                     } catch (Exception e) {
                         e.printStackTrace();
                         JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi: " + e.getMessage(), "Lỗi",
@@ -1167,8 +1182,8 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
                     }
                 }
             }
-            if (x.getMaSP().equals(selectedMaSP)) {
-                tablemodel.addRow(new Object[]{x.getMaSP(), x.getTenSP(), x.getMaLoai().getMaLoai(), x.getMauSac(),
+            if (x.getMaSp().equals(selectedMaSP)) {
+                tablemodel.addRow(new Object[]{x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getMaLoaiSP(), x.getMauSac(),
                         x.getSize(), x.getChatLieu().getMaChatLieu(), soLuong, tien.format(giaBan), vatStatus, km});
                 table_SP.selectAll();
             }
@@ -1866,22 +1881,28 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
             DefaultTableModel tablemodel = (DefaultTableModel) table_SP.getModel();
             tablemodel.setRowCount(0); // Xóa dữ liệu hiện tại trong bảng
 
-            List<sanPham> list = daoSP.getAllSP();
-            for (sanPham x : list) {
-                int soLuong = x.getSoLuong();
-                float vatValue = x.getVAT();
+            List<SanPham> list = daoSP.getAllSP();
+            for (SanPham x : list) {
+                int soLuong = x.getSoluong();
+                float vatValue = x.getVat();
                 String vatStatus = (vatValue == 1) ? "Có (5%)" : "Không";
 
                 double giaBan = x.getGiaBan();
-                String Tenkm = daoSP.getKMTheoTen(x.getKhuyenMai().getMaKhuyenMai());
-                int km = LHD_dao.getKMTheoPhanTram(Tenkm);
+                KhuyenMai khuyenMai = x.getKhuyenMai();
+                String TenKm = null;
+                if (khuyenMai != null) {
+                    TenKm = LHD_dao.getKMTheoTen(khuyenMai.getMaKhuyenMai());
+                } else {
+                    // Handle the case where khuyenMai is null
+                }
+                int km = LHD_dao.getKMTheoPhanTram(TenKm);
                 for (int i = 0; i < table_CTHD.getRowCount(); i++) {
                     if (table_CTHD.getValueAt(i, 1).toString().equals(maSPCanChon)) {
-                        soLuong = x.getSoLuong() - (int) table_CTHD.getValueAt(i, 7);
+                        soLuong = x.getSoluong() - (int) table_CTHD.getValueAt(i, 7);
                     }
                 }
-                if (x.getMaSP().equals(maSPCanChon)) {
-                    tablemodel.addRow(new Object[]{x.getMaSP(), x.getTenSP(), x.getMaLoai().getMaLoai(),
+                if (x.getMaSp().equals(maSPCanChon)) {
+                    tablemodel.addRow(new Object[]{x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getMaLoaiSP(),
                             x.getMauSac(), x.getSize(), x.getChatLieu().getMaChatLieu(), soLuong, tien.format(giaBan),
                             vatStatus, km});
                     table_SP.selectAll();
