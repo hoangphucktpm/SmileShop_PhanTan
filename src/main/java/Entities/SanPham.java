@@ -12,7 +12,7 @@ import java.util.Date;
         @NamedQuery(name = "SanPham.getMaChatLieu", query = "SELECT c.maChatLieu FROM ChatLieu c WHERE c.tenChatLieu = :ten AND c.moTa = :moTa"),
         @NamedQuery(name = "SanPham.getTenChatLieu", query = "SELECT c.tenChatLieu FROM ChatLieu c WHERE c.maChatLieu = :ma"),
         @NamedQuery(name = "SanPham.getMoTaChatLieu", query = "SELECT c.moTa FROM ChatLieu c WHERE c.maChatLieu = :ma"),
-        @NamedQuery(name ="SanPham.getlistSize", query = "SELECT s FROM SanPham s WHERE s.size = :kthuoc"),
+        @NamedQuery(name = "SanPham.getlistSize", query = "SELECT s FROM SanPham s WHERE s.size = :kthuoc"),
         @NamedQuery(name = "SanPham.getlistTenMauSac", query = "SELECT s FROM SanPham s WHERE s.mauSac = :MS"),
         @NamedQuery(name = "SanPham.getlistTenCL", query = "SELECT s FROM SanPham s WHERE s.chatLieu.tenChatLieu = :ChatLieu"),
         @NamedQuery(name = "SanPham.getlistTenNCC", query = "SELECT s FROM SanPham s WHERE s.nhaCungCap.tenNhaCungCap = :nccap"),
@@ -25,21 +25,21 @@ import java.util.Date;
         @NamedQuery(name = "SanPham.soLuongChatLieu", query = "SELECT COUNT(c) FROM ChatLieu c"),
         @NamedQuery(name = "SanPham.soLuongLSP", query = "SELECT COUNT(l) FROM LoaiSanPham l"),
         @NamedQuery(name = "SanPham.vat", query = "SELECT s.vat FROM SanPham s WHERE s.maSp = :ma"),
-        @NamedQuery(name="SanPham.soLuong", query = "SELECT COUNT(s) FROM SanPham s"),
+        @NamedQuery(name = "SanPham.soLuong", query = "SELECT COUNT(s) FROM SanPham s"),
         @NamedQuery(name = "SanPham.getKMTheoTen", query = "SELECT DISTINCT sp.khuyenMai FROM SanPham sp"),
         @NamedQuery(name = "SanPham.getKMTheoPhanTram", query = "SELECT sp.khuyenMai.phanTramKhuyenMai FROM SanPham sp WHERE sp.maSp = :maSP"),
         @NamedQuery(name = "SanPham.getTenNCC", query = "SELECT DISTINCT sp.nhaCungCap.tenNhaCungCap FROM SanPham sp"),
         @NamedQuery(name = "SanPham.getChatLieu", query = "SELECT DISTINCT sp.chatLieu FROM SanPham sp"),
         @NamedQuery(name = "SanPham.getLoaiSP", query = "SELECT DISTINCT sp.loaiSanPham FROM SanPham sp"),
-         @NamedQuery(name = "SanPham.sua",query = "UPDATE SanPham s SET s.tensp = :tenSP, s.nhaCungCap = :nhaCungCap, s.khuyenMai = :km, s.giaBan = :giaBan, s.soluong = :soluong, s.ngaynhap = :ngayNhap, s.hinhanh = :hinhAnh, s.mauSac = :color, s.size = :size, s.chatLieu = :chatLieu, s.tinhTrang = :tinhTrang, s.donViTinh = :dvt, s.loaiSanPham = :loaiSP, s.vat = :VAT, s.giaBan = :giaBanRa WHERE s.maSp = :maSP"),
+        @NamedQuery(name = "SanPham.sua", query = "UPDATE SanPham s SET s.tensp = :tenSP, s.nhaCungCap = :nhaCungCap, s.khuyenMai = :km, s.giaBan = :giaBan, s.soluong = :soluong, s.ngaynhap = :ngayNhap, s.hinhanh = :hinhAnh, s.mauSac = :color, s.size = :size, s.chatLieu = :chatLieu, s.tinhTrang = :tinhTrang, s.donViTinh = :dvt, s.loaiSanPham = :loaiSP, s.vat = :VAT, s.giaBan = :giaBanRa WHERE s.maSp = :maSP"),
         @NamedQuery(name = "SanPham.findAllSP", query = "SELECT s FROM SanPham s"),
         @NamedQuery(name = "SanPham.suaKhongAnh", query = "UPDATE SanPham s SET s.tensp = :tenSP, s.nhaCungCap = :nhaCungCap, s.khuyenMai = :km, s.giaBan = :giaBan, s.soluong = :soluong, s.ngaynhap = :ngayNhap, s.mauSac = :color, s.size = :size, s.chatLieu = :chatLieu, s.tinhTrang = :tinhTrang, s.donViTinh = :dvt, s.loaiSanPham = :loaiSP, s.vat = :VAT, s.giaBan = :giaBanRa WHERE s.maSp = :maSP"),
         @NamedQuery(name = "SanPham.timTheoGia", query = "SELECT s FROM SanPham s WHERE s.giaBan BETWEEN :gia1 AND :gia2"),
         @NamedQuery(name = "SanPham.getDTQuy", query = "SELECT s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai, s.gianhap, s.soluong, SUM(ct.soLuongSP) as tongSoLuong, s.giaBan\n" +
-                "FROM SanPham s \n" +
-                "JOIN CtHoadon ct ON s.maSp = ct.id.maSanPham \n" +
-                "JOIN HoaDon h ON h.maHoaDon = ct.id.maHoaDon\n" +
-                "JOIN NhanVien n ON n.maNhanvien = h.nhanVien\n" +
+                "FROM CtHoadon ct \n" +
+                "JOIN ct.maSanPham s \n" +
+                "JOIN ct.maHoaDon h \n" +
+                "JOIN h.nhanVien n\n" +
                 "WHERE QUARTER(h.ngayLapHoaDon) = :quy AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour and year(h.ngayLapHoaDon) = 2023\n" +
                 "GROUP BY s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai, s.gianhap, s.soluong, s.giaBan")
 })
