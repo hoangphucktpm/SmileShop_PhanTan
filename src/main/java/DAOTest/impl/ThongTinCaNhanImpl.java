@@ -11,10 +11,12 @@ import java.util.List;
 public class ThongTinCaNhanImpl implements ThongTinCaNhanDao {
 
     private EntityManager em;
-    public ThongTinCaNhanImpl(){
+
+    public ThongTinCaNhanImpl() {
         em = Persistence.createEntityManagerFactory("SQLdb")
                 .createEntityManager();
     }
+
     @Override
     public List<NhanVien> loadNhanVien(String ma) {
         try {
@@ -30,28 +32,6 @@ public class ThongTinCaNhanImpl implements ThongTinCaNhanDao {
         return new ArrayList<>();
     }
 
-    // public taiKhoan loadTaiKhoan(String ma) {
-    //       taiKhoan tk = new taiKhoan();
-    //
-    //        try {
-    //            Connection con = ConnectDatabase.getInstance().getConnection();
-    //            String sql = "select * from TaiKhoan where TenTaiKhoan like '%" + ma + "%'";
-    //            Statement statement = con.createStatement();
-    //            ResultSet rs = statement.executeQuery(sql);
-    //
-    //            while (rs.next()) {
-    //                String tenTK = rs.getString(1);
-    //                String matKhau = rs.getString(2);
-    //
-    //               tk = new taiKhoan(tenTK, matKhau);
-    //
-    //            }
-    //        } catch (SQLException e) {
-    //            e.printStackTrace();
-    //        }
-    //
-    //        return tk;
-    //    }
 
     @Override
     public TaiKhoan loadTaiKhoan(String ma) {
@@ -69,7 +49,6 @@ public class ThongTinCaNhanImpl implements ThongTinCaNhanDao {
     }
 
 
-
     @Override
     public String tenNV(String manv) {
         try {
@@ -84,11 +63,11 @@ public class ThongTinCaNhanImpl implements ThongTinCaNhanDao {
 
         }
         return "";
-        }
+    }
 
 
     @Override
-    public boolean sua( String tenNV,String sdt,  String Email, String MaNhanVien, String hinhAnh) {
+    public boolean sua(String tenNV, String sdt, String Email, String MaNhanVien, String hinhAnh) {
         try {
             em.getTransaction().begin();
             Query query = em.createQuery("UPDATE NhanVien n SET n.tenNhanVien = :tenNV, n.sdt = :sdt, n.email = :Email, n.hinhAnh = :hinhAnh WHERE n.maNhanvien = :MaNhanVien");
@@ -132,7 +111,6 @@ public class ThongTinCaNhanImpl implements ThongTinCaNhanDao {
     }
 
 
-
     @Override
     public String mailNhanVien(String manv) {
         try {
@@ -148,7 +126,6 @@ public class ThongTinCaNhanImpl implements ThongTinCaNhanDao {
 
         return "";
     }
-
 
 
 }
