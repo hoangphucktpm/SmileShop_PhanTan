@@ -20,12 +20,12 @@ import java.text.SimpleDateFormat;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import DAO.ThongTinCaNhan_Dao;
+import DAOTest.ThongTinCaNhanDao;
 import DAOTest.NhanVienDao;
 import DAOTest.impl.NhanVienImpl;
+import DAOTest.impl.ThongTinCaNhanImpl;
 import Entities.NhanVien;
 import Entities.TaiKhoan;
-import Entity.taiKhoan;
 
 import javax.swing.JRadioButton;
 import javax.swing.JPasswordField;
@@ -58,7 +58,7 @@ public class FrmThongTinCaNhan extends JFrame implements ActionListener {
 	private JLabel lblTieuDeTrang;
 	private JTextField txtChucVu;
 	private NhanVienDao dao = new NhanVienImpl();
-	private ThongTinCaNhan_Dao ttDao = new ThongTinCaNhan_Dao();
+	private ThongTinCaNhanDao ttDao = new ThongTinCaNhanImpl();
 	private JButton btnCapNhat;
 	private JRadioButton rdHienMatKhau;
 	private JButton btnLuu;
@@ -390,9 +390,9 @@ public class FrmThongTinCaNhan extends JFrame implements ActionListener {
 		String trangThaiText = (nv.getTrangThai() == 1) ? "Đang làm việc" : "Nghỉ việc";
 		txtTrangThai.setText(trangThaiText);
 
-		taiKhoan tk = ttDao.loadTaiKhoan(username);
+		TaiKhoan tk = ttDao.loadTaiKhoan(username);
 
-		txtTenTK.setText(tk.getTenDangNhap());
+		txtTenTK.setText(tk.getTenTaiKhoan().getTenNhanVien());
 		txtMauKhau.setText(tk.getMatKhau());
 		String tenNV = nv.getTenNhanVien();
 

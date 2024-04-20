@@ -1,12 +1,10 @@
 package Application;
 
-import DAOTest.KhachHangDao;
-import DAOTest.KhuyenMaiDao;
-import DAOTest.LapHoaDonDao;
-import DAOTest.XemHoaDonDao;
+import DAOTest.*;
 import DAOTest.impl.KhachHangImpl;
 import DAOTest.impl.KhuyenMaiImpl;
 import DAOTest.impl.LapHoaDonImpl;
+import DAOTest.impl.ThongTinCaNhanImpl;
 import Entities.KhachHang;
 import Entities.KhuyenMai;
 import Entities.LoaiKhachHang;
@@ -19,8 +17,9 @@ public class application {
     public static void main(String[] args) {
 
 
-        KhuyenMaiDao khuyenMaiDao = new KhuyenMaiImpl();
-        System.out.println(khuyenMaiDao.layKhuyenMaiTuSanPham("SP001"));
+        ThongTinCaNhanDao thongTinCaNhanDao = new ThongTinCaNhanImpl();
+        System.out.println(thongTinCaNhanDao.mailNhanVien("NV001"));
+
 
 
     }

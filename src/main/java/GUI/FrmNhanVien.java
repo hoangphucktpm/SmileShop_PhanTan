@@ -588,7 +588,8 @@ public class FrmNhanVien extends JFrame implements ActionListener, MouseListener
 		txtMaNV.setText(tablemodel.getValueAt(row, 1).toString());
 		maBanDau = tablemodel.getValueAt(row, 1).toString();
 		textTen.setText(tablemodel.getValueAt(row, 2).toString());
-		Date ngaySinh = (Date) tablemodel.getValueAt(row, 3);
+		java.util.Date utilDate = (java.util.Date) tablemodel.getValueAt(row, 3);
+		java.sql.Date ngaySinh = new java.sql.Date(utilDate.getTime());
 		txtNgay.setDate(ngaySinh);
 		txtCCCD.setText(tablemodel.getValueAt(row, 4).toString());
 		txtSDT.setText(tablemodel.getValueAt(row, 5).toString());
