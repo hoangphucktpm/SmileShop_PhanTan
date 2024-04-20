@@ -1,55 +1,23 @@
 package GUI;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Font;
+import DAO.NhaCungCap_Dao;
+import DAOTest.NhaCungCapDao;
+import DAOTest.impl.NhaCungCapImpl;
+import Database.ConnectDatabase;
+import Entity.NhaCungCap;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-
-
-import DAO.NhaCungCap_Dao;
-import Database.ConnectDatabase;
-import Entity.LoaiKhachHang;
-import Entity.NhaCungCap;
-
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.text.SimpleDateFormat;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.awt.event.ActionEvent;
 
 public class FrmNhaCungCap extends JFrame implements ActionListener, MouseListener, DocumentListener, KeyListener{
 
@@ -101,6 +69,7 @@ public class FrmNhaCungCap extends JFrame implements ActionListener, MouseListen
 	private DefaultComboBoxModel cboModeTimNCC= new DefaultComboBoxModel();
 
 	private NhaCungCap listN = new NhaCungCap();
+	private NhaCungCapDao nccDao = new NhaCungCapImpl();
 	private JButton btnLuu;
 	
 	private boolean chkThem = false;
@@ -510,7 +479,8 @@ public class FrmNhaCungCap extends JFrame implements ActionListener, MouseListen
 			try {
 				if (chkThem == true && chkSua == false)
 				{
-					boolean newL = dao.them(tenNCCString, Sdt, email, diaChi, 1);
+					Entities.NhaCungCap nhaCungCap = new Entities.NhaCungCap(txtMaNCC.getText(), tenNCCString, Sdt, email, diaChi, (short) tinhTrang);
+					boolean newL = nccDao.them(nhaCungCap);
 					 if(newL == true)
 					 {
 						 btnThem.setText("Thêm");
@@ -526,7 +496,13 @@ public class FrmNhaCungCap extends JFrame implements ActionListener, MouseListen
 					 
 					 JOptionPane.showMessageDialog(this, "Thêm nhà cung cấp không thành công");
 				}else if (chkSua == true && chkThem == false){
-					boolean newL = dao.sua(tenNCCString, Sdt, email, diaChi, tinhTrang, txtMaNCC.getText());
+					Entities.NhaCungCap nhaCungCap = nccDao.getMa(txtMaNCC.getText()).get(0);
+					nhaCungCap.setTenNhaCungCap(tenNCCString);
+					nhaCungCap.setSdt(Sdt);
+					nhaCungCap.setEmail(email);
+					nhaCungCap.setDiaChi(diaChi);
+					nhaCungCap.setTinhTrang((short) tinhTrang);
+					boolean newL = nccDao.sua(nhaCungCap);
 					 if(newL == true)
 					 {
 						 btnSua.setText("Sửa");
@@ -554,8 +530,8 @@ public class FrmNhaCungCap extends JFrame implements ActionListener, MouseListen
 	 */
 	public void docDuLieu() {
 		int d=1;
-		List<NhaCungCap> list = dao.getNhaCungCaps();
-		for(NhaCungCap x:list) {
+		List<Entities.NhaCungCap> list = nccDao.getNhaCungCaps();
+		for(Entities.NhaCungCap x:list) {
 
 			tablemodel.addRow(new Object[] {
 				d++,x.getMaNhaCungCap(),x.getTenNhaCungCap(),x.getSdt(),x.getEmail(),x.getDiaChi()
@@ -609,9 +585,9 @@ public class FrmNhaCungCap extends JFrame implements ActionListener, MouseListen
 	public void updateCBBox()
 	{
 		comboBox.removeAllItems();
-		List<NhaCungCap> listN = dao.getNhaCungCaps();
+		List<Entities.NhaCungCap> listN = nccDao.getNhaCungCaps();
 
-		for (NhaCungCap n : listN)
+		for (Entities.NhaCungCap n : listN)
 		{
 			if(rdMNCC.isSelected())
 			{
@@ -635,10 +611,10 @@ public class FrmNhaCungCap extends JFrame implements ActionListener, MouseListen
 			else if (rdStatus.isSelected())
 			{
 				comboBox.removeAllItems();
-				List<NhaCungCap> lncc = dao.getNhaCungCaps();
+				List<Entities.NhaCungCap> lncc = nccDao.getNhaCungCaps();
 				HashSet<String> tinhTrang = new HashSet<>();
 				String d ;
-				for (NhaCungCap x : lncc) {
+				for (Entities.NhaCungCap x : lncc) {
 					if (x.getTinhTrang() == 1)
 					{
 						d = "Đang hợp tác";
@@ -681,9 +657,9 @@ public class FrmNhaCungCap extends JFrame implements ActionListener, MouseListen
 				if(rdTenNCC.isSelected())
 				{
 					
-							List<NhaCungCap> list = dao.getTen(tim);
+							List<Entities.NhaCungCap> list = nccDao.getTen(tim);
 							txtBaoLoiTimKiem.setText("");
-							for (NhaCungCap x: list)
+							for (Entities.NhaCungCap x: list)
 							{
 								tablemodel.addRow(new Object[] {
 										d++,x.getMaNhaCungCap(),x.getTenNhaCungCap(),x.getSdt(),x.getEmail(),x.getDiaChi()
@@ -694,9 +670,9 @@ public class FrmNhaCungCap extends JFrame implements ActionListener, MouseListen
 				}
 				else if (rdMNCC.isSelected())
 				{
-					List<NhaCungCap> list = dao.getMa(tim);						
+					List<Entities.NhaCungCap> list = nccDao.getMa(tim);
 					txtBaoLoiTimKiem.setText("");
-						for(NhaCungCap x : list)
+						for(Entities.NhaCungCap x : list)
 						{
 							tablemodel.addRow(new Object[] {
 									d++,x.getMaNhaCungCap(),x.getTenNhaCungCap(),x.getSdt(),x.getEmail(),x.getDiaChi()
@@ -707,10 +683,10 @@ public class FrmNhaCungCap extends JFrame implements ActionListener, MouseListen
 				else if (rdSDT.isSelected())
 				{
 					
-						List<NhaCungCap> list = dao.getSDT(tim);
+						List<Entities.NhaCungCap> list = nccDao.getSDT(tim);
 						txtBaoLoiTimKiem.setText("");
 
-						for(NhaCungCap n: list)
+						for(Entities.NhaCungCap n: list)
 						{
 							tablemodel.addRow(new Object[] {
 									d++,n.getMaNhaCungCap(),n.getTenNhaCungCap(),n.getSdt(),n.getEmail(),n.getDiaChi()
@@ -720,9 +696,9 @@ public class FrmNhaCungCap extends JFrame implements ActionListener, MouseListen
 				}
 				else if (rdE.isSelected())
 				{
-					List<NhaCungCap> list = dao.getEmail(tim);
+					List<Entities.NhaCungCap> list = nccDao.getEmail(tim);
 
-						for(NhaCungCap n : list)
+						for(Entities.NhaCungCap n : list)
 						{
 							tablemodel.addRow(new Object[] {
 									d++,n.getMaNhaCungCap(),n.getTenNhaCungCap(),n.getSdt(),n.getEmail(),n.getDiaChi()
@@ -732,9 +708,9 @@ public class FrmNhaCungCap extends JFrame implements ActionListener, MouseListen
 				}
 				else if (rdStatus.isSelected())
 				{
-					List<NhaCungCap> list = dao.getNhaCungCaps();
+					List<Entities.NhaCungCap> list = nccDao.getNhaCungCaps();
 					txtBaoLoiTimKiem.setText("");
-					for (NhaCungCap x: list)
+					for (Entities.NhaCungCap x: list)
 					{
 					if(tim.equalsIgnoreCase("Đang hợp tác") || tim.contains("Đang") || tim.contains("đang") || tim.contains("hợp tác"))
 					{
@@ -847,7 +823,7 @@ public class FrmNhaCungCap extends JFrame implements ActionListener, MouseListen
 	}
 	public String deFaultID()
 	{
-		int n = dao.soLuongNCC() + 1;
+		int n = nccDao.soLuongNCC() + 1;
 		String soLuongMa  = String.format("%03d", n);
 		String deFault = "NCC" + soLuongMa;
 		return deFault;
@@ -884,12 +860,12 @@ public class FrmNhaCungCap extends JFrame implements ActionListener, MouseListen
 			txtSdt.setText(tablemodel.getValueAt(row, 3).toString());
 			txtE.setText(tablemodel.getValueAt(row, 4).toString());
 			txtDiaChi.setText(tablemodel.getValueAt(row, 5).toString());
-			List<NhaCungCap> list = dao.getNhaCungCaps();
-			for (NhaCungCap x:list)
+			List<Entities.NhaCungCap> list = nccDao.getNhaCungCaps();
+			for (Entities.NhaCungCap x:list)
 			{
-				if(x.maNhaCungCap.equals(tablemodel.getValueAt(row, 1).toString()))
+				if(x.getMaNhaCungCap().equals(tablemodel.getValueAt(row, 1).toString()))
 				{
-					if(x.tinhTrang == 1)
+					if(x.getTinhTrang() == 1)
 					{
 						rdHopTac.setSelected(true);
 						rdKhong.setSelected(false);
