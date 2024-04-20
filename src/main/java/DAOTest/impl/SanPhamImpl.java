@@ -57,7 +57,7 @@ public class SanPhamImpl implements SanPhamDao {
             sp.setSoluong(soluong);
             sp.setNgaynhap(ngayNhap);
             sp.setMauSac(MauSac.valueOf(color));
-            sp.setSize(Size.valueOf(size.toLowerCase()));
+            sp.setSize(Size.valueOf(size));
             if (img == null) {
                 img = "null";
             }
@@ -96,15 +96,26 @@ public class SanPhamImpl implements SanPhamDao {
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-            em.merge(sanPham);
+
+            // Merge the detached entity
+            SanPham managedSanPham = em.merge(sanPham);
+
+            // Commit the transaction
             tx.commit();
+
+            // Refresh the managed entity
+            em.refresh(managedSanPham);
+
             return true;
         } catch (Exception e) {
-            tx.rollback();
+            if (tx.isActive()) {
+                tx.rollback();
+            }
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
+
 
     @Override
     public List<Entities.LoaiSanPham> getLoaiSP() {
@@ -235,12 +246,12 @@ public class SanPhamImpl implements SanPhamDao {
 
     @Override
     public int soLuongLSP() {
-        int sl = (int) em.createNamedQuery("SanPham.soLuongLSP").getSingleResult();
-        return sl;
+        Long sl = (Long) em.createNamedQuery("SanPham.soLuongLSP").getSingleResult();
+        return sl.intValue();
     }
 
     @Override
-    public boolean themChatLieu(Entities.ChatLieu chatLieu) {
+    public boolean themChatLieu(ChatLieu chatLieu) {
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
@@ -256,8 +267,8 @@ public class SanPhamImpl implements SanPhamDao {
 
     @Override
     public int soLuongChatLieu() {
-        int sl = (int) em.createNamedQuery("SanPham.soLuongChatLieu").getSingleResult();
-        return sl;
+        Long result = (Long) em.createNamedQuery("SanPham.soLuongChatLieu").getSingleResult();
+        return result.intValue();
     }
 
     @Override
@@ -325,7 +336,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public List<SanPham> getlistTenMauSac(String MS) {
+    public List<SanPham> getlistTenMauSac(MauSac MS) {
         List<SanPham> list = em.createNamedQuery("SanPham.getlistTenMauSac", SanPham.class)
                 .setParameter("MS", MS)
                 .getResultList();
@@ -333,7 +344,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public List<SanPham> getlistSize(String kthuoc) {
+    public List<SanPham> getlistSize(Size kthuoc) {
         List<SanPham> list = em.createNamedQuery("SanPham.getlistSize", SanPham.class)
                 .setParameter("kthuoc", kthuoc)
                 .getResultList();
