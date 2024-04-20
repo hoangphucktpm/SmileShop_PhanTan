@@ -89,7 +89,7 @@ public class KhuyenMaiImpl implements KhuyenMaiDao {
 
     @Override
     public List<KhuyenMai> getTheoThoiGian(LocalDate begin, LocalDate end) {
-        Query query = em.createQuery("SELECT km FROM KhuyenMai km WHERE km.ngayBatDau >= :begin AND km.ngayKetThuc <= :end", KhuyenMai.class);
+        Query query = em.createQuery("SELECT km FROM KhuyenMai km WHERE (km.ngayBatDau >= :begin AND km.ngayBatDau <= :end) OR (km.ngayKetThuc >= :begin AND km.ngayKetThuc <= :end)", KhuyenMai.class);
         query.setParameter("begin", begin);
         query.setParameter("end", end);
         return query.getResultList();
