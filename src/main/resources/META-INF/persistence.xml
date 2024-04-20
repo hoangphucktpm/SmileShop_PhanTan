@@ -3,17 +3,16 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
-    <persistence-unit name="SQLdb">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>Entities.KhachHang</class>
-        <class>Entities.NhanVien</class>
-        <class>Entities.SanPham</class>
-        <class>Entities.HoaDon</class>
-        <class>Entities.CtHoadon</class>
-        <class>Entities.LoaiSanPham</class>
-        <class>Entities.NhaCungCap</class>
+  <persistence-unit name="SQLdb">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <class>Entities.KhachHang</class>
+    <class>Entities.NhanVien</class>
+    <class>Entities.SanPham</class>
+    <class>Entities.HoaDon</class>
+    <class>Entities.CtHoadon</class>
+    <class>Entities.LoaiSanPham</class>
+    <class>Entities.NhaCungCap</class>
 
-<<<<<<< HEAD
     <properties>
       <property name="jakarta.persistence.jdbc.url"
                 value="jdbc:sqlserver://localhost:1433;databaseName=SmileShop;trustServerCertificate=true" />
@@ -28,22 +27,6 @@
       <property name="hibernate.format_sql" value="true" />
       <property name="hibernate.hbm2ddl.auto" value="update" />
     </properties>
-=======
-        <properties>
-            <property name="jakarta.persistence.jdbc.url"
-                      value="jdbc:sqlserver://localhost:1433;databaseName=SmileShop;trustServerCertificate=true"/>
-            <property name="jakarta.persistence.jdbc.user" value="sa"/>
-            <property name="jakarta.persistence.jdbc.password"
-                      value="12345678"/>
-            <property name="jakarta.persistence.jdbc.driver"
-                      value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
-            <property name="jakarta.persistence.jdbc.dialect"
-                      value="org.hibernate.dialect.SQLServer2012Dialect"/>
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
-        </properties>
->>>>>>> 44705378e0da7eb763629f3788e33dc4e133fc13
 
-    </persistence-unit>
+  </persistence-unit>
 </persistence>

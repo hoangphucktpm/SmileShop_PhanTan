@@ -763,10 +763,11 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
             kmDao.hetHan();
             if (x.getNgayKetThuc().isBefore(LocalDate.now())) {
                 trangThaiText = "Hết hạn";
-                x.setTrangThai(1); // Cập nhật trạng thái là "Hết hạn"
+                x.setTrangThai(0); // Cập nhật trạng thái là "Hết hạn"
+                x.setSoLuongSanPhamKM(0);
             } else {
                 trangThaiText = "Đang áp dụng";
-                x.setTrangThai(0);
+                x.setTrangThai(1);
             }
 
             tablemodel1.addRow(new Object[]{x.getMaKhuyenMai(), x.getTenKhuyenMai(), x.getPhanTramKhuyenMai(),
