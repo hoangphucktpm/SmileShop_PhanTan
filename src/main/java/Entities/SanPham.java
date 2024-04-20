@@ -2,18 +2,39 @@ package Entities;
 
 
 import jakarta.persistence.*;
-import lombok.*;
-import java.time.LocalDate;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
 @NoArgsConstructor
 @Entity
 @NamedQueries({
-//        @NamedQuery(name = "SanPham.findAllSP",query = "Select maSp, Tensp, ncc.TenNhaCungCap, KhuyenMai, Gianhap, Soluong, Ngaynhap, Hinhanh, MauSac, s.size, ChatLieu, s.TinhTrang, DonViTinh, lsp.TenLoaiSP ,s.VAT,s.giaBan\n" +
-//                "from SanPham s join NhaCungCap ncc on s.NhaCungCap = ncc.MaNhaCungCap \n" +
-//                "join LoaiSanPham lsp on s.LoaiSanPham = lsp.MaLoaiSP \n" +
-//                "join ChatLieu c on c.MaChatLieu=s.ChatLieu"),
+        @NamedQuery(name = "SanPham.getMaChatLieu", query = "SELECT c.maChatLieu FROM ChatLieu c WHERE c.tenChatLieu = :ten AND c.moTa = :moTa"),
+        @NamedQuery(name = "SanPham.getTenChatLieu", query = "SELECT c.tenChatLieu FROM ChatLieu c WHERE c.maChatLieu = :ma"),
+        @NamedQuery(name = "SanPham.getMoTaChatLieu", query = "SELECT c.moTa FROM ChatLieu c WHERE c.maChatLieu = :ma"),
+        @NamedQuery(name ="SanPham.getlistSize", query = "SELECT s FROM SanPham s WHERE s.size = :kthuoc"),
+        @NamedQuery(name = "SanPham.getlistTenMauSac", query = "SELECT s FROM SanPham s WHERE s.mauSac = :MS"),
+        @NamedQuery(name = "SanPham.getlistTenCL", query = "SELECT s FROM SanPham s WHERE s.chatLieu.tenChatLieu = :ChatLieu"),
+        @NamedQuery(name = "SanPham.getlistTenNCC", query = "SELECT s FROM SanPham s WHERE s.nhaCungCap.tenNhaCungCap = :nccap"),
+        @NamedQuery(name = "SanPham.getlistTenLoaiSP", query = "SELECT s FROM SanPham s WHERE s.loaiSanPham.tenLoaiSP = :lsp"),
+        @NamedQuery(name = "SanPham.getTenSP", query = "SELECT s FROM SanPham s WHERE s.tensp = :Ten"),
+        @NamedQuery(name = "SanPham.getMa", query = "SELECT s FROM SanPham s WHERE s.maSp = :Ma"),
+        @NamedQuery(name = "SanPham.getTenCL", query = "SELECT s.chatLieu.tenChatLieu FROM SanPham s WHERE s.maSp = :maSP"),
+        @NamedQuery(name = "SanPham.getTenNhaCC", query = "SELECT s.nhaCungCap.tenNhaCungCap FROM SanPham s WHERE s.maSp = :maSP"),
+        @NamedQuery(name = "SanPham.getTenLoaiSP", query = "SELECT s.loaiSanPham.tenLoaiSP FROM SanPham s WHERE s.maSp = :maSP"),
+        @NamedQuery(name = "SanPham.soLuongChatLieu", query = "SELECT COUNT(c) FROM ChatLieu c"),
+        @NamedQuery(name = "SanPham.soLuongLSP", query = "SELECT COUNT(l) FROM LoaiSanPham l"),
+        @NamedQuery(name = "SanPham.vat", query = "SELECT s.vat FROM SanPham s WHERE s.maSp = :ma"),
+        @NamedQuery(name="SanPham.soLuong", query = "SELECT COUNT(s) FROM SanPham s"),
+        @NamedQuery(name = "SanPham.getKMTheoTen", query = "SELECT DISTINCT sp.khuyenMai FROM SanPham sp"),
+        @NamedQuery(name = "SanPham.getKMTheoPhanTram", query = "SELECT sp.khuyenMai.phanTramKhuyenMai FROM SanPham sp WHERE sp.maSp = :maSP"),
+        @NamedQuery(name = "SanPham.getTenNCC", query = "SELECT DISTINCT sp.nhaCungCap.tenNhaCungCap FROM SanPham sp"),
+        @NamedQuery(name = "SanPham.getChatLieu", query = "SELECT DISTINCT sp.chatLieu FROM SanPham sp"),
+        @NamedQuery(name = "SanPham.getLoaiSP", query = "SELECT DISTINCT sp.loaiSanPham FROM SanPham sp"),
+         @NamedQuery(name = "SanPham.sua",query = "UPDATE SanPham s SET s.tensp = :tenSP, s.nhaCungCap = :nhaCungCap, s.khuyenMai = :km, s.giaBan = :giaBan, s.soluong = :soluong, s.ngaynhap = :ngayNhap, s.hinhanh = :hinhAnh, s.mauSac = :color, s.size = :size, s.chatLieu = :chatLieu, s.tinhTrang = :tinhTrang, s.donViTinh = :dvt, s.loaiSanPham = :loaiSP, s.vat = :VAT, s.giaBan = :giaBanRa WHERE s.maSp = :maSP"),
         @NamedQuery(name = "SanPham.findAllSP", query = "SELECT s FROM SanPham s"),
+        @NamedQuery(name = "SanPham.suaKhongAnh", query = "UPDATE SanPham s SET s.tensp = :tenSP, s.nhaCungCap = :nhaCungCap, s.khuyenMai = :km, s.giaBan = :giaBan, s.soluong = :soluong, s.ngaynhap = :ngayNhap, s.mauSac = :color, s.size = :size, s.chatLieu = :chatLieu, s.tinhTrang = :tinhTrang, s.donViTinh = :dvt, s.loaiSanPham = :loaiSP, s.vat = :VAT, s.giaBan = :giaBanRa WHERE s.maSp = :maSP"),
+        @NamedQuery(name = "SanPham.timTheoGia", query = "SELECT s FROM SanPham s WHERE s.giaBan BETWEEN :gia1 AND :gia2"),
         @NamedQuery(name = "SanPham.getDTQuy", query = "SELECT s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai, s.gianhap, s.soluong, SUM(ct.soLuongSP) as tongSoLuong, s.giaBan\n" +
                 "FROM SanPham s \n" +
                 "JOIN CtHoadon ct ON s.maSp = ct.id.maSanPham \n" +
