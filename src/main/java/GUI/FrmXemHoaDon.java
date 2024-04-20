@@ -31,7 +31,6 @@ import DAOTest.XemHoaDonDao;
 import DAOTest.impl.KhachHangImpl;
 import DAOTest.impl.SanPhamImpl;
 import DAOTest.impl.XemHoaDonImpl;
-import Entities.CtHoadonId;
 import com.toedter.calendar.JDateChooser;
 
 import DAOTest.SanPhamDao;
