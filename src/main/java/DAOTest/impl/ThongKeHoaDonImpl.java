@@ -36,11 +36,11 @@ public class ThongKeHoaDonImpl implements ThongKeHoaDonDao {
         }
 
         List<Object[]> result = em.createQuery("select h.maHoaDon, h.nhanVien.tenNhanVien, n.caLamViec, sum(c.soLuongSP) as soLuong, h.ngayLapHoaDon, h.tongTien, lkh.tenLoaiKH, n.tenNhanVien, n.maNhanvien " +
-                        "from HoaDon h " +
-                        "join CtHoadon c on c.maHoaDon = h.maHoaDon " +
-                        "join NhanVien n on n.maNhanvien=h.nhanVien " +
-                        "join KhachHang k on k.maKH = h.khachHang " +
-                        "join LoaiKhachHang lkh on lkh.maLoaiKH = k.loaiKH " +
+                        "from CtHoadon c " +
+                        "join c.maHoaDon h " +
+                        "join h.nhanVien n " +
+                        "join h.khachHang k " +
+                        "join k.loaiKH lkh " +
                         "where day(h.ngayLapHoaDon) = :day and MONTH(h.ngayLapHoaDon) = :month and year(h.ngayLapHoaDon) = :year AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour " +
                         "group by  h.maHoaDon, h.nhanVien.tenNhanVien, n.caLamViec, h.ngayLapHoaDon, h.tongTien, lkh.tenLoaiKH, n.tenNhanVien, n.maNhanvien")
                 .setParameter("day", day)
@@ -79,11 +79,11 @@ public class ThongKeHoaDonImpl implements ThongKeHoaDonDao {
         }
 
         List<Object[]> result = em.createQuery("select h.maHoaDon, h.nhanVien.tenNhanVien, n.caLamViec, sum(c.soLuongSP) as soLuong, h.ngayLapHoaDon, h.tongTien, lkh.tenLoaiKH, n.tenNhanVien, n.maNhanvien " +
-                        "from HoaDon h " +
-                        "join CtHoadon c on c.maHoaDon = h.maHoaDon " +
-                        "join NhanVien n on n.maNhanvien=h.nhanVien " +
-                        "join KhachHang k on k.maKH = h.khachHang " +
-                        "join LoaiKhachHang lkh on lkh.maLoaiKH = k.loaiKH " +
+                        "from CtHoadon c " +
+                        "join c.maHoaDon h " +
+                        "join h.nhanVien n " +
+                        "join h.khachHang k " +
+                        "join k.loaiKH lkh " +
                         "where day(h.ngayLapHoaDon) = :day and MONTH(h.ngayLapHoaDon) = :month and year(h.ngayLapHoaDon) = :year AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour and n.maNhanvien = :maNhanVien " +
                         "group by  h.maHoaDon, h.nhanVien.tenNhanVien, n.caLamViec, h.ngayLapHoaDon, h.tongTien, lkh.tenLoaiKH, n.tenNhanVien, n.maNhanvien")
                 .setParameter("day", day)
@@ -112,9 +112,9 @@ public class ThongKeHoaDonImpl implements ThongKeHoaDonDao {
         LocalDate date = LocalDate.now();
         int month = date.getMonthValue();
         int year = date.getYear();
-        Query query = em.createQuery("select n.maNhanvien, count(h.maHoaDon) as HoaDon from HoaDon h " +
-                        "join CtHoadon ct on h.maHoaDon=ct.maHoaDon " +
-                        "join NhanVien n on n.maNhanvien = h.nhanVien " +
+        Query query = em.createQuery("select n.maNhanvien, count(h.maHoaDon) as HoaDon from CtHoadon ct " +
+                        "join ct.maHoaDon h " +
+                        "join h.nhanVien n on n.maNhanvien = h.nhanVien " +
                         "where MONTH(h.ngayLapHoaDon) = :month AND YEAR(h.ngayLapHoaDon) = :year " +
                         "group by n.maNhanvien " +
                         "order by HoaDon desc")
@@ -134,9 +134,9 @@ public class ThongKeHoaDonImpl implements ThongKeHoaDonDao {
         LocalDate date = LocalDate.now();
         int month = date.getMonthValue();
         int year = date.getYear();
-        Query query = em.createQuery("select n.tenNhanVien, count(h.maHoaDon) as HoaDon from HoaDon h " +
-                        "join CtHoadon ct on h.maHoaDon=ct.maHoaDon " +
-                        "join NhanVien n on n.maNhanvien = h.nhanVien " +
+        Query query = em.createQuery("select n.tenNhanVien, count(h.maHoaDon) as HoaDon from CtHoadon ct " +
+                        "join ct.maHoaDon h " +
+                        "join h.nhanVien n on n.maNhanvien = h.nhanVien " +
                         "where MONTH(h.ngayLapHoaDon) = :month AND YEAR(h.ngayLapHoaDon) = :year " +
                         "group by n.tenNhanVien " +
                         "order by HoaDon desc")

@@ -2,6 +2,7 @@ package DAOTest;
 
 import Entities.KhuyenMai;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -33,5 +34,4 @@ public interface KhuyenMaiDao {
     public List<String> dsMaSPKM(String ma);
 
     public String layKhuyenMaiTuSanPham(String ma);
-
 }

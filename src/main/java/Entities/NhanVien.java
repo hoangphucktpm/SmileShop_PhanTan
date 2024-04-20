@@ -4,10 +4,11 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 @NoArgsConstructor
 @Entity
+@NamedQuery(name="NhanVien.findAll", query="SELECT n FROM NhanVien n")
 public class NhanVien {
     @Id
     @Column(name = "MaNhanvien", nullable = false, length = 50)
@@ -17,7 +18,7 @@ public class NhanVien {
     private String tenNhanVien;
 
     @Column(name = "NgaySinh", nullable = false)
-    private LocalDate ngaySinh;
+    private Date ngaySinh;
 
     @Column(name = "CCCD", nullable = false, length = 50)
     private String cccd;
@@ -26,16 +27,16 @@ public class NhanVien {
     private String sdt;
 
     @Column(name = "GioiTinh", columnDefinition = "tinyint not null")
-    private Short gioiTinh;
+    private int gioiTinh;
 
     @Column(name = "TrangThai", columnDefinition = "tinyint not null")
-    private Short trangThai;
+    private int trangThai;
 
     @Column(name = "CaLamViec", columnDefinition = "tinyint not null")
-    private Short caLamViec;
+    private int caLamViec;
 
     @Column(name = "ChucVu", columnDefinition = "tinyint not null")
-    private Short chucVu;
+    private int chucVu;
 
     @Column(name = "HinhAnh", nullable = false, length = 50)
     private String hinhAnh;
@@ -45,6 +46,21 @@ public class NhanVien {
 
     @Column(name = "DiaChi", nullable = false, length = 50)
     private String diaChi;
+
+    public NhanVien(String maNhanvien, String tenNhanVien, Date ngaySinh, String cccd, String sdt, int gioiTinh, int trangThai, int caLamViec, int chucVu, String hinhAnh, String email, String diaChi) {
+        this.maNhanvien = maNhanvien;
+        this.tenNhanVien = tenNhanVien;
+        this.ngaySinh = ngaySinh;
+        this.cccd = cccd;
+        this.sdt = sdt;
+        this.gioiTinh = gioiTinh;
+        this.trangThai = trangThai;
+        this.caLamViec = caLamViec;
+        this.chucVu = chucVu;
+        this.hinhAnh = hinhAnh;
+        this.email = email;
+        this.diaChi = diaChi;
+    }
 
     public String getMaNhanvien() {
         return maNhanvien;
@@ -62,11 +78,11 @@ public class NhanVien {
         this.tenNhanVien = tenNhanVien;
     }
 
-    public LocalDate getNgaySinh() {
+    public Date getNgaySinh() {
         return ngaySinh;
     }
 
-    public void setNgaySinh(LocalDate ngaySinh) {
+    public void setNgaySinh(Date ngaySinh) {
         this.ngaySinh = ngaySinh;
     }
 
@@ -86,35 +102,35 @@ public class NhanVien {
         this.sdt = sdt;
     }
 
-    public Short getGioiTinh() {
+    public int getGioiTinh() {
         return gioiTinh;
     }
 
-    public void setGioiTinh(Short gioiTinh) {
+    public void setGioiTinh(int gioiTinh) {
         this.gioiTinh = gioiTinh;
     }
 
-    public Short getTrangThai() {
+    public int getTrangThai() {
         return trangThai;
     }
 
-    public void setTrangThai(Short trangThai) {
+    public void setTrangThai(int trangThai) {
         this.trangThai = trangThai;
     }
 
-    public Short getCaLamViec() {
+    public int getCaLamViec() {
         return caLamViec;
     }
 
-    public void setCaLamViec(Short caLamViec) {
+    public void setCaLamViec(int caLamViec) {
         this.caLamViec = caLamViec;
     }
 
-    public Short getChucVu() {
+    public int getChucVu() {
         return chucVu;
     }
 
-    public void setChucVu(Short chucVu) {
+    public void setChucVu(int chucVu) {
         this.chucVu = chucVu;
     }
 
@@ -140,24 +156,6 @@ public class NhanVien {
 
     public void setDiaChi(String diaChi) {
         this.diaChi = diaChi;
-    }
-
-    public NhanVien(String maNhanvien, String tenNhanVien, LocalDate ngaySinh, String cccd, String sdt, Short gioiTinh, Short trangThai, Short caLamViec, Short chucVu, String hinhAnh, String email, String diaChi) {
-        this.maNhanvien = maNhanvien;
-        this.tenNhanVien = tenNhanVien;
-        this.ngaySinh = ngaySinh;
-        this.cccd = cccd;
-        this.sdt = sdt;
-        this.gioiTinh = gioiTinh;
-        this.trangThai = trangThai;
-        this.caLamViec = caLamViec;
-        this.chucVu = chucVu;
-        this.hinhAnh = hinhAnh;
-        this.email = email;
-        this.diaChi = diaChi;
-    }
-
-    public NhanVien(String nhanVien) {
     }
 
     @Override

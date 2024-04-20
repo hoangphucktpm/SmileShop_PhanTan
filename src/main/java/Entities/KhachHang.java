@@ -10,7 +10,7 @@ import java.util.Date;
 @Entity
 
 @NamedQueries({
-    @NamedQuery(name = "KhachHang.findAll", query = "SELECT kh FROM KhachHang kh"),
+        @NamedQuery(name = "KhachHang.findAll", query = "SELECT kh FROM KhachHang kh"),
         @NamedQuery(name = "KhachHang.findByMaKH", query = "SELECT kh FROM KhachHang kh WHERE kh.maKH = :maKH"),
         @NamedQuery(name = "KhachHang.find5kPoint", query = "SELECT kh FROM KhachHang kh WHERE kh.diemTichLuy >= 5000"),
         @NamedQuery(name = "KhachHang.findKHByName", query = "SELECT kh FROM KhachHang kh WHERE kh.tenKH = :tenKH"),
@@ -20,7 +20,7 @@ import java.util.Date;
         @NamedQuery(name = "KhachHang.findByLoaiKH", query = "SELECT kh FROM KhachHang kh WHERE kh.loaiKH.tenLoaiKH = :tenLoaiKH"),
         @NamedQuery(name = "KhachHang.findTop", query = "SELECT k.tenKH, SUM(h.tongTien) " +
                 "FROM HoaDon h " +
-                "JOIN CtHoadon ct ON h.maHoaDon = ct.id.maHoaDon " +
+                "JOIN CtHoadon ct ON h.maHoaDon = ct.maHoaDon " +
                 "JOIN KhachHang k ON k.maKH = h.khachHang " +
                 "WHERE MONTH(h.ngayLapHoaDon) = :month AND YEAR(h.ngayLapHoaDon) = :year " +
                 "GROUP BY k.tenKH " +

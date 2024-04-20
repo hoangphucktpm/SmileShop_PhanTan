@@ -50,12 +50,17 @@ public class XemHoaDonImpl implements XemHoaDonDao {
         return hoaDons;
     }
 
-
     @Override
     public List<CtHoadon> getCT_HoaDon(String mahd) {
+        HoaDon hoaDon = em.find(HoaDon.class, mahd);
+        if (hoaDon == null) {
+            // Handle the case where no HoaDon with the given maHoaDon exists
+            return new ArrayList<>();
+        }
+
         Query query = em.createQuery("SELECT cthd FROM CtHoadon cthd JOIN FETCH cthd.maSanPham sp " +
-                "LEFT JOIN FETCH sp.khuyenMai km LEFT JOIN FETCH sp.chatLieu cl WHERE cthd.id.maHoaDon = :mahd", CtHoadon.class);
-        query.setParameter("mahd", mahd);
+                "LEFT JOIN FETCH sp.khuyenMai km LEFT JOIN FETCH sp.chatLieu cl WHERE cthd.maHoaDon = :mahd", CtHoadon.class);
+        query.setParameter("mahd", hoaDon);
         List<CtHoadon> chiTietHoaDons = query.getResultList();
         return chiTietHoaDons;
     }

@@ -37,10 +37,10 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
         LocalDate date = LocalDate.now();
         int year = date.getYear();
         List<Object[]> results = em.createQuery("SELECT s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai.maKhuyenMai, s.gianhap, s.soluong, SUM(ct.soLuongSP), s.giaBan " +
-                        "FROM SanPham s " +
-                        "JOIN CtHoadon ct ON s.maSp = ct.id.maSanPham " +
-                        "JOIN HoaDon h ON h.maHoaDon = ct.id.maHoaDon " +
-                        "JOIN NhanVien n ON n.maNhanvien = h.nhanVien " +
+                        "FROM CtHoadon ct " +
+                        "JOIN ct.maSanPham s " +
+                        "JOIN ct.maHoaDon h " +
+                        "JOIN h.nhanVien " +
                         "WHERE QUARTER(h.ngayLapHoaDon) = :quy AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour and year(h.ngayLapHoaDon) = :year " +
                         "GROUP BY s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai, s.gianhap, s.soluong, s.giaBan")
                 .setParameter("quy", quy)
@@ -90,10 +90,8 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
         LocalDate date = LocalDate.now();
         int year = date.getYear();
         Double result = em.createQuery("SELECT SUM(h.tongTien) " +
-                                "FROM SanPham s " +
-                                "JOIN CtHoadon ct ON s.maSp = ct.id.maSanPham " +
-                                "JOIN HoaDon h ON h.maHoaDon = ct.id.maHoaDon " +
-                                "JOIN NhanVien n ON n.maNhanvien = h.nhanVien " +
+                                "from HoaDon h " +
+                                "JOIN h.nhanVien " +
                                 "WHERE QUARTER(h.ngayLapHoaDon) = :quy AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour and year(h.ngayLapHoaDon) = :year",
                         Double.class)
                 .setParameter("quy", quy)
@@ -121,10 +119,10 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
         LocalDate date = LocalDate.now();
         int year = date.getYear();
         List<Object[]> results = em.createQuery("SELECT s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai.maKhuyenMai, s.gianhap, s.soluong, SUM(ct.soLuongSP), s.giaBan " +
-                        "FROM SanPham s " +
-                        "JOIN CtHoadon ct ON s.maSp = ct.id.maSanPham " +
-                        "JOIN HoaDon h ON h.maHoaDon = ct.id.maHoaDon " +
-                        "JOIN NhanVien n ON n.maNhanvien = h.nhanVien " +
+                        "FROM CtHoadon ct " +
+                        "JOIN ct.maSanPham s " +
+                        "JOIN ct.maHoaDon h " +
+                        "JOIN h.nhanVien " +
                         "WHERE MONTH(h.ngayLapHoaDon) = :thang AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour and year(h.ngayLapHoaDon) = :year " +
                         "GROUP BY s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai, s.gianhap, s.soluong, s.giaBan")
                 .setParameter("thang", thang)
@@ -167,10 +165,8 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
         LocalDate date = LocalDate.now();
         int year = date.getYear();
         Double result = em.createQuery("SELECT SUM(h.tongTien) " +
-                        "FROM SanPham s " +
-                        "JOIN CtHoadon ct ON s.maSp = ct.id.maSanPham " +
-                        "JOIN HoaDon h ON h.maHoaDon = ct.id.maHoaDon " +
-                        "JOIN NhanVien n ON n.maNhanvien = h.nhanVien " +
+                                "from HoaDon h " +
+                                "JOIN h.nhanVien " +
                         "WHERE MONTH(h.ngayLapHoaDon) = :thang AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour and year(h.ngayLapHoaDon) = :year",
                 Double.class)
                 .setParameter("thang", thang)
@@ -195,10 +191,10 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
             endHour = 22;
         }
         List<Object[]> results = em.createQuery("SELECT s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai.maKhuyenMai, s.gianhap, s.soluong, SUM(ct.soLuongSP), s.giaBan " +
-                        "FROM SanPham s " +
-                        "JOIN CtHoadon ct ON s.maSp = ct.id.maSanPham " +
-                        "JOIN HoaDon h ON h.maHoaDon = ct.id.maHoaDon " +
-                        "JOIN NhanVien n ON n.maNhanvien = h.nhanVien " +
+                        "FROM CtHoadon ct " +
+                        "JOIN ct.maSanPham s " +
+                        "JOIN ct.maHoaDon h " +
+                        "JOIN h.nhanVien " +
                         "WHERE YEAR(h.ngayLapHoaDon) = :nam AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour " +
                         "GROUP BY s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai, s.gianhap, s.soluong, s.giaBan")
                 .setParameter("nam", nam)
@@ -238,10 +234,8 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
             endHour = 22;
         }
         Double result = em.createQuery("SELECT SUM(h.tongTien) " +
-                        "FROM SanPham s " +
-                        "JOIN CtHoadon ct ON s.maSp = ct.id.maSanPham " +
-                        "JOIN HoaDon h ON h.maHoaDon = ct.id.maHoaDon " +
-                        "JOIN NhanVien n ON n.maNhanvien = h.nhanVien " +
+                        "from HoaDon h " +
+                        "JOIN h.nhanVien " +
                         "WHERE YEAR(h.ngayLapHoaDon) = :nam AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour",
                 Double.class)
                 .setParameter("nam", nam)
@@ -265,10 +259,10 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
             endHour = 22;
         }
         List<Object[]> results = em.createQuery("SELECT s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai.maKhuyenMai, s.gianhap, s.soluong, SUM(ct.soLuongSP), s.giaBan " +
-                        "FROM SanPham s " +
-                        "JOIN CtHoadon ct ON s.maSp = ct.id.maSanPham " +
-                        "JOIN HoaDon h ON h.maHoaDon = ct.id.maHoaDon " +
-                        "JOIN NhanVien n ON n.maNhanvien = h.nhanVien " +
+                        "FROM CtHoadon ct " +
+                        "JOIN ct.maSanPham s " +
+                        "JOIN ct.maHoaDon h " +
+                        "JOIN h.nhanVien " +
                         "WHERE MONTH(h.ngayLapHoaDon) = :thang AND YEAR(h.ngayLapHoaDon) = :nam AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour " +
                         "GROUP BY s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai, s.gianhap, s.soluong, s.giaBan")
                 .setParameter("thang", thang)
@@ -308,10 +302,8 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
             endHour = 22;
         }
         Double result = em.createQuery("SELECT SUM(h.tongTien) " +
-                        "FROM SanPham s " +
-                        "JOIN CtHoadon ct ON s.maSp = ct.id.maSanPham " +
-                        "JOIN HoaDon h ON h.maHoaDon = ct.id.maHoaDon " +
-                        "JOIN NhanVien n ON n.maNhanvien = h.nhanVien " +
+                        "FROM HoaDon h  " +
+                        "JOIN h.nhanVien n " +
                         "WHERE MONTH(h.ngayLapHoaDon) = :thang AND YEAR(h.ngayLapHoaDon) = :nam AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour",
                 Double.class)
                 .setParameter("thang", thang)

@@ -17,10 +17,7 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
@@ -30,13 +27,13 @@ import javax.swing.border.LineBorder;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 
+import DAOTest.NhanVienDao;
 import DAOTest.ThongKeHoaDonDao;
+import DAOTest.impl.NhanVienImpl;
 import DAOTest.impl.ThongKeHoaDonImpl;
 import com.toedter.calendar.JDateChooser;
 
-import DAO.NhanVien_Dao;
-
-import Entity.NhanVien;
+import Entities.NhanVien;
 import Entities.ThongKeHoaDon;
 
 import javax.swing.JTextField;
@@ -90,7 +87,7 @@ public class FrmThongKeHoaDon extends JFrame implements ActionListener {
 	private JTextField textHDDL;
 	private JTextField textSPDB;
 	private JTextField textTT;
-	private NhanVien_Dao daoNV = new NhanVien_Dao();
+	private NhanVienDao daoNV = new NhanVienImpl();
 	private JPanel pnlBieuDo;
 	public ChartPanel chartPanel;
 	private int day;
@@ -354,8 +351,8 @@ public class FrmThongKeHoaDon extends JFrame implements ActionListener {
 		if (listNV != null && !listNV.isEmpty()) {
 			cbNV.addItem("Tất cả");
 			for (NhanVien n : listNV) {
-				if (!n.getMaNhanVien().contains("QL")) {
-					cbNV.addItem(n.getMaNhanVien());
+				if (!n.getMaNhanvien().contains("QL")) {
+					cbNV.addItem(n.getMaNhanvien());
 				}
 
 			}
@@ -369,8 +366,8 @@ public class FrmThongKeHoaDon extends JFrame implements ActionListener {
 		List<NhanVien> listNV = daoNV.getAllNV();
 		String ma = (String) cbNV.getSelectedItem();
 		for (NhanVien n : listNV) {
-			if (ma.equalsIgnoreCase(n.getMaNhanVien()))
-				txtTenNV.setText(n.getTenNV());
+			if (ma.equalsIgnoreCase(n.getMaNhanvien()))
+				txtTenNV.setText(n.getTenNhanVien());
 			else if (ma.equalsIgnoreCase("Tất cả"))
 				txtTenNV.setText("");
 		}
@@ -473,12 +470,12 @@ public class FrmThongKeHoaDon extends JFrame implements ActionListener {
 
 		} else if (FrmDangNhap.TrangThaiDangNhapNhanVien && !FrmDangNhap.TrangThaiDangNhapQuanLy) {
 			rdNV.setSelected(true);
-			String nhanVienDN = FrmDangNhap.taiKhoan.getTenDangNhap();
+			String nhanVienDN = FrmDangNhap.taiKhoan.getTenTaiKhoan().getMaNhanvien();
 			List<NhanVien> listNV = daoNV.getAllNV();
 			cbNV.setSelectedItem(nhanVienDN);
 			for (NhanVien n : listNV) {
-				if (nhanVienDN.equalsIgnoreCase(n.getMaNhanVien())) {
-					txtTenNV.setText(n.getTenNV());
+				if (nhanVienDN.equalsIgnoreCase(n.getMaNhanvien())) {
+					txtTenNV.setText(n.getTenNhanVien());
 					cbCa.setSelectedItem(n.getCaLamViec());
 				}
 

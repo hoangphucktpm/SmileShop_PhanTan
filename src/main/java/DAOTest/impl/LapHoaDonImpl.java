@@ -128,15 +128,65 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     //		return n>0;
     //	}
 
+    // public String getKMTheoTen(String TenKM) {
+    //
+    //		String ten = "";
+    //
+    //		try {
+    //			Connection con = ConnectDatabase.getInstance().getConnection();
+    //			String sql = "select TenKhuyenMai from [dbo].[KhuyenMai] where MaKhuyenMai like N'%" + TenKM + "%'";
+    //			Statement statement = con.createStatement();
+    //			ResultSet rs = statement.executeQuery(sql);
+    //
+    //			while (rs.next()) {
+    //				ten = rs.getString(1);
+    //			}
+    //		} catch (SQLException e) {
+    //			e.printStackTrace();
+    //		}
+    //
+    //		return ten;
+    //	}
+
+    @Override
+    public String getKMTheoTen(String TenKM) {
+        String ten = "";
+        try {
+            Query query = em.createNativeQuery("SELECT TenKhuyenMai FROM dbo.KhuyenMai WHERE MaKhuyenMai = ?");
+            query.setParameter(1, TenKM);
+            ten = (String) query.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ten;
+    }
+
+    @Override
+    public HoaDon getHoaDon(String mahd) {
+        return em.find(HoaDon.class, mahd);
+    }
+
+    @Override
+    public SanPham getSanPham(String masp) {
+        return em.find(SanPham.class, masp);
+    }
+
     @Override
     public boolean addCT_HoaDon(String maHoaDon, String maSP, int soLuong) {
         try {
+            em.getTransaction().begin(); // Start the transaction
+
             Query query = em.createNativeQuery("INSERT INTO dbo.CT_HoaDon(MaHoaDon, MaSanPham, SoLuongSP) VALUES (?, ?, ?)");
             query.setParameter(1, maHoaDon);
             query.setParameter(2, maSP);
             query.setParameter(3, soLuong);
             query.executeUpdate();
+
+            em.getTransaction().commit(); // Commit the transaction
         } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback(); // Rollback the transaction in case of an error
+            }
             e.printStackTrace();
             return false;
         }

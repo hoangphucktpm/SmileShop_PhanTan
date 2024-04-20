@@ -10,7 +10,9 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import DAOTest.NhanVienDao;
 import DAOTest.ThongKeDoanhThuDao;
+import DAOTest.impl.NhanVienImpl;
 import DAOTest.impl.ThongKeDoanhThuImpl;
 import Entities.ThongKeDoanhThu;
 import org.jfree.chart.ChartFactory;
@@ -51,8 +53,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.JScrollPane;
 
-import DAO.NhanVien_Dao;
-import Entity.NhanVien;
+import Entities.NhanVien;
 
 import javax.swing.ScrollPaneConstants;
 import javax.swing.ImageIcon;
@@ -101,7 +102,7 @@ public class FrmThongKeDoanhThu extends JFrame implements ActionListener{
 	DecimalFormat tien = new DecimalFormat("#,##0");
 	DecimalFormat tienSo = new DecimalFormat("###0");
 
-	private NhanVien_Dao daoNV = new NhanVien_Dao();
+	private NhanVienDao daoNV = new NhanVienImpl();
 	private ButtonGroup gr;
 	private ButtonGroup grChuc;
 	private JPanel pnlBieuDo;
@@ -714,11 +715,11 @@ public class FrmThongKeDoanhThu extends JFrame implements ActionListener{
 		else if (FrmDangNhap.TrangThaiDangNhapNhanVien && !FrmDangNhap.TrangThaiDangNhapQuanLy)
 		{
 			rdNV.setSelected(true);
-			String nhanVienDN = FrmDangNhap.taiKhoan.getTenDangNhap();
+			String nhanVienDN = FrmDangNhap.usernameToGetNhanVien;
 			List<NhanVien> listNV = daoNV.getAllNV();
 			 for (NhanVien n : listNV)
 			 {
-				 if (n.getMaNhanVien().equalsIgnoreCase(nhanVienDN))
+				 if (n.getMaNhanvien().equalsIgnoreCase(nhanVienDN))
 				 cboCa.setSelectedItem(n.getCaLamViec());
 			 }
 			 cboCa.setEnabled(false);
