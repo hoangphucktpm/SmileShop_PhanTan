@@ -28,6 +28,18 @@ public class NhanVienImpl implements NhanVienDao {
         try {
             em.getTransaction().begin();
             NhanVien nhanVien = new NhanVien();
+            nhanVien.setMaNhanvien(maNV);
+            nhanVien.setTenNhanVien(tenNV);
+            nhanVien.setNgaySinh(ngaySinh);
+            nhanVien.setCccd(CCCD);
+            nhanVien.setSdt(sdt);
+            nhanVien.setGioiTinh(gend);
+            nhanVien.setTrangThai(sta);
+            nhanVien.setCaLamViec(ca);
+            nhanVien.setChucVu(chuc);
+            nhanVien.setHinhAnh(hinh);
+            nhanVien.setEmail(Email);
+            nhanVien.setDiaChi(DiaChi);
             em.persist(nhanVien);
             em.getTransaction().commit();
             return true;
