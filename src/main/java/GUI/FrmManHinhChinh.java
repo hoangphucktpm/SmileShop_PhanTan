@@ -155,6 +155,13 @@ public class FrmManHinhChinh extends JFrame implements ActionListener, MenuListe
 
 		btnThongTinCaNhan.setBounds(38, 35, 125, 88);
 		contentPane.add(btnThongTinCaNhan);
+		btnThongTinCaNhan.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Code to execute when the button is clicked
+				// For example, open a new window with personal information
+			}
+		});
 
 		NhanVien nv = dao.getNVTHeoMa(username);
 		lblTenDangNhap.setText(nv.getTenNhanVien());
@@ -512,6 +519,7 @@ public class FrmManHinhChinh extends JFrame implements ActionListener, MenuListe
 				// TODO Auto-generated method stub
 
 			}
+
 
 			@Override
 			public void menuCanceled(MenuEvent e) {
