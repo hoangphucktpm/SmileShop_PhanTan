@@ -37,13 +37,13 @@ import java.util.Date;
         @NamedQuery(name = "SanPham.getTen", query = "SELECT ncc FROM NhaCungCap  ncc where ncc.tinhTrang = 1"),
         @NamedQuery(name = "SanPham.getChatLieu", query = "SELECT DISTINCT sp.chatLieu FROM SanPham sp"),
         @NamedQuery(name = "SanPham.getLoaiSP", query = "SELECT DISTINCT sp.loaiSanPham FROM SanPham sp"),
-<<<<<<< HEAD
-        @NamedQuery(name = "SanPham.sua",query = "UPDATE SanPham s SET s.tensp = :tenSP, s.nhaCungCap = :nhaCungCap, s.khuyenMai = :km, s.giaBan = :giaBan, s.soluong = :soluong, s.ngaynhap = :ngayNhap, s.hinhanh = :hinhAnh, s.mauSac = :color, s.size = :size, s.chatLieu = :chatLieu, s.tinhTrang = :tinhTrang, s.donViTinh = :dvt, s.loaiSanPham = :loaiSP, s.vat = :VAT, s.giaBan = :giaBanRa WHERE s.maSp = :maSP"),
-        @NamedQuery(name = "SanPham.getAllProducts", query = "SELECT s FROM SanPham s"),
-=======
+
         @NamedQuery(name = "SanPham.sua", query = "UPDATE SanPham s SET s.tensp = :tenSP, s.nhaCungCap = :nhaCungCap, s.khuyenMai = :km, s.giaBan = :giaBan, s.soluong = :soluong, s.ngaynhap = :ngayNhap, s.hinhanh = :hinhAnh, s.mauSac = :color, s.size = :size, s.chatLieu = :chatLieu, s.tinhTrang = :tinhTrang, s.donViTinh = :dvt, s.loaiSanPham = :loaiSP, s.vat = :VAT, s.giaBan = :giaBanRa WHERE s.maSp = :maSP"),
+        @NamedQuery(name = "SanPham.getAllProducts", query = "SELECT s FROM SanPham s"),
+
+//        @NamedQuery(name = "SanPham.sua", query = "UPDATE SanPham s SET s.tensp = :tenSP, s.nhaCungCap = :nhaCungCap, s.khuyenMai = :km, s.giaBan = :giaBan, s.soluong = :soluong, s.ngaynhap = :ngayNhap, s.hinhanh = :hinhAnh, s.mauSac = :color, s.size = :size, s.chatLieu = :chatLieu, s.tinhTrang = :tinhTrang, s.donViTinh = :dvt, s.loaiSanPham = :loaiSP, s.vat = :VAT, s.giaBan = :giaBanRa WHERE s.maSp = :maSP"),
         @NamedQuery(name = "SanPham.findAllSP", query = "SELECT s FROM SanPham s"),
->>>>>>> a1d11186b578f60a750fcaa9c80c728250703de4
+
         @NamedQuery(name = "SanPham.suaKhongAnh", query = "UPDATE SanPham s SET s.tensp = :tenSP, s.nhaCungCap = :nhaCungCap, s.khuyenMai = :km, s.giaBan = :giaBan, s.soluong = :soluong, s.ngaynhap = :ngayNhap, s.mauSac = :color, s.size = :size, s.chatLieu = :chatLieu, s.tinhTrang = :tinhTrang, s.donViTinh = :dvt, s.loaiSanPham = :loaiSP, s.vat = :VAT, s.giaBan = :giaBanRa WHERE s.maSp = :maSP"),
         @NamedQuery(name = "SanPham.timTheoGia", query = "SELECT s FROM SanPham s WHERE s.giaBan BETWEEN :gia1 AND :gia2"),
         @NamedQuery(name = "SanPham.getDTQuy", query = "SELECT s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai, s.gianhap, s.soluong, SUM(ct.soLuongSP) as tongSoLuong, s.giaBan\n" +
@@ -256,6 +256,7 @@ public class SanPham {
         this.vat = vat;
         this.giaBan = giaBan;
     }
+
     public SanPham(String maSP, String tenSP, Double giaNhap, int soLuong, Date ngayNhap) {
         super();
         this.maSp = maSP;
@@ -264,6 +265,7 @@ public class SanPham {
         this.soluong = soLuong;
         this.ngaynhap = ngayNhap;
     }
+
     @Override
     public String toString() {
         return "SanPham{" +

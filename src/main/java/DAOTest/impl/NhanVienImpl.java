@@ -1,4 +1,5 @@
 package DAOTest.impl;
+
 import Database.ConnectDatabase;
 import Entities.NhanVien;
 import Entities.TaiKhoan;
@@ -15,10 +16,12 @@ import DAOTest.NhanVienDao;
 
 public class NhanVienImpl implements NhanVienDao {
     private EntityManager em;
+
     public NhanVienImpl() {
         em = Persistence.createEntityManagerFactory("SQLdb").createEntityManager();
     }
-@Override
+
+    @Override
     public List<NhanVien> getAllNV() {
         return this.em.createNamedQuery("NhanVien.findAll", NhanVien.class).getResultList();
     }
@@ -50,6 +53,7 @@ public class NhanVienImpl implements NhanVienDao {
         }
         return false;
     }
+
     @Override
     public boolean sua(String maBanDau, String tenNV, Date ngaySinh, String CCCD, String sdt, int gend, int sta, int ca, int chuc, String hinh, String Email, String DiaChi, String maNV) {
         try {
@@ -78,6 +82,7 @@ public class NhanVienImpl implements NhanVienDao {
         }
         return false;
     }
+
     @Override
     public boolean suakhonganh(String maBanDau, String tenNV, Date ngaySinh, String CCCD, String sdt, int gend, int sta, int ca, int chuc, String Email, String DiaChi, String maNV) {
         try {
@@ -106,6 +111,7 @@ public class NhanVienImpl implements NhanVienDao {
         }
         return false;
     }
+
     @Override
     public long soLuongNV() {
         try {
@@ -115,6 +121,7 @@ public class NhanVienImpl implements NhanVienDao {
         }
         return 0;
     }
+
     @Override
     public long soLuongQL() {
         try {
@@ -124,6 +131,7 @@ public class NhanVienImpl implements NhanVienDao {
         }
         return 0;
     }
+
     @Override
     public NhanVien getNVTHeoMa(String maNV) {
         try {
@@ -134,6 +142,7 @@ public class NhanVienImpl implements NhanVienDao {
         }
         return null;
     }
+
     @Override
     public NhanVien getNVTHeoTen(String tenNV) {
         try {
@@ -147,6 +156,7 @@ public class NhanVienImpl implements NhanVienDao {
             return null;
         }
     }
+
     @Override
     public NhanVien getNVTHeoSdt(String sdt) {
         try {
@@ -160,6 +170,7 @@ public class NhanVienImpl implements NhanVienDao {
             return null;
         }
     }
+
     @Override
     public List<NhanVien> getNVTHeoCa(int ca) {
         try {
@@ -171,6 +182,7 @@ public class NhanVienImpl implements NhanVienDao {
             return new ArrayList<NhanVien>();
         }
     }
+
     @Override
     public List<NhanVien> getNVTHeoChuc(int chuc) {
         try {
@@ -182,6 +194,7 @@ public class NhanVienImpl implements NhanVienDao {
             return new ArrayList<>();
         }
     }
+
     @Override
     public boolean addTaiKhoan(String tk) {
         try {
@@ -208,6 +221,7 @@ public class NhanVienImpl implements NhanVienDao {
             return false;
         }
     }
+
     @Override
     public TaiKhoan getTK(String nv) {
         try {

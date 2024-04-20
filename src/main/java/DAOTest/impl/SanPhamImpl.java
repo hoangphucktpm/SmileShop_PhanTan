@@ -9,7 +9,8 @@ import java.util.List;
 
 public class SanPhamImpl implements SanPhamDao {
     private EntityManager em;
-    public SanPhamImpl(){
+
+    public SanPhamImpl() {
         em = Persistence.createEntityManagerFactory("SQLdb")
                 .createEntityManager();
     }
@@ -40,12 +41,12 @@ public class SanPhamImpl implements SanPhamDao {
         ChatLieu cl = em.find(ChatLieu.class, chatLieu);
         LoaiSanPham lsp = em.find(LoaiSanPham.class, loaiSP);
         boolean tt = false;
-        if(tinhTrang == 1){
+        if (tinhTrang == 1) {
             tt = true;
         } else {
             tt = false;
         }
-        try{
+        try {
             tx.begin();
             SanPham sp = new SanPham();
             sp.setMaSp(maSP);
@@ -56,7 +57,7 @@ public class SanPhamImpl implements SanPhamDao {
             sp.setSoluong(soluong);
             sp.setNgaynhap(ngayNhap);
             sp.setMauSac(MauSac.valueOf(color));
-            sp.setSize(Size.valueOf(size));
+            sp.setSize(Size.valueOf(size.toLowerCase()));
             if (img == null) {
                 img = "null";
             }
@@ -70,12 +71,13 @@ public class SanPhamImpl implements SanPhamDao {
             em.persist(sp);
             tx.commit();
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             tx.rollback();
             e.printStackTrace();
         }
         return false;
     }
+
     @Override
     public NhaCungCap getMaOne(String MaNCC) {
         return em.createNamedQuery("NhaCungCap.getMa", NhaCungCap.class)
@@ -92,12 +94,12 @@ public class SanPhamImpl implements SanPhamDao {
         }
 
         EntityTransaction tx = em.getTransaction();
-        try{
+        try {
             tx.begin();
             em.merge(sanPham);
             tx.commit();
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             tx.rollback();
             e.printStackTrace();
         }
@@ -216,18 +218,18 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public boolean themLoaiSP(Entities.LoaiSanPham loaiSanPham){
+    public boolean themLoaiSP(Entities.LoaiSanPham loaiSanPham) {
         EntityTransaction tx = em.getTransaction();
-        try{
+        try {
             tx.begin();
             em.merge(loaiSanPham);
             tx.commit();
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             tx.rollback();
             e.printStackTrace();
 
-    }
+        }
         return false;
     }
 
@@ -240,12 +242,12 @@ public class SanPhamImpl implements SanPhamDao {
     @Override
     public boolean themChatLieu(Entities.ChatLieu chatLieu) {
         EntityTransaction tx = em.getTransaction();
-        try{
+        try {
             tx.begin();
             em.merge(chatLieu);
             tx.commit();
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             tx.rollback();
             e.printStackTrace();
         }
