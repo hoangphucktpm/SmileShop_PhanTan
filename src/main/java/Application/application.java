@@ -1,26 +1,26 @@
 package Application;
 
 import DAOTest.KhachHangDao;
+import DAOTest.KhuyenMaiDao;
 import DAOTest.LapHoaDonDao;
 import DAOTest.XemHoaDonDao;
 import DAOTest.impl.KhachHangImpl;
+import DAOTest.impl.KhuyenMaiImpl;
 import DAOTest.impl.LapHoaDonImpl;
 import Entities.KhachHang;
+import Entities.KhuyenMai;
 import Entities.LoaiKhachHang;
 
+
 import java.sql.Date;
+import java.time.LocalDate;
 
 public class application {
     public static void main(String[] args) {
 
-//        KhachHangDao khachHangDao = new KhachHangImpl();
-//        KhachHang khachHang = new KhachHang("020", "Nguyen Van D", "0123456789", "123456789", Date.valueOf("2000-01-01"), "Ha Noi", 1, new LoaiKhachHang("002"), "Hoangphuc@gmail.com", 1000);
-//        khachHangDao.addKhachHang(khachHang);
-//        System.out.println(khachHangDao.getAllKH());
 
-
-        XemHoaDonDao xemHoaDonDao = new DAOTest.impl.XemHoaDonImpl();
-        System.out.println(xemHoaDonDao.getHDTheoNgayLap(9, 12, 2023));
+        KhuyenMaiDao khuyenMaiDao = new KhuyenMaiImpl();
+        System.out.println(khuyenMaiDao.layKhuyenMaiTuSanPham("SP001"));
 
 
     }

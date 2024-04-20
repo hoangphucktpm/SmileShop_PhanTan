@@ -27,7 +27,7 @@ public class XemHoaDonImpl implements XemHoaDonDao {
 
     @Override
     public List<HoaDon> getAllHoaDon() {
-        TypedQuery<Object[]> query = em.createQuery("SELECT hd.maHoaDon, hd.tienKhachDua, hd.khachHang.maKH, hd.nhanVien.maNhanvien, " +
+        Query query = em.createQuery("SELECT hd.maHoaDon, hd.tienKhachDua, hd.khachHang.maKH, hd.nhanVien.maNhanvien, " +
                 "hd.tongTien, hd.ngayLapHoaDon, hd.diemTichDuoc FROM HoaDon hd ORDER BY hd.ngayLapHoaDon", Object[].class);
         List<Object[]> results = query.getResultList();
         List<HoaDon> hoaDons = new ArrayList<>();
@@ -53,7 +53,7 @@ public class XemHoaDonImpl implements XemHoaDonDao {
 
     @Override
     public List<CtHoadon> getCT_HoaDon(String mahd) {
-        TypedQuery<CtHoadon> query = em.createQuery("SELECT cthd FROM CtHoadon cthd JOIN FETCH cthd.maSanPham sp " +
+        Query query = em.createQuery("SELECT cthd FROM CtHoadon cthd JOIN FETCH cthd.maSanPham sp " +
                 "LEFT JOIN FETCH sp.khuyenMai km LEFT JOIN FETCH sp.chatLieu cl WHERE cthd.id.maHoaDon = :mahd", CtHoadon.class);
         query.setParameter("mahd", mahd);
         List<CtHoadon> chiTietHoaDons = query.getResultList();
