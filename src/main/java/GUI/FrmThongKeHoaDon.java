@@ -37,7 +37,7 @@ import com.toedter.calendar.JDateChooser;
 import DAO.NhanVien_Dao;
 
 import Entity.NhanVien;
-import Entity.ThongKeHoaDon;
+import Entities.ThongKeHoaDon;
 
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;

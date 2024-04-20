@@ -17,11 +17,14 @@ import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
+<<<<<<< HEAD
 import DAOTest.KhuyenMaiDao;
 import DAOTest.SanPhamDao;
 import DAOTest.impl.KhuyenMaiImpl;
 import DAOTest.impl.SanPhamImpl;
 import Entities.SanPham;
+=======
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 import com.toedter.calendar.JDateChooser;
 
 import DAO.SanPham_Dao;
@@ -137,11 +140,18 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
     private SanPham_Dao dao = new SanPham_Dao();
     private KhuyenMaiDao daoKM = new KhuyenMaiImpl();
 
+<<<<<<< HEAD
     private SanPhamDao sanPhamDao = new SanPhamImpl();
     List<LoaiSanPham> listSP = dao.getLoaiSP();
     List<ChatLieu> listCL = dao.getChatLieu();
     List<NhaCungCap> listNCC = dao.getTenNCC();
     List<KhuyenMai> listKM = dao.getKMTheoTen();
+=======
+	List<LoaiSanPham> listSP = dao.getLoaiSP();
+	List<ChatLieu> listCL = dao.getChatLieu();
+	List<NhaCungCap> listNCC = dao.getTenNCC();
+	List<KhuyenMai> listKM = dao.getKMTheoTen();
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
     private JRadioButton rdTimChatLieu;
     private JRadioButton rdTimMau;
@@ -834,14 +844,21 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
         cboDVT.setEditable(false);
     }
 
+<<<<<<< HEAD
     public void docDuLieu() {
         int d = 1;
         List<Entities.SanPham> list = sanPhamDao.getAllSP();
+=======
+	public void docDuLieu() {
+		int d = 1;
+		List<sanPham> list = dao.getAllSP();
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
         String sta = "";
 
         rdKhongVAT.setSelected(true);
 
+<<<<<<< HEAD
         for (Entities.SanPham x : list) {
             float VAT = x.getVat();
             String km = x.getKhuyenMai().getTenKhuyenMai();
@@ -861,20 +878,48 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
                 double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
                 double giaBanKM = giaBan - (float) (giaBan * (float) ((float) pt / 100));
                 if (x.getKhuyenMai() == null) {
+=======
+		for (sanPham x : list) {
+			float VAT = x.getVAT();
+			String km = dao.getKMTheoTen(x.getKhuyenMai().getMaKhuyenMai());
+			int pt = dao.getKMTheoPhanTram(x.getMaSP());
+			if (x.isTinhTrang() == true) {
+				sta = "Còn hàng";
+			} else
+				sta = "Hết hàng";
+			if (dao.vat(x.getMaSP()) == 1) {
+
+				VAT = (float) (tinhGiaBan(x.getGiaNhap()) * 0.05);
+			} else
+				VAT = 0;
+			double giaBan = tinhGiaBan(x.getGiaNhap()) + VAT;
+			double giaBanKM = giaBan - (float)(giaBan *  (float)((float) pt / 100));
+			if (x.getKhuyenMai().getMaKhuyenMai() == null) {
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 //				Không có khuyến mãi
 
                     String maCL = x.getChatLieu().getMaChatLieu();
 
+<<<<<<< HEAD
                     tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getMaLoaiSP(),
                             tien.format(x.getGianhap()), x.getSoluong(), x.getNgaynhap(),
                             x.getNhaCungCap().getMaNhaCungCap(),
                             dao.getTenChatLieu(maCL) + "(" + dao.getMoTaChatLieu(maCL) + ")", x.getSize(), x.getMauSac(),
                             x.getDonViTinh(), 0, VAT, sta, tien.format(giaBan)});
                 } else {
+=======
+				tablemodel.addRow(new Object[] { d++, x.getMaSP(), x.getTenSP(), x.getMaLoai().getMaLoai(),
+						tien.format(x.getGiaNhap()), x.getSoLuong(), x.getNgayNhap(),
+						x.getNhaCungCap().getMaNhaCungCap(),
+						dao.getTenChatLieu(maCL) + "(" + dao.getMoTaChatLieu(maCL) + ")", x.getSize(), x.getMauSac(),
+						x.getDonVitinh(), 0, VAT, sta, tien.format(giaBan) });
+			} else {
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 //				có khuyến mãi
 
                     String maCL = x.getChatLieu().getMaChatLieu();
 
+<<<<<<< HEAD
                     tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getMaLoaiSP(),
                             tien.format(x.getGianhap()), x.getSoluong(), x.getNgaynhap(),
                             x.getNhaCungCap().getMaNhaCungCap(),
@@ -886,6 +931,18 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
         }
         tblDSSP.setModel(tablemodel);
     }
+=======
+				tablemodel.addRow(new Object[] { d++, x.getMaSP(), x.getTenSP(), x.getMaLoai().getMaLoai(),
+						tien.format(x.getGiaNhap()), x.getSoLuong(), x.getNgayNhap(),
+						x.getNhaCungCap().getMaNhaCungCap(),
+						dao.getTenChatLieu(maCL) + "(" + dao.getMoTaChatLieu(maCL) + ")", x.getSize(), x.getMauSac(),
+						x.getDonVitinh(), km, VAT, sta, tien.format(giaBanKM) });
+			}
+
+		}
+		tblDSSP.setModel(tablemodel);
+	}
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
     /**
      * Dùng để xóa dữ liệu bảng
@@ -1008,6 +1065,7 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
                     } else
                         JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại");
 
+<<<<<<< HEAD
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1036,6 +1094,61 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
                         JOptionPane.showMessageDialog(this, "Cập nhật thất bại.");
                 } else {
                     giaBan = (tinhGiaBan(giaNhap) * (1 - (float) ((float) phanTram / 100))) + VAT;
+=======
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else if (chkSua == true) {
+				if (img != null) {
+					giaBan = (tinhGiaBan(giaNhap) * (1 - (float) ((float) phanTram / 100))) + VAT;
+					int soLuongBanDau = soLuong;
+					if (soLuongBanDau != Integer.parseInt(txtSoLuong.getText()))
+						ngayNhapsql = new java.sql.Date(System.currentTimeMillis());
+
+					boolean spMoi = dao.sua(tenSP, maNCC, maKM, giaNhap, soLuong, ngayNhapsql, folderName, mauSac,
+							kichThuoc, maChatLieu, tinhTrang, dvt, maLoai, thue, giaBan, maSP);
+					if (spMoi) {
+						btnSua.setText("Sửa");
+						xoaAllDataTable();
+						docDuLieu();
+						reSet();
+						JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thành công");
+						btnSua.setIcon(new ImageIcon("Anh\\sua.png"));
+						chkThem = false;
+						chkSua = false;
+						lock = false;
+						btnLuu.setEnabled(false);
+						btnThem.setEnabled(true);
+					} else
+						JOptionPane.showMessageDialog(this, "Cập nhật thất bại.");
+				}
+				else {
+					giaBan = (tinhGiaBan(giaNhap) * (1 - (float) ((float) phanTram / 100))) + VAT;
+
+					boolean spMoi = dao.suaKhongAnh(tenSP, maNCC, maKM, giaNhap, soLuong, ngayNhapsql, mauSac,
+							kichThuoc, maChatLieu, tinhTrang, dvt, maLoai, thue, giaBan, maSP);
+					if (spMoi) {
+						btnSua.setText("Sửa");
+						xoaAllDataTable();
+						docDuLieu();
+						reSet();
+						JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thành công");
+						btnSua.setIcon(new ImageIcon("Anh\\sua.png"));
+						chkThem = false;
+						chkSua = false;
+						lock = false;
+						btnLuu.setEnabled(false);
+						btnThem.setEnabled(true);
+					} else
+						JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thành công");
+				}
+			}
+		}
+	}
+	private void ShowErrorField(String string, JTextField txt) {
+		lblLoi.setText(string);
+		txt.requestFocus();
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
                     boolean spMoi = dao.suaKhongAnh(tenSP, maNCC, maKM, giaNhap, soLuong, ngayNhapsql, mauSac,
                             kichThuoc, maChatLieu, tinhTrang, dvt, maLoai, thue, giaBan, maSP);
@@ -1112,22 +1225,45 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
             sp = new sanPham(maSP, tenSP, giaNhap, Integer.parseInt(soLuong), ngayNhap);
             return sp;
 
+<<<<<<< HEAD
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
             return null;
         }
+=======
+	public void khoaTXT(boolean x) {
+		txtTenSP.setEditable(x);
+		txtGiaNhap.setEditable(x);
+		txtSoLuong.setEditable(x);
+		btnLuu.setEnabled(x);
+		btbAnh.setEnabled(x);
+
+	}
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
     }
 
+<<<<<<< HEAD
     public void khoaTXT(boolean x) {
         txtTenSP.setEditable(x);
         txtGiaNhap.setEditable(x);
         txtSoLuong.setEditable(x);
         btnLuu.setEnabled(x);
         btbAnh.setEnabled(x);
+=======
+	//	Sửa thông tin san pham
+	public void sua() {
+		lock = true;
+		khoaTXT(lock);
+		chkSua = true;
+		btnSua.setText("Hủy");
+		btnThem.setEnabled(false);
+		btnSua.setIcon(new ImageIcon("Anh\\huy.png"));
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
     }
 
+<<<<<<< HEAD
     public void them() {
         lock = true;
         khoaTXT(lock);
@@ -1146,6 +1282,17 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
         btnSua.setText("Hủy");
         btnThem.setEnabled(false);
         btnSua.setIcon(new ImageIcon("Anh\\huy.png"));
+=======
+	//	cập nhật các comboBox
+	public void updateComboBox() {
+
+		cboLoaiSP.removeAllItems();
+		cboChatLieu.removeAllItems();
+		cboNhaCungCap.removeAllItems();
+		cboColor.removeAllItems();
+		cboSize.removeAllItems();
+		List<sanPham> sp = dao.getAllSP();
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
     }
 
@@ -1163,14 +1310,22 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
             cboLoaiSP.addItem(l.getTenLoai());
         }
 
+<<<<<<< HEAD
         for (ChatLieu c : listCL) {
             cboChatLieu.addItem(c.getTenChatLieu() + "(" + c.getMoTa() + ")");
         }
+=======
+		for (sanPham s : sp) {
+			String d = s.getDonVitinh();
+			dvt.add(d);
+		}
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
         for (NhaCungCap ncc : listNCC) {
             cboNhaCungCap.addItem((ncc.getTenNhaCungCap()));
         }
 
+<<<<<<< HEAD
         for (sanPham.MauSac mau : sanPham.MauSac.values()) {
             cboColor.addItem(mau);
         }
@@ -1206,11 +1361,33 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
             }
 //get loai san pham		
             else if (rdTimLoai.isSelected()) {
+=======
+	public void updateCBBoxTim() {
+		cboTimKiem.removeAllItems();
+//get ma san pham
+		List<sanPham> listsp = dao.getAllSP();
+		cboTimKiem.setEditable(true);
+		for (sanPham n : listsp) {
+			if (rdTimMa.isSelected() && n.getMaSP() != null) {
+				cboTimKiem.addItem(n.getMaSP());
+			}
+//get ten san pham
+			else if (rdTen.isSelected() && n.getTenSP() != null) {
+				cboTimKiem.addItem(n.getTenSP());
+			}
+//get loai san pham
+			else if (rdTimLoai.isSelected()) {
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
                 HashSet<String> tenlsp = new HashSet<>();
 
+<<<<<<< HEAD
                 for (SanPham x : listsp) {
                     String o = dao.getTenLoaiSP(x.getMaSp());
+=======
+				for (sanPham x : listsp) {
+					String o = dao.getTenLoaiSP(x.getMaSP());
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
                     tenlsp.add(o);
                 }
@@ -1224,8 +1401,13 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 
                 HashSet<String> tenncc = new HashSet<>();
 
+<<<<<<< HEAD
                 for (SanPham x : listsp) {
                     String o = dao.getTenNhaCC(x.getMaSp());
+=======
+				for (sanPham x : listsp) {
+					String o = dao.getTenNhaCC(x.getMaSP());
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
                     tenncc.add(o);
                 }
@@ -1239,8 +1421,13 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 
                 HashSet<String> clieu = new HashSet<>();
 
+<<<<<<< HEAD
                 for (SanPham x : listsp) {
                     String o = dao.getTenCL(x.getMaSp());
+=======
+				for (sanPham x : listsp) {
+					String o = dao.getTenCL(x.getMaSP());
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
                     clieu.add(o);
                 }
@@ -1263,6 +1450,7 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
         }
     }
 
+<<<<<<< HEAD
     //	Tính giá bán của sản phẩm
     public double tinhGiaBan(double giaNhap) {
         double m = 0;
@@ -1281,6 +1469,26 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
     //	Bắt các sự kiện
     @Override
     public void actionPerformed(ActionEvent e) {
+=======
+	//	Tính giá bán của sản phẩm
+	public double tinhGiaBan(double giaNhap) {
+		double m = 0;
+		m = giaNhap * 2.5;
+		return m;
+	}
+
+	//Tạo mã sản phẩm mặc định
+	public String deFaultID() {
+		int n = dao.soLuong() + 1;
+		String soLuongMa = String.format("%03d", n);
+		String deFault = "SP" + soLuongMa;
+		return deFault;
+	}
+
+	//	Bắt các sự kiện
+	@Override
+	public void actionPerformed(ActionEvent e) {
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
         // TODO Auto-generated method stub
         Object o = e.getSource();
@@ -1355,12 +1563,40 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
         btnThem.setEnabled(false);
         int d = 1;
 
+<<<<<<< HEAD
         int row = tblDSSP.getSelectedRow();
         txtMaSP.setText(tablemodel.getValueAt(row, 1).toString());
         txtTenSP.setText(tablemodel.getValueAt(row, 2).toString());
         cboLoaiSP.setSelectedItem(tablemodel.getValueAt(row, 3));
         txtGiaNhap.setText(tablemodel.getValueAt(row, 4).toString());
         txtSoLuong.setText(tablemodel.getValueAt(row, 5).toString());
+=======
+		} else if (o.equals(btnLuu)) {
+			try {
+				luuThayDoi();
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		} else if (o.equals(btbAnh)) {
+			chonAnh();
+		}
+	}
+
+	//BẮt sự kiện click màn vào bảng
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		btnThem.setEnabled(false);
+		int d = 1;
+
+		int row = tblDSSP.getSelectedRow();
+		txtMaSP.setText(tablemodel.getValueAt(row, 1).toString());
+		txtTenSP.setText(tablemodel.getValueAt(row, 2).toString());
+		cboLoaiSP.setSelectedItem(tablemodel.getValueAt(row, 3));
+		txtGiaNhap.setText(tablemodel.getValueAt(row, 4).toString());
+		txtSoLuong.setText(tablemodel.getValueAt(row, 5).toString());
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 //		Date ngayNhap = (Date) tablemodel.getValueAt(row, 6);
         cboNhaCungCap.setSelectedItem(tablemodel.getValueAt(row, 7));
         cboChatLieu.setSelectedItem(tablemodel.getValueAt(row, 8));
@@ -1371,6 +1607,7 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 //	    txtkhuyenmai.setText(tablemodel.getValueAt(row, 12).toString());
         txtKhuyenMai.setText(String.valueOf(dao.getKMTheoPhanTram(tablemodel.getValueAt(row, 1).toString())));
 
+<<<<<<< HEAD
         // txtChonNgaynhap.setDate(ngayNhap);
         txtChonNgaynhap.setDate(sanPhamDao.getAllSP().get(row).getNgaynhap());
         txtDonGia.setText(tablemodel.getValueAt(row, 15).toString());
@@ -1387,6 +1624,24 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
                     rdConHang.setSelected(true);
                 } else
                     rdHetHang.setSelected(true);
+=======
+		// txtChonNgaynhap.setDate(ngayNhap);
+		txtChonNgaynhap.setDate(dao.getAllSP().get(row).getNgayNhap());
+		txtDonGia.setText(tablemodel.getValueAt(row, 15).toString());
+		List<sanPham> list = dao.getAllSP();
+
+		for (sanPham x : list) {
+			if (x.getMaSP().equals(tablemodel.getValueAt(row, 1).toString())) {
+				if (dao.vat(x.getMaSP()) == 1) {
+					rdCoVAT.setSelected(true);
+				} else {
+					rdKhongVAT.setSelected(true);
+				}
+				if (x.isTinhTrang() == true) {
+					rdConHang.setSelected(true);
+				} else
+					rdHetHang.setSelected(true);
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
             }
             ImageIcon imageIcon = new ImageIcon(
@@ -1421,6 +1676,7 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 
     }
 
+<<<<<<< HEAD
     //	Làm mới thanh thông tin và bảng
     public void reSet() {
         btnThem.setEnabled(true);
@@ -1443,6 +1699,30 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
             JFileChooser fileChooser = new JFileChooser(user + "\\AnhSanPham");
             FileNameExtensionFilter filter = new FileNameExtensionFilter("png file", "png");
             FileNameExtensionFilter filterJPG = new FileNameExtensionFilter("jpg file", "jpg");
+=======
+	//	Làm mới thanh thông tin và bảng
+	public void reSet() {
+		btnThem.setEnabled(true);
+		txtMaSP.setText(deFaultID());
+		txtTenSP.setText("");
+		txtGiaNhap.setText(String.valueOf(0));
+		txtSoLuong.setText(String.valueOf(0));
+		txtDonGia.setText("");
+		txtChonNgaynhap.setDate(new java.util.Date());
+		txtDonGia.setText("");
+		txtTenSP.requestFocus();
+		xoaAllDataTable();
+		docDuLieu();
+	}
+
+	//	chon anh
+	public String chonAnh() {
+		try {
+			String user = System.getProperty("user.dir");
+			JFileChooser fileChooser = new JFileChooser(user + "\\AnhSanPham");
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("png file", "png");
+			FileNameExtensionFilter filterJPG = new FileNameExtensionFilter("jpg file", "jpg");
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
             fileChooser.addChoosableFileFilter(filter);
             fileChooser.addChoosableFileFilter(filterJPG);
@@ -1470,6 +1750,7 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
         return folderName;
     }
 
+<<<<<<< HEAD
     //	tính giá có VAT
     public void tinhGiaThue() {
         double giaBan;
@@ -1507,6 +1788,45 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
                 double gia2 = Double.parseDouble(txtGiaSau.getText());
                 List<sanPham> listsp = dao.timTheoGia(gia1, gia2);
                 xoaAllDataTable();
+=======
+	//	tính giá có VAT
+	public void tinhGiaThue() {
+		double giaBan;
+		double thue;
+		double giaNhap = Double.parseDouble(txtGiaNhap.getText());
+		thue = tinhGiaBan(giaNhap) * 0.05;
+		giaBan = tinhGiaBan(giaNhap) + thue;
+		txtDonGia.setText(String.valueOf(giaBan));
+	}
+
+	//	tinh giá không có VAT
+	public void giaKhongVAT() {
+		double giaBan = 0;
+		Double giaNhap = Double.parseDouble(txtGiaNhap.getText());
+		giaBan = tinhGiaBan(giaNhap);
+		txtDonGia.setText(String.valueOf(giaBan));
+		// txtdongia.setText(String.valueOf(giaBan));
+	}
+
+	// tim
+	public void tim() {
+		xoaAllDataTable();
+		String tim = "";
+
+		List<sanPham> list = dao.getAllSP();
+		float VAT = 0;
+		String sta = "";
+		// int km = 0;
+		rdKhongVAT.setSelected(true);
+
+		for (sanPham sp : list) {
+			int d = 1;
+			if (rdTimGia.isSelected()) {
+				double gia1 = Double.parseDouble(txtGiaDau.getText());
+				double gia2 = Double.parseDouble(txtGiaSau.getText());
+				List<sanPham> listsp = dao.timTheoGia(gia1, gia2);
+				xoaAllDataTable();
+>>>>>>> 184c7c2e41c23151d2febc458b759e64c8495a81
 
                 for (sanPham x : listsp) {
                     String km = x.getKhuyenMai().getMaKhuyenMai();
