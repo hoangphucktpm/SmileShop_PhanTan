@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import DAOTest.ThongTinCaNhanDao;
+import DAOTest.impl.ThongTinCaNhanImpl;
 import xuly.SendEmailSMTP;
 
 import javax.swing.JLabel;
@@ -39,7 +41,7 @@ public class FrmQuenMatKhau extends JFrame implements ActionListener {
     public String user = "";
     public String newPass = matKhauMoi();
     xuly.SendEmailSMTP sendMail = new SendEmailSMTP();
-    ThongTinCaNhan_Dao dao = new ThongTinCaNhan_Dao();
+    ThongTinCaNhanDao dao = new ThongTinCaNhanImpl();
 
 
     /**
