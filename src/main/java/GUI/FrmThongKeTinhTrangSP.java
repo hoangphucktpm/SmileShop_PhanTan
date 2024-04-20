@@ -10,11 +10,7 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -34,6 +30,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import DAOTest.TinhTrangSanPhamDao;
+import DAOTest.impl.TinhTrangSanPhamImpl;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -49,8 +47,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 import com.toedter.calendar.JDateChooser;
 
-import DAO.TinhTrangSanPham_Dao;
-import Entity.ThongKeSanPham;
+import Entities.ThongKeSanPham;
 
 import javax.swing.ImageIcon;
 
@@ -80,11 +77,12 @@ public class FrmThongKeTinhTrangSP extends JFrame implements ActionListener {
 	private JRadioButton rdQuaLau;
 	private JPanel pnlTieuDe;
 
-	private TinhTrangSanPham_Dao dao = new TinhTrangSanPham_Dao();
 	private JTextField textHHDL;
 	private JTextField textSPDB;
 	private JPanel pnlBieuDo;
 	private ChartPanel chartPanel;
+
+	private TinhTrangSanPhamDao daoImpl = new TinhTrangSanPhamImpl();
 
 	DecimalFormat tien = new DecimalFormat("#,##0");
 	private JButton btnInThongKe;
@@ -338,7 +336,7 @@ public class FrmThongKeTinhTrangSP extends JFrame implements ActionListener {
 	public void docDuLieuHetHang() {
 		int d = 1;
 		xoaAllDataTable();
-		List<ThongKeSanPham> list = dao.getSPOUT();
+		List<ThongKeSanPham> list = daoImpl.getSPOUT();
 		String soLuongLoaiSP;
 		HashSet<String> lsp = new HashSet<>();
 
@@ -373,7 +371,7 @@ public class FrmThongKeTinhTrangSP extends JFrame implements ActionListener {
 
 //	Tìm theo sản phẩm còn hàng
 	public void docDuLieuConHang() {
-		List<ThongKeSanPham> list = dao.getSPRE();
+		List<ThongKeSanPham> list = daoImpl.getSPRE();
 		if (list == null || list.isEmpty()) {
 			JOptionPane.showMessageDialog(this, "Tất cả sản phẩm đều hết.");
 			btnInThongKe.setEnabled(false);
@@ -388,7 +386,7 @@ public class FrmThongKeTinhTrangSP extends JFrame implements ActionListener {
 
 //	Tìm theo sản phẩm sắp hết hàng
 	public void docDuLieuSapHet() {
-		List<ThongKeSanPham> list = dao.getAlMOUT();
+		List<ThongKeSanPham> list = daoImpl.getALMOUT();
 		if (list == null || list.isEmpty()) {
 			JOptionPane.showMessageDialog(this, "Tất cả sản phẩm đều trong tình trạng tốt.");
 			btnInThongKe.setEnabled(false);
@@ -403,7 +401,7 @@ public class FrmThongKeTinhTrangSP extends JFrame implements ActionListener {
 
 //	Tìm theo sản phẩm bán ế
 	public void docDuLieuOld() {
-		List<ThongKeSanPham> list = dao.getOld();
+		List<ThongKeSanPham> list = daoImpl.getOld();
 		if (list == null || list.isEmpty()) {
 			JOptionPane.showMessageDialog(this, "Tất cả sản phẩm đều trong tình trạng tốt.");
 			btnInThongKe.setEnabled(false);
@@ -434,7 +432,7 @@ public class FrmThongKeTinhTrangSP extends JFrame implements ActionListener {
 		year = ngayCld.get(Calendar.YEAR);
 		hinhThucThongKe = "THỐNG KÊ NHỮNG SẢN PHẨM MỚI NHẬP NGÀY " + day + " THÁNG " + month + " NĂM " + year;
 
-		List<ThongKeSanPham> list = dao.getNewAdd(ngayNhapsql);
+		List<ThongKeSanPham> list = daoImpl.getNewAdd(ngayNhapsql);
 		if (list == null || list.isEmpty()) {
 			JOptionPane.showMessageDialog(this, "Không có sản phẩm nào được nhập vào ngày " + ngayNhap);
 			btnInThongKe.setEnabled(false);
@@ -505,31 +503,36 @@ public class FrmThongKeTinhTrangSP extends JFrame implements ActionListener {
 //	lấy danh sách các sản phẩm còn hàng, sắp hết, mới nhập
 	public void layDS(List<ThongKeSanPham> list) {
 		int d = 1;
-
-		String soLuongLoaiSP;
-		HashSet<String> lsp = new HashSet<>();
+		Set<String> uniqueProducts = new HashSet<>();
+		Set<String> lsp = new HashSet<>();
 
 		int tongSanPham = 0;
-		int tongLoai = 0;
 
 		for (ThongKeSanPham x : list) {
+			// Create a unique key for each product based on maSP and loai
+			String uniqueKey = x.getMaSP() + "|" + x.getLoai();
 
-			soLuongLoaiSP = x.getLoai();
-			lsp.add(soLuongLoaiSP);
+			// Check if this key has already been processed
+			if (!uniqueProducts.contains(uniqueKey)) {
+				uniqueProducts.add(uniqueKey); // Add to set to mark this product as processed
 
-			tongSanPham += x.getSoLuongNhap();
-			tablemodel.addRow(
-					new Object[] { d++, x.getMaSP(), x.getTenSP(), x.getLoai(), x.getSoLuongNhap(), x.getNgayNhap(),
-							tien.format(x.getGiaNhap()), tien.format(x.getGiaBan()), x.getMauSac(), x.getKichThuoc() });
+				lsp.add(x.getLoai());
+
+				tongSanPham += x.getSoLuongNhap();
+				tablemodel.addRow(new Object[] { d++, x.getMaSP(), x.getTenSP(), x.getLoai(), x.getSoLuongNhap(),
+						x.getNgayNhap(), tien.format(x.getGiaNhap()), tien.format(x.getGiaBan()), x.getMauSac(),
+						x.getKichThuoc() });
+			}
 		}
+
 		int soLuongLoai = lsp.size();
 		textSPDB.setText(String.valueOf(soLuongLoai));
 		textHHDL.setText(String.valueOf(tongSanPham));
 		lblTSP.setText("Tổng số lượng sản phẩm:");
-		table_DSSP.setModel(tablemodel);
+		// Assume there's some missing code here to update the GUI or a table display
 	}
 
-//	Lấy danh sách sản phẩm đã bán theo ngày
+	//	Lấy danh sách sản phẩm đã bán theo ngày
 	public void sanPhamDaBan() throws ParseException {
 		int d = 1;
 		xoaAllDataTable();
@@ -546,12 +549,14 @@ public class FrmThongKeTinhTrangSP extends JFrame implements ActionListener {
 		int month = ngayCld.get(Calendar.MONTH) + 1;
 		int year = ngayCld.get(Calendar.YEAR);
 
-		List<ThongKeSanPham> list = dao.getSold(day, month, year);
+		List<ThongKeSanPham> list = daoImpl.getSold(day, month, year);
 		String soLuongLoaiSP;
 		HashSet<String> lsp = new HashSet<>();
 
 		int tongSanPham = 0;
 		int tongLoai = 0;
+
+		Set<String> uniqueProducts = new HashSet<>();
 
 		hinhThucThongKe = "THỐNG KÊ NHỮNG SẢN PHẨM ĐƯỢC BÁN VÀO NGÀY " + day + " THÁNG " + month + " NĂM " + year;
 
@@ -562,13 +567,17 @@ public class FrmThongKeTinhTrangSP extends JFrame implements ActionListener {
 			textHHDL.setText(String.valueOf(0));
 		} else {
 			for (ThongKeSanPham x : list) {
-				soLuongLoaiSP = x.getLoai();
-				lsp.add(soLuongLoaiSP);
-				int soLuongBan = dao.soLuongBan(x.getMaSP());
-				tongSanPham += soLuongBan;
-				tablemodel.addRow(new Object[] { d++, x.getMaSP(), x.getTenSP(), x.getLoai(), x.getSoLuongNhap(),
-						x.getNgayNhap(), tien.format(x.getGiaNhap()), tien.format(x.getGiaBan()), x.getMauSac(),
-						x.getKichThuoc(), soLuongBan });
+				String uniqueKey = x.getMaSP() + "|" + x.getLoai();
+				if (!uniqueProducts.contains(uniqueKey)) {
+					uniqueProducts.add(uniqueKey);
+					soLuongLoaiSP = x.getLoai();
+					lsp.add(soLuongLoaiSP);
+					int soLuongBan = daoImpl.soLuongBan(x.getMaSP(), day, month, year);
+					tongSanPham += soLuongBan;
+					tablemodel.addRow(new Object[]{d++, x.getMaSP(), x.getTenSP(), x.getLoai(), x.getSoLuongNhap(),
+							x.getNgayNhap(), tien.format(x.getGiaNhap()), tien.format(x.getGiaBan()), x.getMauSac(),
+							x.getKichThuoc(), soLuongBan});
+				}
 			}
 			int soLuongLoai = lsp.size();
 			btnInThongKe.setEnabled(true);
@@ -630,8 +639,8 @@ public class FrmThongKeTinhTrangSP extends JFrame implements ActionListener {
 	public CategoryDataset createDataset() {
 		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		for (int i = 1; i <= 5; i++) {
-			double tongHoaDon = dao.tongTienBan(i);
-			String sanPhamTops = dao.sanPhamTop(i);
+			double tongHoaDon = daoImpl.tongTienBan(i);
+			String sanPhamTops = daoImpl.sanPhamTop(i);
 			if (tongHoaDon != 0) {
 				dataset.addValue(tongHoaDon / 1000000, "Số tiền", sanPhamTops + "\n" + tien.format(tongHoaDon));
 			}

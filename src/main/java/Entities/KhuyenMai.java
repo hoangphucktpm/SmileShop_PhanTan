@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDate;
 
 @NoArgsConstructor
@@ -32,7 +33,7 @@ public class KhuyenMai {
     private LocalDate ngayKetThuc;
 
     @Column(name = "TrangThai", columnDefinition = "tinyint not null")
-    private Short trangThai;
+    private Integer trangThai;
 
     @Column(name = "SoLuongSanPhamKM", nullable = false)
     private Integer soLuongSanPhamKM;
@@ -77,11 +78,11 @@ public class KhuyenMai {
         this.ngayKetThuc = ngayKetThuc;
     }
 
-    public Short getTrangThai() {
+    public Integer getTrangThai() {
         return trangThai;
     }
 
-    public void setTrangThai(Short trangThai) {
+    public void setTrangThai(Integer trangThai) {
         this.trangThai = trangThai;
     }
 
@@ -93,7 +94,7 @@ public class KhuyenMai {
         this.soLuongSanPhamKM = soLuongSanPhamKM;
     }
 
-    public KhuyenMai(String maKhuyenMai, String tenKhuyenMai, Integer phanTramKhuyenMai, LocalDate ngayBatDau, LocalDate ngayKetThuc, Short trangThai, Integer soLuongSanPhamKM) {
+    public KhuyenMai(String maKhuyenMai, String tenKhuyenMai, Integer phanTramKhuyenMai, LocalDate ngayBatDau, LocalDate ngayKetThuc, Integer trangThai, Integer soLuongSanPhamKM) {
         this.maKhuyenMai = maKhuyenMai;
         this.tenKhuyenMai = tenKhuyenMai;
         this.phanTramKhuyenMai = phanTramKhuyenMai;

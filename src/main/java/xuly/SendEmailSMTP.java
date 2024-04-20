@@ -34,8 +34,8 @@ public class SendEmailSMTP {
 		props.put("mail.smtp.starttls.enable", "true");
 
 // Specify the SSL protocols and cipher suites
-		props.put("mail.smtp.ssl.protocols", "TLSv1.2");
-		props.put("mail.smtp.ssl.ciphersuites", "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256");
+		props.put("mail.smtp.ssl.protocols", "TLSv1.3");
+		props.put("mail.smtp.ssl.ciphersuites", "TLS_AES_128_GCM_SHA256");
 
 		Authenticator auth = new Authenticator() {
 			@Override
