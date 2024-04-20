@@ -1,8 +1,6 @@
 package GUI;
 
-import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,25 +10,17 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuKeyEvent;
-import javax.swing.event.MenuKeyListener;
 import javax.swing.event.MenuListener;
 
-import DAO.NhanVien_Dao;
-import Entity.NhanVien;
+import DAOTest.NhanVienDao;
+import DAOTest.impl.NhanVienImpl;
+import Entities.NhanVien;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import java.awt.BorderLayout;
-import java.awt.SystemColor;
-import javax.swing.UIManager;
 import java.awt.Label;
-import java.awt.TextField;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -44,13 +34,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.Panel;
-import javax.swing.JTextPane;
 import javax.swing.JTextField;
-import java.awt.Button;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.ButtonGroup;
-import java.awt.event.InputEvent;
 
 public class FrmManHinhChinh extends JFrame implements ActionListener, MenuListener {
 
@@ -98,7 +85,7 @@ public class FrmManHinhChinh extends JFrame implements ActionListener, MenuListe
 	private Label ID;
 	private String tennv;
 
-	private NhanVien_Dao dao = new NhanVien_Dao();
+	private NhanVienDao dao = new NhanVienImpl();
 	private JTextField lblTenDangNhap;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private Label lblThongTinCaNhan;
@@ -170,7 +157,7 @@ public class FrmManHinhChinh extends JFrame implements ActionListener, MenuListe
 		contentPane.add(btnThongTinCaNhan);
 
 		NhanVien nv = dao.getNVTHeoMa(username);
-		lblTenDangNhap.setText(nv.getTenNV());
+		lblTenDangNhap.setText(nv.getTenNhanVien());
 
 		String duongDanAnh = nv.getHinhAnh(); // Giả sử đây là đường dẫn tới hình ảnh
 		capNhatHinh(duongDanAnh);

@@ -19,7 +19,6 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -59,14 +58,13 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import java.awt.Label;
+
+import DAOTest.NhanVienDao;
+import DAOTest.impl.NhanVienImpl;
 import com.toedter.calendar.JDateChooser;
 import java.util.Locale;
-import java.util.Set;
 
-import DAO.NhanVien_Dao;
-import Entity.NhaCungCap;
-import Entity.NhanVien;
+import Entities.NhanVien;
 
 import java.util.List;
 
@@ -81,7 +79,7 @@ public class FrmNhanVien extends JFrame implements ActionListener, MouseListener
 	private JTextField txtDiaChi;
 	private JPanel contentPane;
 	private JLabel lblTieuDeTrang;
-	private NhanVien_Dao dao = new NhanVien_Dao();
+	private NhanVienDao dao = new NhanVienImpl();
 	private DefaultTableModel tablemodel;
 	private JTable table_DSKH;
 	private JDateChooser txtNgay;
@@ -605,8 +603,8 @@ public class FrmNhanVien extends JFrame implements ActionListener, MouseListener
 		txtDiaChi.setText(tablemodel.getValueAt(row, 11).toString());
 		List<NhanVien> list = dao.getAllNV();
 		for (NhanVien x : list) {
-			if (x.getMaNhanVien().equals(tablemodel.getValueAt(row, 1).toString())) {
-				if (x.trangThai == true) {
+			if (x.getMaNhanvien().equals(tablemodel.getValueAt(row, 1).toString())) {
+				if (x.getTrangThai() == 1) {
 					rdĐangLam.setSelected(true);
 					rdNghi.setSelected(false);
 				} else {
@@ -681,7 +679,7 @@ public class FrmNhanVien extends JFrame implements ActionListener, MouseListener
 				chucVuText = "Nhân viên";
 			}
 
-			String trangThaiText = x.isTrangThai() ? "Đang làm việc" : "Đã nghỉ";
+			String trangThaiText = x.getTrangThai() == 1 ? "Đang làm" : "Đã nghỉ";
 
 			String gioiTinhText = x.getGioiTinh() == 1 ? "Nam" : "Nữ";
 			if (ca == 1) {
@@ -691,8 +689,8 @@ public class FrmNhanVien extends JFrame implements ActionListener, MouseListener
 			}
 //	        String calam = x.getCaLamViec();
 
-			tablemodel.addRow(new Object[] { d++, x.getMaNhanVien(), x.getTenNV(), x.getNgaySinh(), x.getCmnd(),
-					x.getSoDienThoai(), gioiTinhText, trangThaiText, x.getCaLamViec(), chucVuText, x.getEmail(),
+			tablemodel.addRow(new Object[] { d++, x.getMaNhanvien(), x.getTenNhanVien(), x.getNgaySinh(), x.getCccd(),
+					x.getSdt(), gioiTinhText, trangThaiText, x.getCaLamViec(), chucVuText, x.getEmail(),
 					x.getDiaChi() });
 		}
 	}
@@ -890,7 +888,7 @@ public class FrmNhanVien extends JFrame implements ActionListener, MouseListener
 	}
 
 	private String defaultID() {
-		int n = dao.soLuongNV() + 1;
+		int n = dao.getAllNV().size() + 1;
 		String soLuongNV = String.format("%03d", n);
 		String deFault = "NV" + soLuongNV;
 		return deFault;
@@ -906,13 +904,13 @@ public class FrmNhanVien extends JFrame implements ActionListener, MouseListener
 		cbThongTinTim.setEditable(true);
 
 		for (NhanVien n : listNV) {
-			if (rdMaNV.isSelected() && n.getMaNhanVien() != null) {
-				cbThongTinTim.addItem(n.getMaNhanVien());
-			} else if (rdTenNV.isSelected() && n.getTenNV() != null) {
-				cbThongTinTim.addItem(n.getTenNV());
+			if (rdMaNV.isSelected() && n.getMaNhanvien() != null) {
+				cbThongTinTim.addItem(n.getMaNhanvien());
+			} else if (rdTenNV.isSelected() && n.getTenNhanVien() != null) {
+				cbThongTinTim.addItem(n.getTenNhanVien());
 
-			} else if (rdSDT.isSelected() && n.getSoDienThoai() != null) {
-				cbThongTinTim.addItem(n.getSoDienThoai());
+			} else if (rdSDT.isSelected() && n.getSdt() != null) {
+				cbThongTinTim.addItem(n.getSdt());
 
 			}
 		}
@@ -1041,7 +1039,7 @@ public class FrmNhanVien extends JFrame implements ActionListener, MouseListener
 			}
 		}
 		try {
-			nv = new NhanVien(maNV, 0, tenNV, ngaySinh, gioiTinh, CCCD, mail, sdt, 0, true, diaChi, CCCD);
+			nv = new NhanVien(maNV, tenNV, ngaySinh, CCCD, sdt, gioiTinh, 1, ca, 0, mail, diaChi, folderName);
 			return nv;
 
 		} catch (Exception e) {
@@ -1109,7 +1107,7 @@ public class FrmNhanVien extends JFrame implements ActionListener, MouseListener
 		tablemodel.setRowCount(0);
 		cbThongTinTim.setEditable(true);
 		for (NhanVien x : list) {
-			String trangThaiText = x.isTrangThai() ? "Đang làm việc" : "Đã nghỉ";
+			String trangThaiText = x.getTrangThai() == 1 ? "Đang làm" : "Đã nghỉ";
 			int ca = 2;
 			String tim = "";
 			try {
@@ -1175,7 +1173,7 @@ public class FrmNhanVien extends JFrame implements ActionListener, MouseListener
 					indexChuc = 0;
 
 				SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-				ArrayList<NhanVien> listChucVu = dao.getNVTHeoChuc(indexChuc);
+				List<NhanVien> listChucVu = dao.getNVTHeoChuc(indexChuc);
 				int index = 0;
 				for (NhanVien nv : listChucVu)
 
@@ -1198,9 +1196,9 @@ public class FrmNhanVien extends JFrame implements ActionListener, MouseListener
 			chucVuText = "Quản lý";
 		}
 		String gend = nv.getGioiTinh() == 1 ? "Nam" : "Nữ";
-		String status = nv.isTrangThai() ? "Đang làm việc" : "Đã nghỉ";
-		tablemodel.addRow(new Object[] { d, nv.getMaNhanVien(), nv.getTenNV(), nv.getNgaySinh(), nv.getCmnd(),
-				nv.getSoDienThoai(), gend, status, nv.getCaLamViec(), chucVuText, nv.getEmail(), nv.getDiaChi() });
+		String status = nv.getTrangThai() == 1 ? "Đang làm" : "Đã nghỉ";
+		tablemodel.addRow(new Object[] { d, nv.getMaNhanvien(), nv.getTenNhanVien(), nv.getNgaySinh(), nv.getCccd(),
+				nv.getSdt(), gend, status, nv.getCaLamViec(), chucVuText, nv.getEmail(), nv.getDiaChi() });
 	}
 
 //	Khóa các textField
@@ -1222,7 +1220,7 @@ public class FrmNhanVien extends JFrame implements ActionListener, MouseListener
 			if (e.getStateChange() == ItemEvent.SELECTED && !isEventFromTable()) {
 				String chucVu = "";
 				if (cboModeChucVu.getSelectedItem().toString().equalsIgnoreCase("Nhân viên")) {
-					int soLuongNVDL = dao.soLuongNV();
+					Long soLuongNVDL = dao.soLuongNV();
 					List<NhanVien> list = dao.getAllNV();
 					int n = 1;
 					chucVu = "NV";
@@ -1232,7 +1230,7 @@ public class FrmNhanVien extends JFrame implements ActionListener, MouseListener
 						deFault = chucVu + soLuongNV;
 					} else {
 						for (NhanVien nv : list) {
-							while (nv.getMaNhanVien().equalsIgnoreCase(chucVu + soLuongNV)) {
+							while (nv.getMaNhanvien().equalsIgnoreCase(chucVu + soLuongNV)) {
 
 								n++;
 								soLuongNV = String.format("%03d", n);
@@ -1245,7 +1243,7 @@ public class FrmNhanVien extends JFrame implements ActionListener, MouseListener
 					txtMaNV.setText(deFault);
 				} else {
 					int l = 1;
-					int soLuongQLDL = dao.soLuongQL();
+					Long soLuongQLDL = dao.soLuongQL();
 					String soLuongQL = String.format("%03d", l);
 					chucVu = "QL";
 					String deFaultQL = chucVu + soLuongQL;
@@ -1254,7 +1252,7 @@ public class FrmNhanVien extends JFrame implements ActionListener, MouseListener
 						deFaultQL = chucVu + soLuongQL;
 					} else {
 						for (NhanVien nv : list) {
-							while (nv.getMaNhanVien().equalsIgnoreCase(chucVu + soLuongQL)) {
+							while (nv.getMaNhanvien().equalsIgnoreCase(chucVu + soLuongQL)) {
 
 								l++;
 								soLuongQL = String.format("%03d", l);

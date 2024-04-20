@@ -14,28 +14,24 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.JTextComponent;
 
-import DAO.NhanVien_Dao;
 import DAO.ThongTinCaNhan_Dao;
-import Entity.NhanVien;
+import DAOTest.NhanVienDao;
+import DAOTest.impl.NhanVienImpl;
+import Entities.NhanVien;
+import Entities.TaiKhoan;
 import Entity.taiKhoan;
 
-import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import javax.swing.border.EtchedBorder;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -61,7 +57,7 @@ public class FrmThongTinCaNhan extends JFrame implements ActionListener {
 	private JTextField txtMatKhauMoi;
 	private JLabel lblTieuDeTrang;
 	private JTextField txtChucVu;
-	private NhanVien_Dao dao = new NhanVien_Dao();
+	private NhanVienDao dao = new NhanVienImpl();
 	private ThongTinCaNhan_Dao ttDao = new ThongTinCaNhan_Dao();
 	private JButton btnCapNhat;
 	private JRadioButton rdHienMatKhau;
@@ -375,11 +371,11 @@ public class FrmThongTinCaNhan extends JFrame implements ActionListener {
 			ngaySinh += dateFormat.format(nv.getNgaySinh());
 		}
 		txtNgaySinh.setText(ngaySinh);
-		txtMa.setText(nv.getMaNhanVien());
-		txtTen.setText(nv.getTenNV());
+		txtMa.setText(nv.getMaNhanvien());
+		txtTen.setText(nv.getTenNhanVien());
 
-		txtCCCD.setText(nv.getCmnd());
-		txtSDT.setText(nv.getSoDienThoai());
+		txtCCCD.setText(nv.getCccd());
+		txtSDT.setText(nv.getSdt());
 		txtEmail.setText(nv.getEmail());
 		String gioiTinhText = (nv.getGioiTinh() == 1) ? "Nam" : "Nữ";
 		txtGioiTinh.setText(gioiTinhText);
@@ -391,14 +387,14 @@ public class FrmThongTinCaNhan extends JFrame implements ActionListener {
 		String CaText = (nv.getCaLamViec() == 1) ? "Ca 1" : "Ca 2";
 		txtCa.setText(CaText);
 
-		String trangThaiText = (nv.isTrangThai()) ? "Đang làm việc" : "Nghỉ việc";
+		String trangThaiText = (nv.getTrangThai() == 1) ? "Đang làm việc" : "Nghỉ việc";
 		txtTrangThai.setText(trangThaiText);
 
 		taiKhoan tk = ttDao.loadTaiKhoan(username);
 
 		txtTenTK.setText(tk.getTenDangNhap());
 		txtMauKhau.setText(tk.getMatKhau());
-		String tenNV = nv.getTenNV();
+		String tenNV = nv.getTenNhanVien();
 
 		if (duongDanAnh != null && !duongDanAnh.isEmpty()) {
 			ImageIcon imageIcon = new ImageIcon(duongDanAnh);
@@ -419,7 +415,7 @@ public class FrmThongTinCaNhan extends JFrame implements ActionListener {
 		String Email = txtEmail.getText();
 		// NhanVien nv = nv.validate();
 		// if (nv != null) {
-		NhanVien_Dao nvDao = new NhanVien_Dao();
+		NhanVienDao dao = new NhanVienImpl();
 		boolean moi = ttDao.sua(tenNV, Sdt, Email, txtMa.getText(), folderName);
 
 		if (moi == true) {

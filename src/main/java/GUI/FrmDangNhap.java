@@ -4,32 +4,21 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 
-import DAO.NhanVien_Dao;
-import Database.ConnectDatabase;
+import DAOTest.NhanVienDao;
+import DAOTest.impl.NhanVienImpl;
+import Entities.TaiKhoan;
 import Entity.taiKhoan;
 
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JSplitPane;
 import java.awt.Font;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Desktop.Action;
 
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.awt.event.ActionEvent;
-import javax.swing.UIManager;
 import javax.swing.JPasswordField;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -43,9 +32,9 @@ public class FrmDangNhap extends JFrame implements ActionListener{
 	private JPasswordField txtPassWord;
 	private JLabel lblDangNhap;
 
-	public static  taiKhoan taiKhoan;
+	public static TaiKhoan taiKhoan;
 	private JRadioButton rdHienMK;
-	private NhanVien_Dao dao = new NhanVien_Dao();
+	private NhanVienDao dao = new NhanVienImpl();
 	public static boolean TrangThaiDangNhapNhanVien = false;
 	public static boolean TrangThaiDangNhapQuanLy = false;
 	private String tenTaiKhoanAdmin = "ADMIN";
@@ -212,7 +201,7 @@ public class FrmDangNhap extends JFrame implements ActionListener{
 	
 
 	public boolean kiemTraDangNhap(String username, String password) {
-		taiKhoan = dao.getTK(username);
+			    taiKhoan = dao.getTK(username);
 //	    System.out.println(taiKhoan);
 
 	    if (username.equalsIgnoreCase(tenTaiKhoanAdmin) && password.equalsIgnoreCase(matKhauAdmin)) {
@@ -220,7 +209,7 @@ public class FrmDangNhap extends JFrame implements ActionListener{
 	        TrangThaiDangNhapQuanLy = true;
 	        return true;
 	    } else if (taiKhoan != null) {
-	        String tenDangNhap = taiKhoan.getTenDangNhap();
+	        String tenDangNhap = taiKhoan.getTenTaiKhoan().getMaNhanvien();
 
 	        if (username.equals(tenDangNhap) && password.equals(taiKhoan.getMatKhau())) {
 	            if (tenDangNhap.contains("NV")) {
