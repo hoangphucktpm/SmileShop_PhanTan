@@ -1,6 +1,8 @@
 package Entities;
 
-public enum MauSac {
+import java.io.Serializable;
+
+public enum MauSac implements Serializable {
     Đỏ("Đỏ"),
     Xanh("Xanh"),
     Vàng("Vàng"),

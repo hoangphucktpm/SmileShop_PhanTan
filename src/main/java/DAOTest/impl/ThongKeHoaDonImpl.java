@@ -6,15 +6,18 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ThongKeHoaDonImpl implements ThongKeHoaDonDao {
+public class ThongKeHoaDonImpl extends UnicastRemoteObject implements ThongKeHoaDonDao {
+    private static final long serialVersionUID = 1L;
     private EntityManager em;
 
-    public ThongKeHoaDonImpl() {
+    public ThongKeHoaDonImpl() throws RemoteException {
         em = Persistence
                 .createEntityManagerFactory("SQLdb")
                 .createEntityManager();
@@ -22,7 +25,7 @@ public class ThongKeHoaDonImpl implements ThongKeHoaDonDao {
 
 
     @Override
-    public List<ThongKeHoaDon> getHoaDonTheoNgayVaCa(int day, int month, int year, int ca) {
+    public List<ThongKeHoaDon> getHoaDonTheoNgayVaCa(int day, int month, int year, int ca) throws RemoteException {
         int startHour, endHour;
         if (ca == 0) {
             startHour = 0;
@@ -49,23 +52,23 @@ public class ThongKeHoaDonImpl implements ThongKeHoaDonDao {
                 .setParameter("startHour", startHour)
                 .setParameter("endHour", endHour)
                 .getResultList();
-                List<ThongKeHoaDon> resultList = new ArrayList<>();
-                for (Object[] obj : result) {
-                    ThongKeHoaDon tk = new ThongKeHoaDon();
-                    tk.setMaHoaDon((String) obj[0]);
-                    tk.setMaNhanVien((String) obj[1]);
-                    tk.setCaLamViec(((Short) obj[2]).intValue());
-                    tk.setSoLuongSP(((Long) obj[3]).intValue());
-                    tk.setNgayLap((Timestamp) obj[4]);
-                    tk.setLoaiKH((String) obj[6]);
-                    tk.setDoanhThu((double) obj[5]);
-                    resultList.add(tk);
-                }
-                return resultList;
+        List<ThongKeHoaDon> resultList = new ArrayList<>();
+        for (Object[] obj : result) {
+            ThongKeHoaDon tk = new ThongKeHoaDon();
+            tk.setMaHoaDon((String) obj[0]);
+            tk.setMaNhanVien((String) obj[1]);
+            tk.setCaLamViec(((Short) obj[2]).intValue());
+            tk.setSoLuongSP(((Long) obj[3]).intValue());
+            tk.setNgayLap((Timestamp) obj[4]);
+            tk.setLoaiKH((String) obj[6]);
+            tk.setDoanhThu((double) obj[5]);
+            resultList.add(tk);
+        }
+        return resultList;
     }
 
     @Override
-    public List<ThongKeHoaDon> getHoaDonTheoNV(int day, int month, int year, String maNhanVien, int ca) {
+    public List<ThongKeHoaDon> getHoaDonTheoNV(int day, int month, int year, String maNhanVien, int ca) throws RemoteException {
         int startHour, endHour;
         if (ca == 0) {
             startHour = 0;
@@ -92,7 +95,8 @@ public class ThongKeHoaDonImpl implements ThongKeHoaDonDao {
                 .setParameter("startHour", startHour)
                 .setParameter("endHour", endHour)
                 .setParameter("maNhanVien", maNhanVien)
-                .getResultList();List<ThongKeHoaDon> resultList = new ArrayList<>();
+                .getResultList();
+        List<ThongKeHoaDon> resultList = new ArrayList<>();
         for (Object[] obj : result) {
             ThongKeHoaDon tk = new ThongKeHoaDon();
             tk.setMaHoaDon((String) obj[0]);
@@ -108,7 +112,7 @@ public class ThongKeHoaDonImpl implements ThongKeHoaDonDao {
     }
 
     @Override
-    public int tongHoaDon(int top) {
+    public int tongHoaDon(int top) throws RemoteException {
         LocalDate date = LocalDate.now();
         int month = date.getMonthValue();
         int year = date.getYear();
@@ -121,7 +125,7 @@ public class ThongKeHoaDonImpl implements ThongKeHoaDonDao {
                 .setParameter("month", month)
                 .setParameter("year", year);
         List<Object[]> result = query.getResultList();
-        if(top <= result.size()){
+        if (top <= result.size()) {
             Object[] topResult = result.get(top - 1);
             return ((Long) topResult[1]).intValue();
         }
@@ -130,7 +134,7 @@ public class ThongKeHoaDonImpl implements ThongKeHoaDonDao {
     }
 
     @Override
-    public String nhanVienTop(int top) {
+    public String nhanVienTop(int top) throws RemoteException {
         LocalDate date = LocalDate.now();
         int month = date.getMonthValue();
         int year = date.getYear();

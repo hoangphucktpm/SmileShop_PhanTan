@@ -5,20 +5,23 @@ import Entities.NhanVien;
 import Entities.TaiKhoan;
 import jakarta.persistence.*;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ThongTinCaNhanImpl implements ThongTinCaNhanDao {
+public class ThongTinCaNhanImpl extends UnicastRemoteObject implements ThongTinCaNhanDao {
+    private static final long serialVersionUID = 1L;
 
     private EntityManager em;
 
-    public ThongTinCaNhanImpl() {
+    public ThongTinCaNhanImpl() throws RemoteException {
         em = Persistence.createEntityManagerFactory("SQLdb")
                 .createEntityManager();
     }
 
     @Override
-    public List<NhanVien> loadNhanVien(String ma) {
+    public List<NhanVien> loadNhanVien(String ma) throws RemoteException {
         try {
             Query query = em.createQuery("SELECT n FROM NhanVien n WHERE n.maNhanvien LIKE :ma", NhanVien.class);
             query.setParameter("ma", "%" + ma + "%");
@@ -34,7 +37,7 @@ public class ThongTinCaNhanImpl implements ThongTinCaNhanDao {
 
 
     @Override
-    public TaiKhoan loadTaiKhoan(String ma) {
+    public TaiKhoan loadTaiKhoan(String ma) throws RemoteException {
         try {
             Query query = em.createQuery("SELECT t FROM TaiKhoan t WHERE t.tenTaiKhoan.maNhanvien LIKE :ma", TaiKhoan.class);
             query.setParameter("ma", "%" + ma + "%");
@@ -50,7 +53,7 @@ public class ThongTinCaNhanImpl implements ThongTinCaNhanDao {
 
 
     @Override
-    public String tenNV(String manv) {
+    public String tenNV(String manv) throws RemoteException {
         try {
             Query query = em.createQuery("SELECT n.tenNhanVien FROM NhanVien n WHERE n.maNhanvien = :ma", NhanVien.class);
             query.setParameter("ma", manv);
@@ -67,7 +70,7 @@ public class ThongTinCaNhanImpl implements ThongTinCaNhanDao {
 
 
     @Override
-    public boolean sua(String tenNV, String sdt, String Email, String MaNhanVien, String hinhAnh) {
+    public boolean sua(String tenNV, String sdt, String Email, String MaNhanVien, String hinhAnh) throws RemoteException {
         EntityManager em = null;
         try {
             em = Persistence.createEntityManagerFactory("SQLdb").createEntityManager();
@@ -89,7 +92,7 @@ public class ThongTinCaNhanImpl implements ThongTinCaNhanDao {
     }
 
     @Override
-    public boolean suaMK(String matkhau, String MaNhanVien) {
+    public boolean suaMK(String matkhau, String MaNhanVien) throws RemoteException {
         EntityManager em = null;
         try {
             // Open a new EntityManager
@@ -120,7 +123,7 @@ public class ThongTinCaNhanImpl implements ThongTinCaNhanDao {
 
 
     @Override
-    public String mailNhanVien(String manv) {
+    public String mailNhanVien(String manv) throws RemoteException {
         try {
             Query query = em.createQuery("SELECT n.email FROM NhanVien n WHERE n.maNhanvien = :ma", NhanVien.class);
             query.setParameter("ma", manv);

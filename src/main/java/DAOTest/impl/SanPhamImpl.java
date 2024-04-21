@@ -4,26 +4,29 @@ import DAOTest.SanPhamDao;
 import Entities.*;
 import jakarta.persistence.*;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.Date;
 import java.util.List;
 
-public class SanPhamImpl implements SanPhamDao {
+public class SanPhamImpl extends UnicastRemoteObject implements SanPhamDao {
+    private static final long serialVersionUID = 1L;
     private EntityManager em;
 
-    public SanPhamImpl() {
+    public SanPhamImpl() throws RemoteException {
         em = Persistence.createEntityManagerFactory("SQLdb")
                 .createEntityManager();
     }
 
 
     @Override
-    public List<SanPham> getAllSP() {
+    public List<SanPham> getAllSP() throws RemoteException {
         List<SanPham> list = em.createNamedQuery("SanPham.getAllProducts", SanPham.class).getResultList();
         return list;
     }
 
     @Override
-    public List<SanPham> timTheoGia(double gia1, double gia2) {
+    public List<SanPham> timTheoGia(double gia1, double gia2) throws RemoteException {
         List<SanPham> list = em.createNamedQuery("SanPham.timTheoGia", SanPham.class)
                 .setParameter("gia1", gia1)
                 .setParameter("gia2", gia2)
@@ -34,7 +37,7 @@ public class SanPhamImpl implements SanPhamDao {
     @Override
     public boolean them(String maSP, String tenSP, String nhaCungCap, String km, double giaBan, int soluong, Date ngayNhap,
                         String color, String size, String img, String chatLieu, int tinhTrang, String dvt, String loaiSP, int VAT,
-                        double giaBanRa) {
+                        double giaBanRa) throws RemoteException {
         EntityTransaction tx = em.getTransaction();
         NhaCungCap ncc = getMaOne(nhaCungCap);
         KhuyenMai km1 = em.find(KhuyenMai.class, km);
@@ -79,14 +82,14 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public NhaCungCap getMaOne(String MaNCC) {
+    public NhaCungCap getMaOne(String MaNCC) throws RemoteException {
         return em.createNamedQuery("NhaCungCap.getMa", NhaCungCap.class)
                 .setParameter("MaNCC", MaNCC)
                 .getSingleResult();
     }
 
     @Override
-    public boolean sua(SanPham sanPham) {
+    public boolean sua(SanPham sanPham) throws RemoteException {
         // Check if chatLieu is null and handle it
         if (sanPham.getChatLieu() == null) {
             // Skip saving the SanPham entity if chatLieu is null
@@ -118,26 +121,26 @@ public class SanPhamImpl implements SanPhamDao {
 
 
     @Override
-    public List<Entities.LoaiSanPham> getLoaiSP() {
+    public List<Entities.LoaiSanPham> getLoaiSP() throws RemoteException {
         List<Entities.LoaiSanPham> list = em.createNamedQuery("SanPham.getLoaiSP", Entities.LoaiSanPham.class).getResultList();
         return list;
     }
 
     @Override
-    public List<Entities.ChatLieu> getChatLieu() {
+    public List<Entities.ChatLieu> getChatLieu() throws RemoteException {
         List<Entities.ChatLieu> list = em.createNamedQuery("SanPham.getChatLieu", Entities.ChatLieu.class).getResultList();
         return list;
     }
 
     @Override
-    public ChatLieu getChatLieuOne(String ma) {
+    public ChatLieu getChatLieuOne(String ma) throws RemoteException {
         return em.createNamedQuery("SanPham.getChatLieuOne", ChatLieu.class)
                 .setParameter("ma", ma)
                 .getSingleResult();
     }
 
     @Override
-    public LoaiSanPham getLoaiSPOne(String ma) {
+    public LoaiSanPham getLoaiSPOne(String ma) throws RemoteException {
         try {
             TypedQuery<LoaiSanPham> query = em.createQuery("SELECT l FROM LoaiSanPham l WHERE l.maLoaiSP = :ma", LoaiSanPham.class);
             query.setParameter("ma", ma);
@@ -152,19 +155,19 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public List<Entities.NhaCungCap> getTenNCC() {
+    public List<Entities.NhaCungCap> getTenNCC() throws RemoteException {
         List<Entities.NhaCungCap> list = em.createNamedQuery("SanPham.getTen", Entities.NhaCungCap.class).getResultList();
         return list;
     }
 
     @Override
-    public List<Entities.KhuyenMai> getKMTheoTen() {
+    public List<Entities.KhuyenMai> getKMTheoTen() throws RemoteException {
         List<Entities.KhuyenMai> list = em.createNamedQuery("SanPham.getKMTheoTen", Entities.KhuyenMai.class).getResultList();
         return list;
     }
 
     @Override
-    public KhuyenMai getKMTheoTenOne(String ma) {
+    public KhuyenMai getKMTheoTenOne(String ma) throws RemoteException {
         try {
             Query query = em.createQuery("SELECT km FROM KhuyenMai km WHERE km.maKhuyenMai = :ma", KhuyenMai.class);
             query.setParameter("ma", ma);
@@ -180,7 +183,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public ChatLieu getCLTheoTenOne(String ma) {
+    public ChatLieu getCLTheoTenOne(String ma) throws RemoteException {
         try {
             TypedQuery<ChatLieu> query = em.createQuery("SELECT c FROM ChatLieu c WHERE c.maChatLieu = :ma", ChatLieu.class);
             query.setParameter("ma", ma);
@@ -195,7 +198,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public LoaiSanPham getLSPTheoTenOne(String ma) {
+    public LoaiSanPham getLSPTheoTenOne(String ma) throws RemoteException {
         LoaiSanPham lsp = em.createNamedQuery("SanPham.getLSPTheoTenOne", LoaiSanPham.class)
                 .setParameter("ma", ma)
                 .getSingleResult();
@@ -203,7 +206,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public int getKMTheoPhanTram(String maSp) {
+    public int getKMTheoPhanTram(String maSp) throws RemoteException {
         SanPham sp = em.find(SanPham.class, maSp);
         if (sp != null && sp.getKhuyenMai() != null) {
             return sp.getKhuyenMai().getPhanTramKhuyenMai();
@@ -214,14 +217,14 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public int soLuong() {
+    public int soLuong() throws RemoteException {
         Long result = (Long) em.createNamedQuery("SanPham.soLuong").getSingleResult();
         return result.intValue(); // Chuyển đổi từ Long sang int
     }
 
 
     @Override
-    public int vat(String ma) {
+    public int vat(String ma) throws RemoteException {
         Number vat = (Number) em.createNamedQuery("SanPham.vat")
                 .setParameter("ma", ma)
                 .getSingleResult();
@@ -229,7 +232,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public boolean themLoaiSP(Entities.LoaiSanPham loaiSanPham) {
+    public boolean themLoaiSP(Entities.LoaiSanPham loaiSanPham) throws RemoteException {
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
@@ -245,13 +248,13 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public int soLuongLSP() {
+    public int soLuongLSP() throws RemoteException {
         Long sl = (Long) em.createNamedQuery("SanPham.soLuongLSP").getSingleResult();
         return sl.intValue();
     }
 
     @Override
-    public boolean themChatLieu(ChatLieu chatLieu) {
+    public boolean themChatLieu(ChatLieu chatLieu) throws RemoteException {
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
@@ -266,13 +269,13 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public int soLuongChatLieu() {
+    public int soLuongChatLieu() throws RemoteException {
         Long result = (Long) em.createNamedQuery("SanPham.soLuongChatLieu").getSingleResult();
         return result.intValue();
     }
 
     @Override
-    public String getTenLoaiSP(String maSP) {
+    public String getTenLoaiSP(String maSP) throws RemoteException {
         String ten = (String) em.createNamedQuery("SanPham.getTenLoaiSP")
                 .setParameter("maSP", maSP)
                 .getSingleResult();
@@ -280,7 +283,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public String getTenNhaCC(String maSP) {
+    public String getTenNhaCC(String maSP) throws RemoteException {
         String ten = (String) em.createNamedQuery("SanPham.getTenNhaCC")
                 .setParameter("maSP", maSP)
                 .getSingleResult();
@@ -288,7 +291,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public String getTenCL(String maSP) {
+    public String getTenCL(String maSP) throws RemoteException {
         String ten = (String) em.createNamedQuery("SanPham.getTenCL")
                 .setParameter("maSP", maSP)
                 .getSingleResult();
@@ -296,7 +299,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public SanPham getMa(String Ma) {
+    public SanPham getMa(String Ma) throws RemoteException {
         SanPham sp = em.createNamedQuery("SanPham.getMa", SanPham.class)
                 .setParameter("Ma", Ma)
                 .getSingleResult();
@@ -304,7 +307,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public SanPham getTenSP(String Ten) {
+    public SanPham getTenSP(String Ten) throws RemoteException {
         SanPham sp = em.createNamedQuery("SanPham.getTenSP", SanPham.class)
                 .setParameter("Ten", Ten)
                 .getSingleResult();
@@ -312,7 +315,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public List<SanPham> getlistTenLoaiSP(String lsp) {
+    public List<SanPham> getlistTenLoaiSP(String lsp) throws RemoteException {
         List<SanPham> list = em.createNamedQuery("SanPham.getlistTenLoaiSP", SanPham.class)
                 .setParameter("lsp", lsp)
                 .getResultList();
@@ -320,7 +323,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public List<SanPham> getlistTenNCC(String nccap) {
+    public List<SanPham> getlistTenNCC(String nccap) throws RemoteException {
         List<SanPham> list = em.createNamedQuery("SanPham.getlistTenNCC", SanPham.class)
                 .setParameter("nccap", nccap)
                 .getResultList();
@@ -328,7 +331,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public List<SanPham> getlistTenCL(String ChatLieu) {
+    public List<SanPham> getlistTenCL(String ChatLieu) throws RemoteException {
         List<SanPham> list = em.createNamedQuery("SanPham.getlistTenCL", SanPham.class)
                 .setParameter("ChatLieu", ChatLieu)
                 .getResultList();
@@ -336,7 +339,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public List<SanPham> getlistTenMauSac(MauSac MS) {
+    public List<SanPham> getlistTenMauSac(MauSac MS) throws RemoteException {
         List<SanPham> list = em.createNamedQuery("SanPham.getlistTenMauSac", SanPham.class)
                 .setParameter("MS", MS)
                 .getResultList();
@@ -344,7 +347,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public List<SanPham> getlistSize(Size kthuoc) {
+    public List<SanPham> getlistSize(Size kthuoc) throws RemoteException {
         List<SanPham> list = em.createNamedQuery("SanPham.getlistSize", SanPham.class)
                 .setParameter("kthuoc", kthuoc)
                 .getResultList();
@@ -352,7 +355,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public String getMoTaChatLieu(String ma) {
+    public String getMoTaChatLieu(String ma) throws RemoteException {
         String mota = (String) em.createNamedQuery("SanPham.getMoTaChatLieu")
                 .setParameter("ma", ma)
                 .getSingleResult();
@@ -360,7 +363,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public String getTenChatLieu(String ma) {
+    public String getTenChatLieu(String ma) throws RemoteException {
         String ten = (String) em.createNamedQuery("SanPham.getTenChatLieu")
                 .setParameter("ma", ma)
                 .getSingleResult();
@@ -368,7 +371,7 @@ public class SanPhamImpl implements SanPhamDao {
     }
 
     @Override
-    public String getMaChatLieu(String ten, String moTa) {
+    public String getMaChatLieu(String ten, String moTa) throws RemoteException {
         String ma = (String) em.createNamedQuery("SanPham.getMaChatLieu")
                 .setParameter("ten", ten)
                 .setParameter("moTa", moTa)

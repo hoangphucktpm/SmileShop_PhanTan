@@ -18,6 +18,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.rmi.RemoteException;
 import javax.swing.JPasswordField;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -59,7 +60,7 @@ public class FrmDangNhap extends JFrame implements ActionListener {
     /**
      * Create the frame.
      */
-    public FrmDangNhap() {
+    public FrmDangNhap() throws RemoteException {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 800, 400);
         contentPane = new JPanel();
@@ -197,7 +198,7 @@ public class FrmDangNhap extends JFrame implements ActionListener {
     }
 
 
-    public boolean kiemTraDangNhap(String username, String password) {
+    public boolean kiemTraDangNhap(String username, String password) throws RemoteException {
         taiKhoan = dao.getTK(username);
 //	    System.out.println(taiKhoan);
 

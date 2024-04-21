@@ -4,6 +4,7 @@ package Entities;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -54,7 +55,7 @@ import java.util.Date;
                 "WHERE QUARTER(h.ngayLapHoaDon) = :quy AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour and year(h.ngayLapHoaDon) = 2023\n" +
                 "GROUP BY s.maSp, s.tensp, s.mauSac, s.size, s.khuyenMai, s.gianhap, s.soluong, s.giaBan")
 })
-public class SanPham {
+public class SanPham implements Serializable {
     @Id
     @Column(name = "maSp", nullable = false, length = 50)
     private String maSp;

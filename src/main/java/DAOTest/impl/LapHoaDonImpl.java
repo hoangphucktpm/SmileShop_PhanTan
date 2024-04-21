@@ -8,14 +8,17 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LapHoaDonImpl implements LapHoaDonDao {
+public class LapHoaDonImpl extends UnicastRemoteObject implements LapHoaDonDao {
+    private static final long serialVersionUID = 1L;
 
     private EntityManager em;
 
-    public LapHoaDonImpl() {
+    public LapHoaDonImpl() throws RemoteException {
         em = Persistence
                 .createEntityManagerFactory("SQLdb")
                 .createEntityManager();
@@ -23,13 +26,13 @@ public class LapHoaDonImpl implements LapHoaDonDao {
 
 
     @Override
-    public List<HoaDon> getAllLapHoaDon() {
+    public List<HoaDon> getAllLapHoaDon() throws RemoteException {
         return em.createNamedQuery("HoaDon.findAll", HoaDon.class).getResultList();
     }
 
 
     @Override
-    public String maHoaDon(String maNhanVien) {
+    public String maHoaDon(String maNhanVien) throws RemoteException {
         String maHoaDon = null;
         try {
             Query query = em.createNativeQuery("select 'HD'+convert(nvarchar,MAX(RIGHT(LEFT(MaHoaDon,7),5))+'NV'+ ? +CONVERT(nvarchar,GETDATE(),112)) from dbo.HoaDon");
@@ -43,7 +46,7 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     }
 
     @Override
-    public List<KhachHang> timKhachHangBySDT(String Sdt) {
+    public List<KhachHang> timKhachHangBySDT(String Sdt) throws RemoteException {
         List<KhachHang> list = new ArrayList<KhachHang>();
         try {
             Query query = em.createNativeQuery("SELECT * FROM dbo.KhachHang WHERE Sdt = ?", KhachHang.class);
@@ -58,7 +61,7 @@ public class LapHoaDonImpl implements LapHoaDonDao {
 
 
     @Override
-    public float getDiem(String Sdt) {
+    public float getDiem(String Sdt) throws RemoteException {
         float result = 0;
 
         try {
@@ -73,7 +76,7 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     }
 
     @Override
-    public int soLuongHD() {
+    public int soLuongHD() throws RemoteException {
         int sum = 0;
         try {
             Query query = em.createNativeQuery("SELECT COUNT(*) FROM [dbo].[HoaDon] WHERE CAST(NgayLapHoaDon AS DATE) = CAST(GETDATE() AS DATE);");
@@ -85,7 +88,7 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     }
 
     @Override
-    public int soLuongSPDaBan(String masp) {
+    public int soLuongSPDaBan(String masp) throws RemoteException {
         int soLuongSP = 0;
         try {
             Query query = em.createNativeQuery("SELECT SUM(SoLuongSP) FROM dbo.CT_HoaDon WHERE MaSanPham = ?");
@@ -99,7 +102,7 @@ public class LapHoaDonImpl implements LapHoaDonDao {
 
 
     @Override
-    public int soLuongNhap(String masp) {
+    public int soLuongNhap(String masp) throws RemoteException {
         int soLuongSP = 0;
         try {
             Query query = em.createNativeQuery("SELECT SoLuong FROM dbo.SanPham WHERE MaSp = ?");
@@ -111,45 +114,9 @@ public class LapHoaDonImpl implements LapHoaDonDao {
         return soLuongSP;
     }
 
-    //	public boolean addCT_HoaDon(String maHoaDon,String maSP,int soLuong) {
-    //		Connection con = ConnectDatabase.getInstance().getConnection();
-    //		PreparedStatement stmt = null;
-    //		int n =0;
-    //		try {
-    //			stmt = con.prepareStatement("insert into dbo.CT_HoaDon(MaHoaDon, MaSanPham, SoLuongSP) values (?,?,?)");
-    //			stmt.setString(1,maHoaDon);
-    //			stmt.setString(2, maSP);
-    //
-    //			stmt.setInt(3, soLuong);
-    //			n= stmt.executeUpdate();
-    //		} catch (Exception e3) {
-    //			e3.printStackTrace();
-    //		}
-    //		return n>0;
-    //	}
-
-    // public String getKMTheoTen(String TenKM) {
-    //
-    //		String ten = "";
-    //
-    //		try {
-    //			Connection con = ConnectDatabase.getInstance().getConnection();
-    //			String sql = "select TenKhuyenMai from [dbo].[KhuyenMai] where MaKhuyenMai like N'%" + TenKM + "%'";
-    //			Statement statement = con.createStatement();
-    //			ResultSet rs = statement.executeQuery(sql);
-    //
-    //			while (rs.next()) {
-    //				ten = rs.getString(1);
-    //			}
-    //		} catch (SQLException e) {
-    //			e.printStackTrace();
-    //		}
-    //
-    //		return ten;
-    //	}
 
     @Override
-    public String getKMTheoTen(String TenKM) {
+    public String getKMTheoTen(String TenKM) throws RemoteException {
         String ten = "";
         try {
             Query query = em.createNativeQuery("SELECT TenKhuyenMai FROM dbo.KhuyenMai WHERE MaKhuyenMai = ?");
@@ -162,17 +129,17 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     }
 
     @Override
-    public HoaDon getHoaDon(String mahd) {
+    public HoaDon getHoaDon(String mahd) throws RemoteException {
         return em.find(HoaDon.class, mahd);
     }
 
     @Override
-    public SanPham getSanPham(String masp) {
+    public SanPham getSanPham(String masp) throws RemoteException {
         return em.find(SanPham.class, masp);
     }
 
     @Override
-    public boolean addCT_HoaDon(String maHoaDon, String maSP, int soLuong) {
+    public boolean addCT_HoaDon(String maHoaDon, String maSP, int soLuong) throws RemoteException {
         try {
             em.getTransaction().begin(); // Start the transaction
 
@@ -194,7 +161,7 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     }
 
     @Override
-    public String getTenNV(String ma) {
+    public String getTenNV(String ma) throws RemoteException {
         String tenDN1 = null;
         try {
             Query query = em.createNativeQuery("SELECT TenNhanVien FROM dbo.NhanVien WHERE MaNhanvien = ?");
@@ -206,82 +173,9 @@ public class LapHoaDonImpl implements LapHoaDonDao {
         return tenDN1;
     }
 
-    //	public sanPham laySP(String ten, String mau, String kt) {
-    //	    sanPham sp = new sanPham();
-    //
-    //	    try {
-    //	        Connection con = ConnectDatabase.getInstance().getConnection();
-    //	        PreparedStatement stmt = null;
-    //	        String sql = "SELECT  maSp, Tensp, ncc.TenNhaCungCap, KhuyenMai, Gianhap, Soluong, Ngaynhap, Hinhanh, MauSac, Size, c.TenChatLieu, s.TinhTrang, DonViTinh, lsp.TenLoaiSP, VAT \r\n"
-    //	        		+ "from SanPham s join NhaCungCap ncc on s.NhaCungCap = ncc.MaNhaCungCap \r\n"
-    //	        		+ "join LoaiSanPham lsp on s.LoaiSanPham = lsp.MaLoaiSP \r\n"
-    //	        		+ "join ChatLieu c on c.MaChatLieu=s.ChatLieu\r\n"
-    //	        		+ "where Tensp like ? and MauSac = ? AND Size = ?";
-    //	        stmt = con.prepareStatement(sql);
-    //
-    //	        stmt.setString(1, ten); // Sử dụng LIKE để tìm kiếm Tensp chứa chuỗi ten
-    //	        stmt.setString(2, mau);
-    //	        stmt.setString(3, kt);
-    ////
-    //
-    //			ResultSet rs = stmt.executeQuery();
-    //				while (rs.next()) {
-    //					String maSP= rs.getString(1);
-    //					String tenSP=rs.getString(2);
-    //					String NhaCC= rs.getString(3);
-    //					String khuyenMai= rs.getString(4);
-    //					Double giaNhap= rs.getDouble(5);
-    //					int soLuong = rs.getInt(6);
-    //					Date dateNhap = rs.getDate(7);
-    //					String hinhAnh = rs.getString(8);
-    //					String MauSac = rs.getString(9);
-    //					String size = rs.getString(10);
-    //					String chatLieu = rs.getString(11);
-    //					int tinhTrang = rs.getInt(12);
-    //					String donViTinh = rs.getString(13);
-    //					String loaiSP = rs.getString(14);
-    //					Double giaban = rs.getDouble(15);
-    //					int vat = rs.getInt(16);
-    //					Boolean sta = true;
-    //					if (tinhTrang == 1)
-    //					{
-    //						sta = true;
-    //					}
-    //					else
-    //						sta = false;
-    //					sanPham.MauSac mauSac = null;
-    //					sanPham.Size kichThuoc = null;
-    //					for (sanPham.MauSac colr: sanPham.MauSac.values())
-    //					{
-    //						if(MauSac.equalsIgnoreCase(colr.nCo))
-    //						{
-    //							mauSac = colr;
-    //						}
-    //					}
-    //					for (sanPham.Size sizeC: sanPham.Size.values())
-    //					{
-    //						if(size.equalsIgnoreCase(sizeC.nSiz))
-    //						{
-    //							kichThuoc = sizeC;
-    //						}
-    //					}
-    //					LoaiSanPham loai = new LoaiSanPham(loaiSP);
-    //					ChatLieu cl = new ChatLieu(chatLieu);
-    //					NhaCungCap ncc = new NhaCungCap(NhaCC);
-    //					KhuyenMai km = new KhuyenMai(khuyenMai);
-    //					sanPham sp1 = new sanPham(maSP, ten, giaNhap, soLuong, dateNhap, hinhAnh, mauSac, kichThuoc, cl, sta, donViTinh, loai, ncc, km, giaban, vat);
-    //					sp = sp1;
-    //				}
-    //
-    //		} catch (SQLException e) {
-    //			// TODO: handle exception
-    //			e.printStackTrace();
-    //		}
-    //		return sp;
-    //	}
 
     @Override
-    public SanPham laySP(String ten, String mau, String kt) {
+    public SanPham laySP(String ten, String mau, String kt) throws RemoteException {
         SanPham sp = null;
         try {
             Query query = em.createQuery("SELECT s FROM SanPham s " +
@@ -333,7 +227,7 @@ public class LapHoaDonImpl implements LapHoaDonDao {
 
     //    /{Còn lỗi}/
     @Override
-    public boolean upDateHoaDon(String mahd, double tienkd, float diemtichduoc, String nhanvien, String khachhang, double tongtien) {
+    public boolean upDateHoaDon(String mahd, double tienkd, float diemtichduoc, String nhanvien, String khachhang, double tongtien) throws RemoteException {
         try {
             em.getTransaction().begin(); // Bắt đầu giao dịch
 
@@ -358,7 +252,7 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     }
 
     @Override
-    public boolean updateDiem(double diem, String sdt) {
+    public boolean updateDiem(double diem, String sdt) throws RemoteException {
         try {
             em.getTransaction().begin(); // Bắt đầu giao dịch
 
@@ -379,30 +273,8 @@ public class LapHoaDonImpl implements LapHoaDonDao {
     }
 
 
-    //	public int getKMTheoPhanTram(String ma) {
-    //		int phanTram = 0;
-    //
-    //		try {
-    //			Connection con = ConnectDatabase.getInstance().getConnection();
-    //			String sql = "select PhanTramKhuyenMai from KhuyenMai where TenKhuyenMai like '" + ma + "'";
-    //			Statement statement = con.createStatement();
-    //			ResultSet rs = statement.executeQuery(sql);
-    //
-    //			while (rs.next()) {
-    //				phanTram = rs.getInt(1);
-    //			}
-    //		} catch (SQLException e) {
-    //			e.printStackTrace();
-    //		}
-    //
-    //		return phanTram;
-    //	}
-    //
-
-    // Can kiem tra lai
-
     @Override
-    public int getKMTheoPhanTram(String ma) {
+    public int getKMTheoPhanTram(String ma) throws RemoteException {
         int phanTram = 0;
         try {
             Query query = em.createNativeQuery("SELECT PhanTramKhuyenMai FROM dbo.KhuyenMai WHERE MaKhuyenMai = ?");

@@ -4,12 +4,13 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @NoArgsConstructor
 @Entity
-@NamedQuery(name="NhanVien.findAll", query="SELECT n FROM NhanVien n")
-public class NhanVien {
+@NamedQuery(name = "NhanVien.findAll", query = "SELECT n FROM NhanVien n")
+public class NhanVien implements Serializable {
     @Id
     @Column(name = "MaNhanvien", nullable = false, length = 50)
     private String maNhanvien;

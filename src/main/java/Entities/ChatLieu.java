@@ -1,11 +1,13 @@
 package Entities;
 
 
-
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.io.Serializable;
+
 @Entity
-public class ChatLieu {
+public class ChatLieu implements Serializable {
     @Id
     @Column(name = "MaChatLieu", nullable = false, length = 50)
     private String maChatLieu;

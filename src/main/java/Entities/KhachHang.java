@@ -4,6 +4,7 @@ package Entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -26,7 +27,9 @@ import java.util.Date;
                 "GROUP BY k.tenKH " +
                 "ORDER BY SUM(h.tongTien) DESC"),
 })
-public class KhachHang {
+public class KhachHang implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "MaKH", nullable = false, length = 50)
     private String maKH;

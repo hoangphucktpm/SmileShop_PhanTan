@@ -8,13 +8,16 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.time.LocalDate;
 import java.util.List;
 
-public class KhuyenMaiImpl implements KhuyenMaiDao {
+public class KhuyenMaiImpl extends UnicastRemoteObject implements KhuyenMaiDao {
+    private static final long serialVersionUID = 1L;
     private EntityManager em;
 
-    public KhuyenMaiImpl() {
+    public KhuyenMaiImpl() throws RemoteException {
         em = Persistence
                 .createEntityManagerFactory("SQLdb")
                 .createEntityManager();
@@ -22,12 +25,12 @@ public class KhuyenMaiImpl implements KhuyenMaiDao {
 
 
     @Override
-    public List<KhuyenMai> getAllKhuyenMai() {
+    public List<KhuyenMai> getAllKhuyenMai() throws RemoteException {
         return em.createNamedQuery("KhuyenMai.findAll", KhuyenMai.class).getResultList();
     }
 
     @Override
-    public boolean themKhuyenMai(KhuyenMai khuyenMai) {
+    public boolean themKhuyenMai(KhuyenMai khuyenMai) throws RemoteException {
         em.getTransaction().begin();
         em.persist(khuyenMai);
         em.getTransaction().commit();
@@ -36,7 +39,7 @@ public class KhuyenMaiImpl implements KhuyenMaiDao {
 
 
     @Override
-    public boolean updateKhuyenMai(KhuyenMai khuyenMai) {
+    public boolean updateKhuyenMai(KhuyenMai khuyenMai) throws RemoteException {
         em.getTransaction().begin();
         em.merge(khuyenMai);
         em.getTransaction().commit();
@@ -45,19 +48,19 @@ public class KhuyenMaiImpl implements KhuyenMaiDao {
 
 
     @Override
-    public Long soLuongCTKM() {
+    public Long soLuongCTKM() throws RemoteException {
         Query query = em.createQuery("SELECT COUNT(km) FROM KhuyenMai km");
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public KhuyenMai getKMTHeoMa(String MaKM) {
+    public KhuyenMai getKMTHeoMa(String MaKM) throws RemoteException {
         return em.find(KhuyenMai.class, MaKM);
     }
 
 
     @Override
-    public KhuyenMai getKMTheoTen(String TenKM) {
+    public KhuyenMai getKMTheoTen(String TenKM) throws RemoteException {
         Query query = em.createQuery("SELECT km FROM KhuyenMai km WHERE km.tenKhuyenMai = :tenKhuyenMai", KhuyenMai.class);
         query.setParameter("tenKhuyenMai", TenKM);
         return (KhuyenMai) query.getSingleResult();
@@ -65,21 +68,21 @@ public class KhuyenMaiImpl implements KhuyenMaiDao {
 
 
     @Override
-    public List<KhuyenMai> getKMTheoPhanTram(int PhanTramKM) {
+    public List<KhuyenMai> getKMTheoPhanTram(int PhanTramKM) throws RemoteException {
         Query query = em.createQuery("SELECT km FROM KhuyenMai km WHERE km.phanTramKhuyenMai = :phanTramKhuyenMai", KhuyenMai.class);
         query.setParameter("phanTramKhuyenMai", PhanTramKM);
         return query.getResultList();
     }
 
     @Override
-    public List<KhuyenMai> getKMTheoTrangThai(String TrangThaiKM) {
+    public List<KhuyenMai> getKMTheoTrangThai(String TrangThaiKM) throws RemoteException {
         Query query = em.createQuery("SELECT km FROM KhuyenMai km WHERE km.trangThai = :trangThai", KhuyenMai.class);
         query.setParameter("trangThai", TrangThaiKM);
         return query.getResultList();
     }
 
     @Override
-    public boolean hetHan() {
+    public boolean hetHan() throws RemoteException {
         Query query = em.createQuery("UPDATE KhuyenMai km SET km.trangThai = 0 WHERE km.ngayKetThuc < CURRENT_DATE");
         em.getTransaction().begin();
         query.executeUpdate();
@@ -88,7 +91,7 @@ public class KhuyenMaiImpl implements KhuyenMaiDao {
     }
 
     @Override
-    public List<KhuyenMai> getTheoThoiGian(LocalDate begin, LocalDate end) {
+    public List<KhuyenMai> getTheoThoiGian(LocalDate begin, LocalDate end) throws RemoteException {
         Query query = em.createQuery("SELECT km FROM KhuyenMai km WHERE (km.ngayBatDau >= :begin AND km.ngayBatDau <= :end) OR (km.ngayKetThuc >= :begin AND km.ngayKetThuc <= :end)", KhuyenMai.class);
         query.setParameter("begin", begin);
         query.setParameter("end", end);
@@ -96,7 +99,7 @@ public class KhuyenMaiImpl implements KhuyenMaiDao {
     }
 
     @Override
-    public boolean adDSPKM(String maSP, String maKM) {
+    public boolean adDSPKM(String maSP, String maKM) throws RemoteException {
         KhuyenMai khuyenMai = em.find(KhuyenMai.class, maKM);
         if (khuyenMai != null) {
             Query query = em.createQuery("UPDATE SanPham sp SET sp.khuyenMai = :khuyenMai WHERE sp.maSp = :maSP");
@@ -111,23 +114,8 @@ public class KhuyenMaiImpl implements KhuyenMaiDao {
         }
     }
 
-    //			 public void capNhatNull(String maKM)
-    //			 {
-    //				 Connection con = ConnectDatabase.getInstance().getConnection();
-    //			        PreparedStatement stmt = null;
-    //
-    //			        try {
-    //			            String sql = "update SanPham set KhuyenMai = null where KhuyenMai = '" + maKM +"'";
-    //			            stmt = con.prepareStatement(sql);
-    //			            stmt.executeUpdate();
-    //			        } catch (SQLException e) {
-    //			            e.printStackTrace();
-    //
-    //			        }
-    //
-    //			 }
     @Override
-    public void capNhatNull(String maKM) {
+    public void capNhatNull(String maKM) throws RemoteException {
         em.getTransaction().begin();
         Query query = em.createQuery("SELECT sp FROM SanPham sp WHERE sp.khuyenMai.maKhuyenMai = :maKM", SanPham.class);
         query.setParameter("maKM", maKM);
@@ -140,14 +128,14 @@ public class KhuyenMaiImpl implements KhuyenMaiDao {
     }
 
     @Override
-    public List<String> dsMaSPKM(String ma) {
+    public List<String> dsMaSPKM(String ma) throws RemoteException {
         Query query = em.createQuery("SELECT sp.maSp FROM SanPham sp WHERE sp.khuyenMai.maKhuyenMai = :ma", String.class);
         query.setParameter("ma", ma);
         return query.getResultList();
     }
 
     @Override
-    public String layKhuyenMaiTuSanPham(String ma) {
+    public String layKhuyenMaiTuSanPham(String ma) throws RemoteException {
         Query query = em.createQuery("SELECT sp.khuyenMai.maKhuyenMai FROM SanPham sp WHERE sp.maSp = :ma", String.class);
         query.setParameter("ma", ma);
         return (String) query.getSingleResult();

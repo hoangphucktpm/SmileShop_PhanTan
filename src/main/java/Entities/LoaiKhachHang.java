@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @NoArgsConstructor
 @Entity
 @Table(name = "loaiKhachHang")
@@ -13,7 +15,7 @@ import lombok.*;
 @NamedQueries({
         @NamedQuery(name = "LoaiKhachHang.findAll", query = "SELECT lkh FROM LoaiKhachHang lkh"),
 })
-public class LoaiKhachHang {
+public class LoaiKhachHang implements Serializable {
     @Id
     @Column(name = "MaLoaiKH", nullable = false, length = 50)
     private String maLoaiKH;

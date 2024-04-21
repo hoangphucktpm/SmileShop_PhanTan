@@ -8,6 +8,8 @@ import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.Timestamp;
 
 import java.util.ArrayList;
@@ -15,10 +17,11 @@ import java.util.Date;
 import java.util.List;
 
 
-public class XemHoaDonImpl implements XemHoaDonDao {
+public class XemHoaDonImpl extends UnicastRemoteObject implements XemHoaDonDao {
+    private static final long serialVersionUID = 1L;
     private EntityManager em;
 
-    public XemHoaDonImpl() {
+    public XemHoaDonImpl() throws RemoteException {
         em = Persistence
                 .createEntityManagerFactory("SQLdb")
                 .createEntityManager();
@@ -26,7 +29,7 @@ public class XemHoaDonImpl implements XemHoaDonDao {
 
 
     @Override
-    public List<HoaDon> getAllHoaDon() {
+    public List<HoaDon> getAllHoaDon() throws RemoteException {
         Query query = em.createQuery("SELECT hd.maHoaDon, hd.tienKhachDua, hd.khachHang.maKH, hd.nhanVien.maNhanvien, " +
                 "hd.tongTien, hd.ngayLapHoaDon, hd.diemTichDuoc FROM HoaDon hd ORDER BY hd.ngayLapHoaDon", Object[].class);
         List<Object[]> results = query.getResultList();
@@ -51,7 +54,7 @@ public class XemHoaDonImpl implements XemHoaDonDao {
     }
 
     @Override
-    public List<CtHoadon> getCT_HoaDon(String mahd) {
+    public List<CtHoadon> getCT_HoaDon(String mahd) throws RemoteException {
         HoaDon hoaDon = em.find(HoaDon.class, mahd);
         if (hoaDon == null) {
             // Handle the case where no HoaDon with the given maHoaDon exists
@@ -67,26 +70,26 @@ public class XemHoaDonImpl implements XemHoaDonDao {
 
 
     @Override
-    public String getTenNV(String manv) {
+    public String getTenNV(String manv) throws RemoteException {
         NhanVien nv = em.find(NhanVien.class, manv);
         return nv.getTenNhanVien();
     }
 
     @Override
-    public String getTenKH(String makh) {
+    public String getTenKH(String makh) throws RemoteException {
         KhachHang kh = em.find(KhachHang.class, makh);
         return kh.getTenKH();
     }
 
 
     @Override
-    public HoaDon getHDTHeoMa(String MaHD) {
+    public HoaDon getHDTHeoMa(String MaHD) throws RemoteException {
         HoaDon hd = em.find(HoaDon.class, MaHD);
         return hd;
     }
 
     @Override
-    public List<HoaDon> getHDTheoTenNV(String tennv) {
+    public List<HoaDon> getHDTheoTenNV(String tennv) throws RemoteException {
         Query query = em.createQuery("SELECT hd.maHoaDon, hd.tienKhachDua, hd.khachHang.maKH, hd.nhanVien.maNhanvien, " +
                 "hd.tongTien, hd.ngayLapHoaDon, hd.diemTichDuoc FROM HoaDon hd WHERE hd.nhanVien.tenNhanVien = :tennv ORDER BY hd.ngayLapHoaDon", Object[].class);
         query.setParameter("tennv", tennv);
@@ -112,7 +115,7 @@ public class XemHoaDonImpl implements XemHoaDonDao {
     }
 
     @Override
-    public List<HoaDon> getHDTheoTenKH(String tenkh) {
+    public List<HoaDon> getHDTheoTenKH(String tenkh) throws RemoteException {
         Query query = em.createQuery("SELECT hd.maHoaDon, hd.tienKhachDua, hd.khachHang.maKH, hd.nhanVien.maNhanvien, " +
                 "hd.tongTien, hd.ngayLapHoaDon, hd.diemTichDuoc FROM HoaDon hd WHERE hd.khachHang.tenKH = :tenkh ORDER BY hd.ngayLapHoaDon", Object[].class);
         query.setParameter("tenkh", tenkh);
@@ -138,7 +141,7 @@ public class XemHoaDonImpl implements XemHoaDonDao {
     }
 
     @Override
-    public List<HoaDon> getHDTheoNgayLap(int ngay, int thang, int nam) {
+    public List<HoaDon> getHDTheoNgayLap(int ngay, int thang, int nam) throws RemoteException {
         TypedQuery<HoaDon> query = em.createQuery(
                 "SELECT hd FROM HoaDon hd " +
                         "JOIN FETCH hd.khachHang kh " +

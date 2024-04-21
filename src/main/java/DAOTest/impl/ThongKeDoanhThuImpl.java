@@ -7,21 +7,24 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
+public class ThongKeDoanhThuImpl extends UnicastRemoteObject implements ThongKeDoanhThuDao {
+    private static final long serialVersionUID = 1L;
     private EntityManager em;
 
-    public ThongKeDoanhThuImpl() {
+    public ThongKeDoanhThuImpl() throws RemoteException {
         em = Persistence
                 .createEntityManagerFactory("SQLdb")
                 .createEntityManager();
     }
 
     @Override
-    public List<ThongKeDoanhThu> getDTQuy(int quy, int ca) {
+    public List<ThongKeDoanhThu> getDTQuy(int quy, int ca) throws RemoteException {
         int startHour, endHour;
         if (ca == 0) {
             startHour = 0;
@@ -67,14 +70,14 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
     }
 
     @Override
-    public int getKhuyemMai(String maKM) {
+    public int getKhuyemMai(String maKM) throws RemoteException {
         return em.createNamedQuery("KhuyenMai.getPercent", Integer.class)
                 .setParameter("maKhuyenMai", maKM)
                 .getSingleResult();
     }
 
     @Override
-    public double tongDoanhThuQuy(int quy, int ca) {
+    public double tongDoanhThuQuy(int quy, int ca) throws RemoteException {
         int startHour, endHour;
         if (ca == 0) {
             startHour = 0;
@@ -103,7 +106,7 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
     }
 
     @Override
-    public List<ThongKeDoanhThu> getDTThang(int thang, int ca) {
+    public List<ThongKeDoanhThu> getDTThang(int thang, int ca) throws RemoteException {
         int startHour, endHour;
         if (ca == 0) {
             startHour = 0;
@@ -149,7 +152,7 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
     }
 
     @Override
-    public Double tongDoanhThuThang(int thang, int ca) {
+    public Double tongDoanhThuThang(int thang, int ca) throws RemoteException {
         int startHour, endHour;
         if (ca == 0) {
             startHour = 0;
@@ -167,8 +170,8 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
         Double result = em.createQuery("SELECT SUM(h.tongTien) " +
                                 "from HoaDon h " +
                                 "JOIN h.nhanVien " +
-                        "WHERE MONTH(h.ngayLapHoaDon) = :thang AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour and year(h.ngayLapHoaDon) = :year",
-                Double.class)
+                                "WHERE MONTH(h.ngayLapHoaDon) = :thang AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour and year(h.ngayLapHoaDon) = :year",
+                        Double.class)
                 .setParameter("thang", thang)
                 .setParameter("startHour", startHour)
                 .setParameter("endHour", endHour)
@@ -178,7 +181,7 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
     }
 
     @Override
-    public List<ThongKeDoanhThu> getDTNam(int nam, int ca) {
+    public List<ThongKeDoanhThu> getDTNam(int nam, int ca) throws RemoteException {
         int startHour, endHour;
         if (ca == 0) {
             startHour = 0;
@@ -221,7 +224,7 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
     }
 
     @Override
-    public Double tongDoanhThuNam(int nam, int ca) {
+    public Double tongDoanhThuNam(int nam, int ca) throws RemoteException {
         int startHour, endHour;
         if (ca == 0) {
             startHour = 0;
@@ -234,10 +237,10 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
             endHour = 22;
         }
         Double result = em.createQuery("SELECT SUM(h.tongTien) " +
-                        "from HoaDon h " +
-                        "JOIN h.nhanVien " +
-                        "WHERE YEAR(h.ngayLapHoaDon) = :nam AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour",
-                Double.class)
+                                "from HoaDon h " +
+                                "JOIN h.nhanVien " +
+                                "WHERE YEAR(h.ngayLapHoaDon) = :nam AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour",
+                        Double.class)
                 .setParameter("nam", nam)
                 .setParameter("startHour", startHour)
                 .setParameter("endHour", endHour)
@@ -246,7 +249,7 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
     }
 
     @Override
-    public List<ThongKeDoanhThu> getDTThangNam(int thang, int nam, int ca) {
+    public List<ThongKeDoanhThu> getDTThangNam(int thang, int nam, int ca) throws RemoteException {
         int startHour, endHour;
         if (ca == 0) {
             startHour = 0;
@@ -289,7 +292,7 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
     }
 
     @Override
-    public Double tongDoanhThuThangNam(int thang, int nam, int ca) {
+    public Double tongDoanhThuThangNam(int thang, int nam, int ca) throws RemoteException {
         int startHour, endHour;
         if (ca == 0) {
             startHour = 0;
@@ -302,10 +305,10 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
             endHour = 22;
         }
         Double result = em.createQuery("SELECT SUM(h.tongTien) " +
-                        "FROM HoaDon h  " +
-                        "JOIN h.nhanVien n " +
-                        "WHERE MONTH(h.ngayLapHoaDon) = :thang AND YEAR(h.ngayLapHoaDon) = :nam AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour",
-                Double.class)
+                                "FROM HoaDon h  " +
+                                "JOIN h.nhanVien n " +
+                                "WHERE MONTH(h.ngayLapHoaDon) = :thang AND YEAR(h.ngayLapHoaDon) = :nam AND HOUR(h.ngayLapHoaDon) >= :startHour  and HOUR(h.ngayLapHoaDon) < :endHour",
+                        Double.class)
                 .setParameter("thang", thang)
                 .setParameter("nam", nam)
                 .setParameter("startHour", startHour)
@@ -313,8 +316,9 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
                 .getSingleResult();
         return (result != null) ? result : 0.0;
     }
+
     @Override
-    public Double tongDoanhThuCuaKhachHang(int top) {
+    public Double tongDoanhThuCuaKhachHang(int top) throws RemoteException {
         LocalDate date = LocalDate.now();
         int month = date.getMonthValue();
         int year = date.getYear();
@@ -330,7 +334,7 @@ public class ThongKeDoanhThuImpl implements ThongKeDoanhThuDao {
     }
 
     @Override
-    public String topKhachHang(int top) {
+    public String topKhachHang(int top) throws RemoteException {
         LocalDate date = LocalDate.now();
         int month = date.getMonthValue();
         int year = date.getYear();

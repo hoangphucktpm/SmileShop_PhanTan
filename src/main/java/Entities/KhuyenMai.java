@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @NoArgsConstructor
@@ -15,7 +16,7 @@ import java.time.LocalDate;
         @NamedQuery(name = "KhuyenMai.findByMaKhuyenMai", query = "SELECT km FROM KhuyenMai km WHERE km.maKhuyenMai = :maKhuyenMai"),
         @NamedQuery(name = "KhuyenMai.getPercent", query = "SELECT km.phanTramKhuyenMai FROM KhuyenMai km WHERE km.maKhuyenMai = :maKhuyenMai")
 })
-public class KhuyenMai {
+public class KhuyenMai implements Serializable {
     @Id
     @Column(name = "MaKhuyenMai", nullable = false, length = 50)
     private String maKhuyenMai;

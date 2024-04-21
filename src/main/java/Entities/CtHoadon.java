@@ -4,9 +4,11 @@ package Entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "CT_HoaDon")
-public class CtHoadon {
+public class CtHoadon implements Serializable {
     @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "MaHoaDon", nullable = false)

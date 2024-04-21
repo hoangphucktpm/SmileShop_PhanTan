@@ -3,6 +3,8 @@ package DAOTest;
 import Entities.KhachHang;
 import Entities.LoaiKhachHang;
 
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -13,18 +15,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+public interface KhachHangDao extends Remote {
+    public List<KhachHang> getAllKH() throws RemoteException;
 
-public interface KhachHangDao {
-    public List<KhachHang> getAllKH();
-    public boolean addKhachHang(KhachHang khachHang);
-    public KhachHang getKhachHang(String maKH);
-    public Boolean updateKhachHang(KhachHang khachHang);
-    public List<LoaiKhachHang> getAllLoaiKH();
-    public List<KhachHang> getKH5KPoint();
-    public String getLoaiKH(String maKH);
-    public KhachHang getKHByName(String tenKH);
-    public List<KhachHang> getByGender(int gioiTinh);
-    public List<KhachHang> getKHByLoaiKH(String tenLoaiKH);
+    public boolean addKhachHang(KhachHang khachHang) throws RemoteException;
+
+    public KhachHang getKhachHang(String maKH) throws RemoteException;
+
+    public Boolean updateKhachHang(KhachHang khachHang) throws RemoteException;
+
+    public List<LoaiKhachHang> getAllLoaiKH() throws RemoteException;
+
+    public List<KhachHang> getKH5KPoint() throws RemoteException;
+
+    public String getLoaiKH(String maKH) throws RemoteException;
+
+    public KhachHang getKHByName(String tenKH) throws RemoteException;
+
+    public List<KhachHang> getByGender(int gioiTinh) throws RemoteException;
+
+    public List<KhachHang> getKHByLoaiKH(String tenLoaiKH) throws RemoteException;
+
+    ;
 
 
 }

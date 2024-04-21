@@ -5,6 +5,8 @@ import Entities.NhanVien;
 import Entities.TaiKhoan;
 import jakarta.persistence.*;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -14,20 +16,21 @@ import java.util.List;
 
 import DAOTest.NhanVienDao;
 
-public class NhanVienImpl implements NhanVienDao {
+public class NhanVienImpl extends UnicastRemoteObject implements NhanVienDao {
+    private static final long serialVersionUID = 1L;
     private EntityManager em;
 
-    public NhanVienImpl() {
+    public NhanVienImpl() throws RemoteException {
         em = Persistence.createEntityManagerFactory("SQLdb").createEntityManager();
     }
 
     @Override
-    public List<NhanVien> getAllNV() {
+    public List<NhanVien> getAllNV() throws RemoteException {
         return this.em.createNamedQuery("NhanVien.findAll", NhanVien.class).getResultList();
     }
 
     @Override
-    public boolean them(String maNV, String tenNV, Date ngaySinh, String CCCD, String sdt, int gend, int sta, int ca, int chuc, String hinh, String Email, String DiaChi) {
+    public boolean them(String maNV, String tenNV, Date ngaySinh, String CCCD, String sdt, int gend, int sta, int ca, int chuc, String hinh, String Email, String DiaChi) throws RemoteException {
         try {
             em.getTransaction().begin();
             NhanVien nhanVien = new NhanVien();
@@ -55,7 +58,7 @@ public class NhanVienImpl implements NhanVienDao {
     }
 
     @Override
-    public boolean sua(String maBanDau, String tenNV, Date ngaySinh, String CCCD, String sdt, int gend, int sta, int ca, int chuc, String hinh, String Email, String DiaChi, String maNV) {
+    public boolean sua(String maBanDau, String tenNV, Date ngaySinh, String CCCD, String sdt, int gend, int sta, int ca, int chuc, String hinh, String Email, String DiaChi, String maNV) throws RemoteException {
         try {
             em.getTransaction().begin();
             NhanVien nhanVien = em.find(NhanVien.class, maBanDau);
@@ -84,7 +87,7 @@ public class NhanVienImpl implements NhanVienDao {
     }
 
     @Override
-    public boolean suakhonganh(String maBanDau, String tenNV, Date ngaySinh, String CCCD, String sdt, int gend, int sta, int ca, int chuc, String Email, String DiaChi, String maNV) {
+    public boolean suakhonganh(String maBanDau, String tenNV, Date ngaySinh, String CCCD, String sdt, int gend, int sta, int ca, int chuc, String Email, String DiaChi, String maNV) throws RemoteException {
         try {
             em.getTransaction().begin();
             NhanVien nhanVien = em.find(NhanVien.class, maBanDau);
@@ -113,7 +116,7 @@ public class NhanVienImpl implements NhanVienDao {
     }
 
     @Override
-    public long soLuongNV() {
+    public long soLuongNV() throws RemoteException {
         try {
             return em.createQuery("SELECT COUNT(n) FROM NhanVien n WHERE n.chucVu = 0 AND n.maNhanvien <> 'admin'", Long.class).getSingleResult();
         } catch (Exception e) {
@@ -123,7 +126,7 @@ public class NhanVienImpl implements NhanVienDao {
     }
 
     @Override
-    public long soLuongQL() {
+    public long soLuongQL() throws RemoteException {
         try {
             return em.createQuery("SELECT COUNT(n) FROM NhanVien n WHERE n.chucVu = 1 AND n.maNhanvien <> 'admin'", Long.class).getSingleResult();
         } catch (Exception e) {
@@ -133,7 +136,7 @@ public class NhanVienImpl implements NhanVienDao {
     }
 
     @Override
-    public NhanVien getNVTHeoMa(String maNV) {
+    public NhanVien getNVTHeoMa(String maNV) throws RemoteException {
         try {
             NhanVien nhanVien = em.find(NhanVien.class, maNV);
             return nhanVien;
@@ -144,7 +147,7 @@ public class NhanVienImpl implements NhanVienDao {
     }
 
     @Override
-    public NhanVien getNVTHeoTen(String tenNV) {
+    public NhanVien getNVTHeoTen(String tenNV) throws RemoteException {
         try {
             TypedQuery<NhanVien> query = em.createQuery("SELECT n FROM NhanVien n WHERE n.tenNhanVien LIKE :tenNV", NhanVien.class);
             query.setParameter("tenNV", "%" + tenNV + "%");
@@ -158,7 +161,7 @@ public class NhanVienImpl implements NhanVienDao {
     }
 
     @Override
-    public NhanVien getNVTHeoSdt(String sdt) {
+    public NhanVien getNVTHeoSdt(String sdt) throws RemoteException {
         try {
             TypedQuery<NhanVien> query = em.createQuery("SELECT n FROM NhanVien n WHERE n.sdt LIKE :sdt", NhanVien.class);
             query.setParameter("sdt", "%" + sdt + "%");
@@ -172,7 +175,7 @@ public class NhanVienImpl implements NhanVienDao {
     }
 
     @Override
-    public List<NhanVien> getNVTHeoCa(int ca) {
+    public List<NhanVien> getNVTHeoCa(int ca) throws RemoteException {
         try {
             TypedQuery<NhanVien> query = em.createQuery("SELECT n FROM NhanVien n WHERE n.caLamViec = :ca AND n.maNhanvien <> 'admin'", NhanVien.class);
             query.setParameter("ca", ca);
@@ -184,7 +187,7 @@ public class NhanVienImpl implements NhanVienDao {
     }
 
     @Override
-    public List<NhanVien> getNVTHeoChuc(int chuc) {
+    public List<NhanVien> getNVTHeoChuc(int chuc) throws RemoteException {
         try {
             TypedQuery<NhanVien> query = em.createQuery("SELECT n FROM NhanVien n WHERE n.chucVu = :chuc AND n.maNhanvien <> 'admin'", NhanVien.class);
             query.setParameter("chuc", chuc);
@@ -196,7 +199,7 @@ public class NhanVienImpl implements NhanVienDao {
     }
 
     @Override
-    public boolean addTaiKhoan(String tk) {
+    public boolean addTaiKhoan(String tk) throws RemoteException {
         try {
             em.getTransaction().begin();
             TaiKhoan taiKhoan = new TaiKhoan();
@@ -223,7 +226,7 @@ public class NhanVienImpl implements NhanVienDao {
     }
 
     @Override
-    public TaiKhoan getTK(String nv) {
+    public TaiKhoan getTK(String nv) throws RemoteException {
         try {
             TypedQuery<TaiKhoan> query = em.createQuery("SELECT t FROM TaiKhoan t JOIN t.tenTaiKhoan n WHERE n.maNhanvien LIKE :nv", TaiKhoan.class);
             query.setParameter("nv", nv);

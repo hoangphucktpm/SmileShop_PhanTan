@@ -2,79 +2,149 @@ package DAOTest;
 
 import Entities.*;
 
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.sql.Date;
 import java.util.List;
 
-public interface SanPhamDao {
-    public List<SanPham> getAllSP();
+public interface SanPhamDao extends Remote {
+    public List<SanPham> getAllSP() throws RemoteException;
 
-    public List<SanPham> timTheoGia(double gia1, double gia2);
+    ;
+
+    public List<SanPham> timTheoGia(double gia1, double gia2) throws RemoteException;
+
+    ;
 
     public boolean them(String maSP, String tenSP, String nhaCungCap, String km, double giaBan, int soluong, Date ngayNhap,
                         String color, String size, String img, String chatLieu, int tinhTrang, String dvt, String loaiSP, int VAT,
-                        double giaBanRa);
+                        double giaBanRa) throws RemoteException;
 
-    public boolean sua(SanPham sanPham);
+    ;
 
-    public List<Entities.LoaiSanPham> getLoaiSP();
+    public boolean sua(SanPham sanPham) throws RemoteException;
 
-    public List<Entities.ChatLieu> getChatLieu();
+    ;
 
-    public ChatLieu getChatLieuOne(String ma);
+    public List<Entities.LoaiSanPham> getLoaiSP() throws RemoteException;
 
-    public LoaiSanPham getLoaiSPOne(String ma);
+    ;
 
-    public List<Entities.NhaCungCap> getTenNCC();
+    public List<Entities.ChatLieu> getChatLieu() throws RemoteException;
 
-    public List<Entities.KhuyenMai> getKMTheoTen();
+    ;
 
-    public KhuyenMai getKMTheoTenOne(String ma);
+    public ChatLieu getChatLieuOne(String ma) throws RemoteException;
 
-    public ChatLieu getCLTheoTenOne(String ma);
+    ;
 
-    public LoaiSanPham getLSPTheoTenOne(String ma);
+    public LoaiSanPham getLoaiSPOne(String ma) throws RemoteException;
 
-    public int getKMTheoPhanTram(String ma);
+    ;
 
-    public int soLuong();
+    public List<Entities.NhaCungCap> getTenNCC() throws RemoteException;
 
-    public int vat(String ma);
+    ;
 
-    public boolean themLoaiSP(Entities.LoaiSanPham loaiSanPham);
+    public List<Entities.KhuyenMai> getKMTheoTen() throws RemoteException;
 
-    public int soLuongLSP();
+    ;
 
-    public boolean themChatLieu(ChatLieu chatLieu);
+    public KhuyenMai getKMTheoTenOne(String ma) throws RemoteException;
 
-    public int soLuongChatLieu();
+    ;
 
-    public String getTenLoaiSP(String maSP);
+    public ChatLieu getCLTheoTenOne(String ma) throws RemoteException;
 
-    public String getTenNhaCC(String maSP);
+    ;
 
-    public String getTenCL(String maSP);
+    public LoaiSanPham getLSPTheoTenOne(String ma) throws RemoteException;
 
-    public SanPham getMa(String Ma);
+    ;
 
-    public SanPham getTenSP(String Ten);
+    public int getKMTheoPhanTram(String ma) throws RemoteException;
 
-    public List<SanPham> getlistTenLoaiSP(String lsp);
+    ;
 
-    public List<SanPham> getlistTenNCC(String nccap);
+    public int soLuong() throws RemoteException;
 
-    public List<SanPham> getlistTenCL(String ChatLieu);
+    ;
 
-    public List<SanPham> getlistTenMauSac(MauSac MS);
+    public int vat(String ma) throws RemoteException;
 
-    public List<SanPham> getlistSize(Size kthuoc);
+    ;
 
-    public String getMoTaChatLieu(String ma);
+    public boolean themLoaiSP(Entities.LoaiSanPham loaiSanPham) throws RemoteException;
 
-    public String getTenChatLieu(String ma);
+    ;
 
-    public String getMaChatLieu(String ten, String moTa);
+    public int soLuongLSP() throws RemoteException;
 
-    public NhaCungCap getMaOne(String MaNCC);
+    ;
+
+    public boolean themChatLieu(ChatLieu chatLieu) throws RemoteException;
+
+    ;
+
+    public int soLuongChatLieu() throws RemoteException;
+
+    ;
+
+    public String getTenLoaiSP(String maSP) throws RemoteException;
+
+    ;
+
+    public String getTenNhaCC(String maSP) throws RemoteException;
+
+    ;
+
+    public String getTenCL(String maSP) throws RemoteException;
+
+    ;
+
+    public SanPham getMa(String Ma) throws RemoteException;
+
+    ;
+
+    public SanPham getTenSP(String Ten) throws RemoteException;
+
+    ;
+
+    public List<SanPham> getlistTenLoaiSP(String lsp) throws RemoteException;
+
+    ;
+
+    public List<SanPham> getlistTenNCC(String nccap) throws RemoteException;
+
+    ;
+
+    public List<SanPham> getlistTenCL(String ChatLieu) throws RemoteException;
+
+    ;
+
+    public List<SanPham> getlistTenMauSac(MauSac MS) throws RemoteException;
+
+    ;
+
+    public List<SanPham> getlistSize(Size kthuoc) throws RemoteException;
+
+    ;
+
+    public String getMoTaChatLieu(String ma) throws RemoteException;
+
+    ;
+
+    public String getTenChatLieu(String ma) throws RemoteException;
+
+    ;
+
+    public String getMaChatLieu(String ten, String moTa) throws RemoteException;
+
+    ;
+
+    public NhaCungCap getMaOne(String MaNCC) throws RemoteException;
+
+    ;
 
 
 }

@@ -6,21 +6,26 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
-public class TinhTrangSanPhamImpl implements TinhTrangSanPhamDao {
+public class TinhTrangSanPhamImpl extends UnicastRemoteObject implements TinhTrangSanPhamDao {
+
+    private static final long serialVersionUID = 1L;
     private EntityManager em;
 
-    public TinhTrangSanPhamImpl() {
+    public TinhTrangSanPhamImpl() throws RemoteException {
         em = Persistence
                 .createEntityManagerFactory("SQLdb")
                 .createEntityManager();
     }
+
     @Override
-    public List<ThongKeSanPham> getSPOUT() {
+    public List<ThongKeSanPham> getSPOUT() throws RemoteException {
         Query query = em.createQuery("select maSp, tensp, s.loaiSanPham.tenLoaiSP, soluong, ngaynhap, gianhap, giaBan, mauSac, s.size " +
                 "from SanPham s where s.soluong = 0");
         List<Object[]> result = query.getResultList();
@@ -43,7 +48,7 @@ public class TinhTrangSanPhamImpl implements TinhTrangSanPhamDao {
     }
 
     @Override
-    public List<ThongKeSanPham> getSPRE() {
+    public List<ThongKeSanPham> getSPRE() throws RemoteException {
         Query query = em.createQuery("select maSp, tensp, s.loaiSanPham.tenLoaiSP, soluong, ngaynhap, gianhap, giaBan, mauSac, s.size " +
                 "from SanPham s where s.soluong > 0");
         List<Object[]> result = query.getResultList();
@@ -65,7 +70,7 @@ public class TinhTrangSanPhamImpl implements TinhTrangSanPhamDao {
     }
 
     @Override
-    public List<ThongKeSanPham> getALMOUT() {
+    public List<ThongKeSanPham> getALMOUT() throws RemoteException {
         Query query = em.createQuery("select maSp, tensp, s.loaiSanPham.tenLoaiSP, soluong, ngaynhap, gianhap, giaBan, mauSac, s.size " +
                 "from SanPham s where s.soluong <= 10 and  soluong > 0");
         List<Object[]> result = query.getResultList();
@@ -88,9 +93,9 @@ public class TinhTrangSanPhamImpl implements TinhTrangSanPhamDao {
 
 
     @Override
-    public List<ThongKeSanPham> getNewAdd(Date date) {
+    public List<ThongKeSanPham> getNewAdd(Date date) throws RemoteException {
         Query query = em.createQuery("select maSp, tensp, s.loaiSanPham.tenLoaiSP, soluong, ngaynhap, gianhap, giaBan, mauSac, s.size " +
-                "from SanPham s where ngaynhap = :date")
+                        "from SanPham s where ngaynhap = :date")
                 .setParameter("date", date);
         List<Object[]> result = query.getResultList();
         List<ThongKeSanPham> resultList = new java.util.ArrayList<>();
@@ -111,7 +116,7 @@ public class TinhTrangSanPhamImpl implements TinhTrangSanPhamDao {
     }
 
     @Override
-    public List<ThongKeSanPham> getOld() {
+    public List<ThongKeSanPham> getOld() throws RemoteException {
         LocalDateTime specificDateTime = LocalDateTime.now().minusMonths(1);
 
         Date specificDate = Date.from(specificDateTime.atZone(ZoneId.systemDefault()).toInstant());
@@ -124,11 +129,11 @@ public class TinhTrangSanPhamImpl implements TinhTrangSanPhamDao {
         List<String> recentProducts = recentQuery.getResultList();
         Set<String> recentProductIds = new HashSet<>(recentProducts);
         Query newQuery = em.createQuery("SELECT s.maSp, s.tensp, s.loaiSanPham.tenLoaiSP, s.soluong, s.ngaynhap, s.gianhap, s.giaBan, s.mauSac, s.size " +
-                "FROM SanPham s " +
-                "LEFT JOIN CtHoadon ct ON s.maSp = ct.maSanPham " +
-                "LEFT JOIN HoaDon h ON h.maHoaDon = ct.maHoaDon " +
-                "WHERE (h.ngayLapHoaDon < :date OR h.maHoaDon IS NULL) AND s.maSp NOT IN :recentIds " +
-                "ORDER BY s.maSp ASC")// Sorting by maSp
+                        "FROM SanPham s " +
+                        "LEFT JOIN CtHoadon ct ON s.maSp = ct.maSanPham " +
+                        "LEFT JOIN HoaDon h ON h.maHoaDon = ct.maHoaDon " +
+                        "WHERE (h.ngayLapHoaDon < :date OR h.maHoaDon IS NULL) AND s.maSp NOT IN :recentIds " +
+                        "ORDER BY s.maSp ASC")// Sorting by maSp
                 .setParameter("date", specificDate)
                 .setParameter("recentIds", recentProductIds);
         List<Object[]> result = newQuery.getResultList();
@@ -150,7 +155,7 @@ public class TinhTrangSanPhamImpl implements TinhTrangSanPhamDao {
     }
 
     @Override
-    public List<ThongKeSanPham> getSold(int day, int month, int year) {
+    public List<ThongKeSanPham> getSold(int day, int month, int year) throws RemoteException {
         Query query = em.createQuery("select s.maSp, s.tensp, s.loaiSanPham.tenLoaiSP, s.soluong, s.ngaynhap, s.gianhap, s.giaBan, s.mauSac, s.size " +
                         "from CtHoadon ct INNER JOIN ct.maSanPham s INNER JOIN ct.maHoaDon h " +
                         "where DAY(h.ngayLapHoaDon) = :day and MONTH(h.ngayLapHoaDon) = :month and YEAR(h.ngayLapHoaDon) = :year " +
@@ -177,7 +182,7 @@ public class TinhTrangSanPhamImpl implements TinhTrangSanPhamDao {
     }
 
     @Override
-    public int soLuongBan(String ma, int day, int month, int year) {
+    public int soLuongBan(String ma, int day, int month, int year) throws RemoteException {
         Query query = em.createQuery("select sum(ct.soLuongSP) from CtHoadon ct INNER JOIN ct.maSanPham s INNER JOIN ct.maHoaDon h " +
                         "where s.maSp = :ma and DAY(h.ngayLapHoaDon) = :day and MONTH(h.ngayLapHoaDon) = :month and YEAR(h.ngayLapHoaDon) = :year")
                 .setParameter("ma", ma)
@@ -208,7 +213,7 @@ public class TinhTrangSanPhamImpl implements TinhTrangSanPhamDao {
     }
 
     @Override
-    public String sanPhamTop(int top) {
+    public String sanPhamTop(int top) throws RemoteException {
         LocalDate date = LocalDate.now();
         int ngay = date.getDayOfMonth();
         int thang = date.getMonthValue();

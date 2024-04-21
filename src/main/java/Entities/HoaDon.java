@@ -4,6 +4,7 @@ package Entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -19,7 +20,7 @@ import java.util.Date;
 })
 
 
-public class HoaDon {
+public class HoaDon implements Serializable {
     @Id
     @Column(name = "MaHoaDon", nullable = false, length = 50)
     private String maHoaDon;
@@ -40,7 +41,6 @@ public class HoaDon {
 
     @Column(name = "NgayLapHoaDon", nullable = false)
     private Timestamp ngayLapHoaDon;
-
 
 
     @Column(name = "DiemTichDuoc", nullable = false)

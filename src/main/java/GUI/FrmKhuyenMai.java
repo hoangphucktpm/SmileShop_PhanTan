@@ -51,6 +51,7 @@ import Entities.SanPham;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -159,7 +160,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
      * @throws SQLException
      * @throws ClassNotFoundException
      */
-    public FrmKhuyenMai() {
+    public FrmKhuyenMai() throws RemoteException {
         pnlThongTin = new JPanel();
         getContentPane().setBackground(new Color(129, 250, 243));
         getContentPane().setLayout(null);
@@ -550,7 +551,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
             try {
                 LuuThongTin();
 
-            } catch (ClassNotFoundException | ParseException | SQLException e1) {
+            } catch (ClassNotFoundException | ParseException | SQLException | RemoteException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
@@ -636,7 +637,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
     }
 
     // Thêm khuyến mãi mới và sửa khuyến mãi
-    public void LuuThongTin() throws ParseException, ClassNotFoundException, SQLException {
+    public void LuuThongTin() throws ParseException, ClassNotFoundException, SQLException, RemoteException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String maKM = txtMaKM.getText();
         String tenkm = txtTenKM.getText();
@@ -749,7 +750,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
     }
 
     // Đọc dữ liệu lên
-    public void docDuLieu() {
+    public void docDuLieu() throws RemoteException {
         List<KhuyenMai> list = kmDao.getAllKhuyenMai();
         tablemodel1 = (DefaultTableModel) tableThongTinKM.getModel();
         DefaultComboBoxModel<Integer> cboModelPhanTram = new DefaultComboBoxModel<>();
@@ -779,7 +780,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
     }
 
     // Đọc dữ liệu sản phẩm
-    public void docDuLieuSP() {
+    public void docDuLieuSP() throws RemoteException {
         List<SanPham> list = daoSP.getAllSP();
         JCheckBox chkADD = new JCheckBox();
         tablemodel.setRowCount(0);
@@ -1034,7 +1035,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
     }
 
     //	Tự động check các sản phẩm đã có khuyến mãi
-    public void locDanhSachSanPhamApDung(String maKM) {
+    public void locDanhSachSanPhamApDung(String maKM) throws RemoteException {
         List<SanPham> list = daoSP.getAllSP();
         // Kiểm tra giá trị cột 2 của mỗi dòng
         for (SanPham x : list) {
@@ -1051,7 +1052,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
     }
 
     //Tìm kiếm sản phẩm để áp dụng khuyến mãi
-    public void timSanPham() {
+    public void timSanPham() throws RemoteException {
         if (flag == 1) {
             String selectedMaSP = cbbTimKiemSP.getSelectedItem().toString();
 

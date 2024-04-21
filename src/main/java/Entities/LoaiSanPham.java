@@ -5,9 +5,11 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @NoArgsConstructor
 @Entity
-public class LoaiSanPham {
+public class LoaiSanPham implements Serializable {
     @Id
     @Column(name = "MaLoaiSP", nullable = false, length = 50)
     private String maLoaiSP;
