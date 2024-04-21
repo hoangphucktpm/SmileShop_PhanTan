@@ -1,10 +1,9 @@
 package GUI;
 
-import DAO.NhaCungCap_Dao;
 import DAOTest.NhaCungCapDao;
 import DAOTest.impl.NhaCungCapImpl;
 import Database.ConnectDatabase;
-import Entity.NhaCungCap;
+import Entities.NhaCungCap;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -58,7 +57,6 @@ public class FrmNhaCungCap extends JFrame implements ActionListener, MouseListen
     private JRadioButton rdStatus;
     private JButton btnTim;
     private JButton btnResetTim;
-    private NhaCungCap_Dao dao = new NhaCungCap_Dao();
     private List<String> listMa = new ArrayList<>();
     private List<String> listNCC = new ArrayList<>();
     private List<String> listTimNCC = new ArrayList<>();

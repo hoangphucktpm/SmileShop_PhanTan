@@ -70,8 +70,6 @@ public interface SanPhamDao extends Remote {
 
     ;
 
-    public int vat(String ma) throws RemoteException;
-
     ;
 
     public boolean themLoaiSP(Entities.LoaiSanPham loaiSanPham) throws RemoteException;
@@ -90,9 +88,9 @@ public interface SanPhamDao extends Remote {
 
     ;
 
-    public String getTenLoaiSP(String maSP) throws RemoteException;
-
-    ;
+//    public String getTenLoaiSP(String maSP) throws RemoteException;
+//
+//    ;
 
     public String getTenNhaCC(String maSP) throws RemoteException;
 

@@ -224,14 +224,6 @@ public class SanPhamImpl extends UnicastRemoteObject implements SanPhamDao {
 
 
     @Override
-    public int vat(String ma) throws RemoteException {
-        Number vat = (Number) em.createNamedQuery("SanPham.vat")
-                .setParameter("ma", ma)
-                .getSingleResult();
-        return vat.intValue();
-    }
-
-    @Override
     public boolean themLoaiSP(Entities.LoaiSanPham loaiSanPham) throws RemoteException {
         EntityTransaction tx = em.getTransaction();
         try {
@@ -274,13 +266,13 @@ public class SanPhamImpl extends UnicastRemoteObject implements SanPhamDao {
         return result.intValue();
     }
 
-    @Override
-    public String getTenLoaiSP(String maSP) throws RemoteException {
-        String ten = (String) em.createNamedQuery("SanPham.getTenLoaiSP")
-                .setParameter("maSP", maSP)
-                .getSingleResult();
-        return ten;
-    }
+//    @Override
+//    public String getTenLoaiSP(String maSP) throws RemoteException {
+//        String ten = (String) em.createNamedQuery("SanPham.getTenLoaiSP")
+//                .setParameter("maSP", maSP)
+//                .getSingleResult();
+//        return ten;
+//    }
 
     @Override
     public String getTenNhaCC(String maSP) throws RemoteException {

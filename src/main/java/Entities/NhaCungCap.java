@@ -36,7 +36,7 @@ public class NhaCungCap implements Serializable {
     private String diaChi;
 
     @Column(name = "TinhTrang", columnDefinition = "tinyint not null")
-    private Short tinhTrang;
+    private int tinhTrang;
 
     public String getMaNhaCungCap() {
         return maNhaCungCap;
@@ -78,15 +78,15 @@ public class NhaCungCap implements Serializable {
         this.diaChi = diaChi;
     }
 
-    public Short getTinhTrang() {
+    public int getTinhTrang() {
         return tinhTrang;
     }
 
-    public void setTinhTrang(Short tinhTrang) {
+    public void setTinhTrang(int tinhTrang) {
         this.tinhTrang = tinhTrang;
     }
 
-    public NhaCungCap(String maNhaCungCap, String tenNhaCungCap, String sdt, String email, String diaChi, Short tinhTrang) {
+    public NhaCungCap(String maNhaCungCap, String tenNhaCungCap, String sdt, String email, String diaChi, int tinhTrang) {
         this.maNhaCungCap = maNhaCungCap;
         this.tenNhaCungCap = tenNhaCungCap;
         this.sdt = sdt;
