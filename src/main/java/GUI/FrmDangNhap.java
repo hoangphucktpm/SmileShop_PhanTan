@@ -171,17 +171,22 @@ public class FrmDangNhap extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Object o = e.getSource();
-        if (o.equals(btnDangNhap)) {
+        try {
+            Object o = e.getSource();
+            if (o.equals(btnDangNhap)) {
 
-            logIn();
+                logIn();
 
-        } else if (o.equals(btnQMK)) {
-            FrmQuenMatKhau frmQuenMatKhau = new FrmQuenMatKhau();
-            frmQuenMatKhau.setVisible(true);
-            this.setVisible(false);
-        } else if (o.equals(btnLamMoi)) {
-            lammoi();
+            } else if (o.equals(btnQMK)) {
+                FrmQuenMatKhau frmQuenMatKhau = new FrmQuenMatKhau();
+                frmQuenMatKhau.setVisible(true);
+                this.setVisible(false);
+            } else if (o.equals(btnLamMoi)) {
+                lammoi();
+            }
+        } catch (RemoteException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
         }
     }
 

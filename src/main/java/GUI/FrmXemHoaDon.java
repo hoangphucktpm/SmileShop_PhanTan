@@ -39,6 +39,7 @@ import Entities.HoaDon;
 import Entities.SanPham;
 
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -128,7 +129,7 @@ public class FrmXemHoaDon extends JFrame implements ActionListener {
     /**
      * Create the frame.
      */
-    public FrmXemHoaDon() {
+    public FrmXemHoaDon() throws RemoteException {
         pnlThongTin = new JPanel();
         getContentPane().setBackground(new Color(129, 250, 243));
         getContentPane().setLayout(null);
@@ -342,7 +343,13 @@ public class FrmXemHoaDon extends JFrame implements ActionListener {
                 double diemTichDuoc = tongThanhToan * 0.01;
                 txtDiemTichDuoc.setText(String.valueOf(diemTichDuoc));
 
-                String sdt = kh_dao.getKHByName(txtTenKH.getText()).getSdt();
+
+                String sdt = null;
+                try {
+                    sdt = kh_dao.getKHByName(txtTenKH.getText()).getSdt();
+                } catch (RemoteException e1) {
+                    e1.printStackTrace();
+                }
 
                 txtSDT.setText(sdt);
 
@@ -350,7 +357,12 @@ public class FrmXemHoaDon extends JFrame implements ActionListener {
                     String selectedInvoiceCode = (String) tblHD.getValueAt(selectedRow, 1);
                     // change the way the CtHoadon objects are fetched
                     List<CtHoadon> list = getInvoiceDetails(selectedInvoiceCode);
-                    List<SanPham> listSP = sp_Dao.getAllSP();
+//                    List<SanPham> listSP = sp_Dao.getAllSP();
+                    try {
+                        List<SanPham> listSP = sp_Dao.getAllSP();
+                    } catch (RemoteException e1) {
+                        e1.printStackTrace();
+                    }
                     xoaTableChiTiet();
 
                     DefaultTableModel detailsModel = (DefaultTableModel) table_CTHD.getModel();
@@ -509,8 +521,13 @@ public class FrmXemHoaDon extends JFrame implements ActionListener {
     }
 
     private List<CtHoadon> getInvoiceDetails(String invoiceCode) {
-        List<CtHoadon> details = hd_dao.getCT_HoaDon(invoiceCode);
-
+//        List<CtHoadon> details = hd_dao.getCT_HoaDon(invoiceCode);
+        List<CtHoadon> details = null;
+        try {
+            details = hd_dao.getCT_HoaDon(invoiceCode);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         return details;
     }
 
@@ -532,7 +549,13 @@ public class FrmXemHoaDon extends JFrame implements ActionListener {
                 int ngay = ngayCld.get(Calendar.DATE);
                 int thang = ngayCld.get(Calendar.MONTH) + 1;
                 int nam = ngayCld.get(Calendar.YEAR);
-                List<HoaDon> hds = hd_dao.getHDTheoNgayLap(ngay, thang, nam);
+//                List<HoaDon> hds = hd_dao.getHDTheoNgayLap(ngay, thang, nam);
+                List<HoaDon> hds = null;
+                try {
+                    hds = hd_dao.getHDTheoNgayLap(ngay, thang, nam);
+                } catch (RemoteException e1) {
+                    e1.printStackTrace();
+                }
 
                 if (hds.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Không có hóa đơn cho ngày đã chọn.", "Thông báo",
@@ -561,7 +584,11 @@ public class FrmXemHoaDon extends JFrame implements ActionListener {
 
     public void docDuLieuHD() {
         int d = 1;
-        list = hd_dao.getAllHoaDon();
+        try {
+            list = hd_dao.getAllHoaDon();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
         for (HoaDon x : list) {
@@ -583,7 +610,12 @@ public class FrmXemHoaDon extends JFrame implements ActionListener {
      */
     public void updateCombobox() {
         int d = 1;
-        List<HoaDon> list = hd_dao.getAllHoaDon();
+//        List<HoaDon> list = hd_dao.getAllHoaDon();
+        try {
+            List<HoaDon> list = hd_dao.getAllHoaDon();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         cbTimKiem.removeAllItems();
 
@@ -675,7 +707,17 @@ public class FrmXemHoaDon extends JFrame implements ActionListener {
         if (rdMaHD.isSelected()) {
             int d = 1;
             String ma = cbTimKiem.getSelectedItem().toString();
-            HoaDon x = hd_dao.getHDTHeoMa(ma);
+//            HoaDon x = hd_dao.getHDTHeoMa(ma);
+            HoaDon x = null;
+            try {
+                x = hd_dao.getHDTHeoMa(ma);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            if (x == null) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy hóa đơn có mã " + ma);
+                return;
+            }
 
             xoaTableChiTiet();
             xoaTableHoaDon();
@@ -698,38 +740,47 @@ public class FrmXemHoaDon extends JFrame implements ActionListener {
             int d = 1;
 
             String ma = cbTimKiem.getSelectedItem().toString();
-            List<HoaDon> hds = hd_dao.getHDTheoTenKH(ma);
-            for (HoaDon x : hds) {
+//            List<HoaDon> hds = hd_dao.getHDTheoTenKH(ma);
+            try {
+                List<HoaDon> hds = hd_dao.getHDTheoTenKH(ma);
+                for (HoaDon x : hds) {
 
-                String nhanVien = x.getNhanVien().getTenNhanVien();
-                String khachHang = x.getKhachHang().getTenKH();
-                tblModelHoaDon.addRow(new Object[]{d++, x.getMaHoaDon(), x.getNgayLapHoaDon(), khachHang, nhanVien,
-                        tien.format(x.getTongTien())
+                    String nhanVien = x.getNhanVien().getTenNhanVien();
+                    String khachHang = x.getKhachHang().getTenKH();
+                    tblModelHoaDon.addRow(new Object[]{d++, x.getMaHoaDon(), x.getNgayLapHoaDon(), khachHang, nhanVien,
+                            tien.format(x.getTongTien())
 
-                });
+                    });
+                }
+
+                tblHD.setModel(tblModelHoaDon);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+
             }
-
-            tblHD.setModel(tblModelHoaDon);
-
         }
         if (rdTenNV.isSelected()) {
             int d = 1;
 
             String ma = cbTimKiem.getSelectedItem().toString();
-            List<HoaDon> hds = hd_dao.getHDTheoTenNV(ma);
-            for (HoaDon x : hds) {
+//            List<HoaDon> hds = hd_dao.getHDTheoTenNV(ma);
+            try {
+                List<HoaDon> hds = hd_dao.getHDTheoTenNV(ma);
+                for (HoaDon x : hds) {
 
-                String nhanVien = x.getNhanVien().getTenNhanVien();
-                String khachHang = x.getKhachHang().getTenKH();
-                tblModelHoaDon.addRow(new Object[]{d++, x.getMaHoaDon(), x.getNgayLapHoaDon(), khachHang, nhanVien,
-                        tien.format(x.getTongTien())
+                    String nhanVien = x.getNhanVien().getTenNhanVien();
+                    String khachHang = x.getKhachHang().getTenKH();
+                    tblModelHoaDon.addRow(new Object[]{d++, x.getMaHoaDon(), x.getNgayLapHoaDon(), khachHang, nhanVien,
+                            tien.format(x.getTongTien())
 
-                });
+                    });
+                }
+
+                tblHD.setModel(tblModelHoaDon);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+
             }
-
-            tblHD.setModel(tblModelHoaDon);
-
         }
-
     }
 }

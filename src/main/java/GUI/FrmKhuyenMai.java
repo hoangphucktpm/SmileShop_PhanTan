@@ -516,7 +516,12 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
         Object o = e.getSource();
         if (o.equals(btnThem)) {
             if (chkThem == false)
-                themKM();
+//                themKM();
+                try {
+                    themKM();
+                } catch (RemoteException remoteException) {
+                    remoteException.printStackTrace();
+                }
             else if (chkThem == true) {
                 chkThem = false;
                 lock = false;
@@ -524,21 +529,49 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
                 btnThem.setText("Thêm");
                 btnThem.setIcon(new ImageIcon("Anh\\them.png"));
                 btnSua.setEnabled(true);
-                docDuLieuSP();
+//                docDuLieuSP();
+                try {
+                    docDuLieuSP();
+                } catch (RemoteException remoteException) {
+                    remoteException.printStackTrace();
+                }
             }
         } else if (o.equals(btnLamMoiCT)) {
-            xoaTrang();
+            try {
+                xoaTrang();
+            } catch (RemoteException remoteException) {
+                remoteException.printStackTrace();
+            }
         } else if (o.equals(btnTimKiem)) {
             if (gr2.isSelected(null)) {
                 timTheoNgay();
             } else
-                TimKiem();
+                try {
+                    TimKiem();
+                } catch (RemoteException remoteException) {
+                    remoteException.printStackTrace();
+                }
         } else if (o.equals(btnLamMoiTimKiem)) {
-            xoaTrangThanhTK();
-            xoaTrang();
+//            xoaTrangThanhTK();
+//            xoaTrang();
+            try {
+                xoaTrangThanhTK();
+            } catch (RemoteException remoteException) {
+                remoteException.printStackTrace();
+            }
+            try {
+                xoaTrang();
+            } catch (RemoteException remoteException) {
+                remoteException.printStackTrace();
+            }
         } else if (o.equals(btnSua)) {
             if (chkSua == false)
-                suaKM();
+//                suaKM();
+                try {
+                    suaKM();
+                } catch (RemoteException remoteException) {
+                    remoteException.printStackTrace();
+                }
             else if (chkSua == true) {
                 chkSua = false;
                 lock = false;
@@ -556,9 +589,19 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
                 e1.printStackTrace();
             }
         } else if (o.equals(rdMa) || o.equals(rdPhanTram) || o.equals(rdTen) || o.equals(rdTrangThai)) {
-            updateCombobox();
+//            updateCombobox();
+            try {
+                updateCombobox();
+            } catch (RemoteException remoteException) {
+                remoteException.printStackTrace();
+            }
         } else if (o.equals(cbbTimKiemSP)) {
-            timSanPham();
+//            timSanPham();
+            try {
+                timSanPham();
+            } catch (RemoteException remoteException) {
+                remoteException.printStackTrace();
+            }
         }
 
     }
@@ -566,7 +609,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
     private int flag = 0;
 
     // Sửa chương trình khuyến mãi
-    private void suaKM() {
+    private void suaKM() throws RemoteException {
         lock = true;
         chkSua = true;
         khoaText(lock);
@@ -578,7 +621,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
     }
 
     //Cho phép thêm khuyến mãi
-    private void themKM() {
+    private void themKM() throws RemoteException {
         lock = true;
         chkThem = true;
         khoaText(lock);
@@ -591,7 +634,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
     }
 
     // Xóa trắng thông tin
-    private void xoaTrang() {
+    private void xoaTrang() throws RemoteException {
 
         txtMaKM.setText(deFaultID());
         txtTenKM.setText("");
@@ -623,7 +666,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
     }
 
     // Làm mới thanh tìm kiếm
-    private void xoaTrangThanhTK() {
+    private void xoaTrangThanhTK() throws RemoteException {
         gr2.clearSelection();
         cbbTimKiem.setSelectedItem("");
         deleteAllDataTable();
@@ -797,7 +840,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
     }
 
     // Đọc dữ liệu sản phẩm
-    public void docDuLieuSPByMaKM(String makm) {
+    public void docDuLieuSPByMaKM(String makm) throws RemoteException {
         flag = 0;
         List<SanPham> list = daoSP.getAllSP();
 
@@ -810,7 +853,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
     }
 
     // Mã khuyến mãi tự động
-    public String deFaultID() {
+    public String deFaultID() throws RemoteException {
         Long n = kmDao.soLuongCTKM() + 1;
         String soLuongKM = String.format("%03d", n);
         String deFault = "KM" + soLuongKM;
@@ -818,7 +861,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
     }
 
     //	Lưu dữ liệu vào comboBOx
-    public void updateCombobox() {
+    public void updateCombobox() throws RemoteException {
 
         List<KhuyenMai> listKM = kmDao.getAllKhuyenMai();
         List<String> trangThaiList = new ArrayList<>();
@@ -850,7 +893,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
     }
 
     // Tìm chương trình khuyến mãi
-    public void TimKiem() {
+    public void TimKiem() throws RemoteException {
         deleteAllDataTable();
         String tim = "";
         java.util.Date timngaybd = txtTimStartDate.getDate();
@@ -907,7 +950,13 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
 
         if (rdTrangThai.isSelected()) {
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-            List<KhuyenMai> list = kmDao.getAllKhuyenMai();
+//            List<KhuyenMai> list = kmDao.getAllKhuyenMai();
+            List<KhuyenMai> list = null;
+            try {
+                list = kmDao.getAllKhuyenMai();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             for (KhuyenMai x : list) {
                 String trangThaiText = x.getTrangThai() == 0 ? "Đang áp dụng" : "Hết hạn";
 
@@ -965,7 +1014,6 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
         chkApAll.setEnabled(lock);
         btnLuu.setEnabled(lock);
         table_SP.setEnabled(lock);
-
     }
 
     // Sự kiện click
@@ -973,7 +1021,11 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
     public void mouseClicked(MouseEvent e) {
         Object o = e.getSource();
         if (o.equals(tableThongTinKM)) {
-            clickTrongKhuyenMai();
+            try {
+                clickTrongKhuyenMai();
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -1001,7 +1053,7 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
 
     }
 
-    public void clickTrongKhuyenMai() {
+    public void clickTrongKhuyenMai() throws RemoteException {
         docDuLieuSP();
         btnThem.setEnabled(false);
         int row = tableThongTinKM.getSelectedRow();
@@ -1101,14 +1153,26 @@ public class FrmKhuyenMai extends JFrame implements ActionListener, MouseListene
                     tablemodel.setValueAt(true, i, 2);
                 }
             } else {
-                List<SanPham> list = daoSP.getAllSP();
+//                List<SanPham> list = daoSP.getAllSP();
+                List<SanPham> list = null;
+                try {
+                    list = daoSP.getAllSP();
+                } catch (RemoteException e1) {
+                    e1.printStackTrace();
+                }
                 selectedRowsValues.clear();
                 for (int i = 0; i < table_SP.getRowCount(); i++) {
 
                     for (SanPham s : list) {
 
                         if (s.getMaSp().equalsIgnoreCase(table_SP.getValueAt(i, 0).toString())) {
-                            String km = kmDao.layKhuyenMaiTuSanPham(s.getMaSp());
+//                            String km = kmDao.layKhuyenMaiTuSanPham(s.getMaSp());
+                            String km = null;
+                            try {
+                                km = kmDao.layKhuyenMaiTuSanPham(s.getMaSp());
+                            } catch (RemoteException e1) {
+                                e1.printStackTrace();
+                            }
                             if (km == null)
                                 tablemodel.setValueAt(false, i, 2);
 

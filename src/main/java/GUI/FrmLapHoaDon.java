@@ -46,6 +46,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.rmi.RemoteException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -100,7 +101,7 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
     private JButton btnXoaAll;
     public static TaiKhoan taiKhoan;
     public static int i = 0;
-    private static LapHoaDonDao LHD_dao = new LapHoaDonImpl();
+    private LapHoaDonDao LHD_dao = new LapHoaDonImpl();
     private FrmXuatHoaDon frmXuatHD = new FrmXuatHoaDon();
     private XemHoaDonDao xem_dao = new XemHoaDonImpl();
     private NhanVienDao dao = new NhanVienImpl();
@@ -178,7 +179,7 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
     /**
      * Create the frame.
      */
-    public FrmLapHoaDon() {
+    public FrmLapHoaDon() throws RemoteException {
         pnlThongTin = new JPanel();
         getContentPane().setBackground(new Color(129, 250, 243));
         getContentPane().setLayout(null);
@@ -633,7 +634,12 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
             XoatrangthanhTK();
             xoaSLSanPham();
         } else if (o.equals(btnThemSP)) {
-            Themsoluong();
+//            Themsoluong();
+            try {
+                Themsoluong();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         } else if (o.equals(btnHangCho)) {
             themHangCho();
         } else if (o.equals(btnThanhToan)) {
@@ -716,7 +722,12 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
         Map<String, Object> hoaDonVaChiTiet = new HashMap<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy , HH:mm");
         String maHoaDon = txtMaHD.getText();
-        String nhanVien = LHD_dao.getTenNV(tenNhanVien);
+        String nhanVien = null;
+        try {
+            nhanVien = LHD_dao.getTenNV(tenNhanVien);
+        } catch (Exception e) {
+            nhanVien = "admin";
+        }
         String ngayLap = LocalDateTime.now().format(formatter);
         String maKH = txtMaKH.getText();
         String hoTenKh = txtTenKH.getText();
@@ -804,7 +815,7 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
     }
 
     //	Thêm sản phẩm mới vào danh sách
-    public void Themsoluong() {
+    public void Themsoluong() throws RemoteException {
         int selectedRow = table_SP.getSelectedRow();
         int n = table_CTHD.getRowCount() + 1;
 
@@ -826,19 +837,44 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
                             lblLoiSP.setText("Số lượng sản phẩm phải lớn hơn 0.");
                         } else if (soLuongSPObj.matches("^[0-9]+$")) {
                             int slInt = Integer.parseInt(soLuongSPObj);
-                            int soLuongDaBan = LHD_dao.soLuongSPDaBan(masp1);
-                            int soLuongNhap = LHD_dao.soLuongNhap(masp1);
+                            int soLuongDaBan = 0;
+                            try {
+                                soLuongDaBan = LHD_dao.soLuongSPDaBan(masp1);
+                            } catch (Exception e) {
+                                soLuongDaBan = 0;
+                            }
+                            int soLuongNhap = 0;
+                            try {
+                                soLuongNhap = LHD_dao.soLuongNhap(masp1);
+                            } catch (Exception e) {
+                                soLuongNhap = 0;
+                            }
 
                             if ((slInt) <= soLuongNhap) {
-                                SanPham x = daoSP.getMa(masp1);
+                                SanPham x = null;
+                                try {
+                                    x = daoSP.getMa(masp1);
+                                } catch (Exception e) {
+                                    x = null;
+                                }
                                 KhuyenMai khuyenMai = x.getKhuyenMai();
                                 String TenKm = null;
                                 if (khuyenMai != null) {
-                                    TenKm = LHD_dao.getKMTheoTen(khuyenMai.getMaKhuyenMai());
+                                    TenKm = null;
+                                    try {
+                                        TenKm = LHD_dao.getKMTheoTen(khuyenMai.getMaKhuyenMai());
+                                    } catch (Exception e) {
+                                        TenKm = null;
+                                    }
                                 } else {
                                     // Handle the case where khuyenMai is null
                                 }
-                                int km = LHD_dao.getKMTheoPhanTram(TenKm);
+                                int km = 0;
+                                try {
+                                    km = LHD_dao.getKMTheoPhanTram(TenKm);
+                                } catch (Exception e) {
+                                    km = 0;
+                                }
                                 double giaBan = x.getGiaBan();
                                 double soTienKhuyenMai = ((giaBan * km) / 100);
                                 double tienKM = 0;
@@ -936,29 +972,60 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
     }
 
     public void docDuLieuSP() {
-        List<SanPham> list = daoSP.getAllSP();
+        List<SanPham> list = null;
+        try {
+            list = daoSP.getAllSP();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         DefaultTableModel tablemodel = (DefaultTableModel) table_SP.getModel();
 
         for (SanPham x : list) {
             KhuyenMai khuyenMai = x.getKhuyenMai();
             String tenKm = null;
             if (khuyenMai != null) {
-                tenKm = LHD_dao.getKMTheoTen(khuyenMai.getMaKhuyenMai());
+                tenKm = null;
+                try {
+                    tenKm = LHD_dao.getKMTheoTen(khuyenMai.getMaKhuyenMai());
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             } else {
                 // Handle the case where khuyenMai is null
             }
-            int km = LHD_dao.getKMTheoPhanTram(tenKm);
+//            int km = LHD_dao.getKMTheoPhanTram(tenKm);
+            try {
+                int km = LHD_dao.getKMTheoPhanTram(tenKm);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+//            double giaBan = x.getGiaBan();
+//            float VAT = x.getVat();
+////            if (daoSP.vat(x.getMaSp()) == 1) {
+//            try {
+//
+//                VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
+//            } else
+//                VAT = 0;
+//        }
+//    }
             double giaBan = x.getGiaBan();
             float VAT = x.getVat();
-            if (daoSP.vat(x.getMaSp()) == 1) {
 
-                VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
-            } else
-                VAT = 0;
+            try {
+                if (daoSP.vat(x.getMaSp()) == 1) {
+                    VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
+                } else {
+                    VAT = 0;
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void updateComBoBox() {
+    public void updateComBoBox() throws RemoteException {
         List<SanPham> list = daoSP.getAllSP();
         for (SanPham x : list) {
             cboTimSP.addItem(x.getMaSp());
@@ -1103,11 +1170,21 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
     public String updateMaHD() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
         String ngayLap = LocalDateTime.now().format(formatter);
-        int n = LHD_dao.soLuongHD() + 1 + table_dscho.getRowCount();
+        int n = 0;
+        try {
+            n = LHD_dao.soLuongHD() + 1 + table_dscho.getRowCount();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         String soLuongHDDformatted = String.format("%04d", n);
         String maHoaDon = "HD" + soLuongHDDformatted + tenNhanVien + ngayLap;
 
-        List<HoaDon> hd = LHD_dao.getAllLapHoaDon();
+        List<HoaDon> hd = null;
+        try {
+            hd = LHD_dao.getAllLapHoaDon();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         model = (DefaultTableModel) table_dscho.getModel();
         int count = model.getRowCount();
         for (HoaDon x : hd) {
@@ -1157,7 +1234,12 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
         DefaultTableModel tablemodel = (DefaultTableModel) table_SP.getModel();
         tablemodel.setRowCount(0); // Xóa dữ liệu hiện tại trong bảng
 
-        List<SanPham> list = daoSP.getAllSP();
+        List<SanPham> list = null;
+        try {
+            list = daoSP.getAllSP();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         for (SanPham x : list) {
             int soLuong = x.getSoluong();
             float vatValue = x.getVat();
@@ -1167,11 +1249,22 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
             KhuyenMai khuyenMai = x.getKhuyenMai();
             String TenKm = null;
             if (khuyenMai != null) {
-                TenKm = LHD_dao.getKMTheoTen(khuyenMai.getMaKhuyenMai());
+                TenKm = null;
+                try {
+                    TenKm = LHD_dao.getKMTheoTen(khuyenMai.getMaKhuyenMai());
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             } else {
                 // Handle the case where khuyenMai is null
             }
-            int km = LHD_dao.getKMTheoPhanTram(TenKm);
+            int km = Integer.parseInt(null);
+            try {
+                km = LHD_dao.getKMTheoPhanTram(TenKm);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
             for (int i = 0; i < table_CTHD.getRowCount(); i++) {
                 if (table_CTHD.getValueAt(i, 1).toString().equals(selectedMaSP)) {
                     try {
@@ -1336,7 +1429,12 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy , HH:mm");
             String maHoaDon = txtMaHD.getText();
-            String nhanVien = LHD_dao.getTenNV(tenNhanVien);
+            String nhanVien = null;
+            try {
+                nhanVien = LHD_dao.getTenNV(tenNhanVien);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             String ngayLap = LocalDateTime.now().format(formatter);
             String maKH = txtMaKH.getText();
             String hoTenKh = txtTenKH.getText();
@@ -1391,12 +1489,20 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
                     tongkm);
 
             // Cập nhật hoá đơn và chi tiết hoá đơn trong cơ sở dữ liệu
-            LHD_dao.upDateHoaDon(maHoaDon, tkd, diemTichDuoc, tenNhanVien, maKH, tongThanhToan);
+//            LHD_dao.upDateHoaDon(maHoaDon, tkd, diemTichDuoc, tenNhanVien, maKH, tongThanhToan);
+            try {
+                LHD_dao.upDateHoaDon(maHoaDon, tkd, diemTichDuoc, tenNhanVien, maKH, tongThanhToan);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             for (int i = 0; i < table_CTHD.getRowCount(); i++) {
                 try {
                     int soLuongBan = Integer.parseInt(table_CTHD.getValueAt(i, 7).toString().replace(",", ""));
                     String maSanPham = table_CTHD.getValueAt(i, 1).toString();
+//                    LHD_dao.addCT_HoaDon(maHoaDon, maSanPham, soLuongBan);
                     LHD_dao.addCT_HoaDon(maHoaDon, maSanPham, soLuongBan);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -1411,7 +1517,12 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
 
             // Xóa dữ liệu, cập nhật điểm và dọn dẹp bảng
             HuyHD();
-            LHD_dao.updateDiem(tinhDTLHienCoDouble(diemtichluy, diemsudung, diemtichduoc), soDT);
+//            LHD_dao.updateDiem(tinhDTLHienCoDouble(diemtichluy, diemsudung, diemtichduoc), soDT);
+            try {
+                LHD_dao.updateDiem(tinhDTLHienCoDouble(diemtichluy, diemsudung, diemtichduoc), soDT);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             deleteAllDataTable();
         }
     }
@@ -1882,7 +1993,12 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
             DefaultTableModel tablemodel = (DefaultTableModel) table_SP.getModel();
             tablemodel.setRowCount(0); // Xóa dữ liệu hiện tại trong bảng
 
-            List<SanPham> list = daoSP.getAllSP();
+            List<SanPham> list = null;
+            try {
+                list = daoSP.getAllSP();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             for (SanPham x : list) {
                 int soLuong = x.getSoluong();
                 float vatValue = x.getVat();
@@ -1892,11 +2008,22 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
                 KhuyenMai khuyenMai = x.getKhuyenMai();
                 String TenKm = null;
                 if (khuyenMai != null) {
-                    TenKm = LHD_dao.getKMTheoTen(khuyenMai.getMaKhuyenMai());
+//                    TenKm = LHD_dao.getKMTheoTen(khuyenMai.getMaKhuyenMai());
+                    try {
+                        TenKm = LHD_dao.getKMTheoTen(khuyenMai.getMaKhuyenMai());
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     // Handle the case where khuyenMai is null
                 }
-                int km = LHD_dao.getKMTheoPhanTram(TenKm);
+//                int km = LHD_dao.getKMTheoPhanTram(TenKm);
+                int km = 0; // Initialize km outside the try-catch block
+                try {
+                    km = LHD_dao.getKMTheoPhanTram(TenKm);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 for (int i = 0; i < table_CTHD.getRowCount(); i++) {
                     if (table_CTHD.getValueAt(i, 1).toString().equals(maSPCanChon)) {
                         soLuong = x.getSoluong() - (int) table_CTHD.getValueAt(i, 7);
@@ -1911,6 +2038,7 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
             }
         }
     }
+
 
     public void nhapTimSoDienThoaiKhachHang() {
         String sdt = textField.getText();
@@ -1949,7 +2077,7 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
     }
 
     //	Tự động điền thông tin khách hàng
-    public void tuDongDienKhachHang() {
+    public void tuDongDienKhachHang() throws RemoteException {
         if (LHD_dao.timKhachHangBySDT(txtSDT.getText()).isEmpty()) {
             txtMaKH.setText("Khách lẻ");
             txtTenKH.setText("Khách lẻ");
@@ -2141,7 +2269,13 @@ public class FrmLapHoaDon extends JFrame implements ActionListener, MouseListene
                         lblLoiSP.setText("Số điện thoại phải có ít là 10 số!");
                 }
             }
-            tuDongDienKhachHang();
+//            tuDongDienKhachHang();
+            try {
+                tuDongDienKhachHang();
+            } catch (RemoteException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
 
     }

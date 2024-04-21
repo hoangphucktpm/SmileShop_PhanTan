@@ -335,113 +335,133 @@ public class FrmThongKeTinhTrangSP extends JFrame implements ActionListener {
     }
 
     public void docDuLieuHetHang() {
-        int d = 1;
-        xoaAllDataTable();
-        List<ThongKeSanPham> list = daoImpl.getSPOUT();
-        String soLuongLoaiSP;
-        HashSet<String> lsp = new HashSet<>();
+        try {
+            int d = 1;
+            xoaAllDataTable();
+            List<ThongKeSanPham> list = daoImpl.getSPOUT();
+            String soLuongLoaiSP;
+            HashSet<String> lsp = new HashSet<>();
 
-        int tongSanPham = 0;
-        int tongLoai = 0;
+            int tongSanPham = 0;
+            int tongLoai = 0;
 
-        if (list == null || list.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Không có sản phẩm nào hết hàng.");
-            btnInThongKe.setEnabled(false);
-            textSPDB.setText(String.valueOf(0));
-            textHHDL.setText(String.valueOf(0));
-        } else {
-            for (ThongKeSanPham x : list) {
-                soLuongLoaiSP = x.getLoai();
-                lsp.add(soLuongLoaiSP);
+            if (list == null || list.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không có sản phẩm nào hết hàng.");
+                btnInThongKe.setEnabled(false);
+                textSPDB.setText(String.valueOf(0));
+                textHHDL.setText(String.valueOf(0));
+            } else {
+                for (ThongKeSanPham x : list) {
+                    soLuongLoaiSP = x.getLoai();
+                    lsp.add(soLuongLoaiSP);
 
-                tongSanPham++;
-                tablemodel.addRow(new Object[]{d++, x.getMaSP(), x.getTenSP(), x.getLoai(), x.getSoLuongNhap(),
-                        x.getNgayNhap(), tien.format(x.getGiaNhap()), tien.format(x.getGiaBan()), x.getMauSac(),
-                        x.getKichThuoc()});
+                    tongSanPham++;
+                    tablemodel.addRow(new Object[]{d++, x.getMaSP(), x.getTenSP(), x.getLoai(), x.getSoLuongNhap(),
+                            x.getNgayNhap(), tien.format(x.getGiaNhap()), tien.format(x.getGiaBan()), x.getMauSac(),
+                            x.getKichThuoc()});
+                }
+                int soLuongLoai = lsp.size();
+                hinhThucThongKe = "THỐNG KÊ NHỮNG SẢN PHẨM ĐÃ HẾT HÀNG";
+                btnInThongKe.setEnabled(true);
+                textSPDB.setText(String.valueOf(soLuongLoai));
+                textHHDL.setText(String.valueOf(tongSanPham));
+                lblTSP.setText("Tổng sản phẩm:");
+                table_DSSP.setModel(tablemodel);
             }
-            int soLuongLoai = lsp.size();
-            hinhThucThongKe = "THỐNG KÊ NHỮNG SẢN PHẨM ĐÃ HẾT HÀNG";
-            btnInThongKe.setEnabled(true);
-            textSPDB.setText(String.valueOf(soLuongLoai));
-            textHHDL.setText(String.valueOf(tongSanPham));
-            lblTSP.setText("Tổng sản phẩm:");
-            table_DSSP.setModel(tablemodel);
-        }
 
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     //	Tìm theo sản phẩm còn hàng
     public void docDuLieuConHang() {
-        List<ThongKeSanPham> list = daoImpl.getSPRE();
-        if (list == null || list.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Tất cả sản phẩm đều hết.");
-            btnInThongKe.setEnabled(false);
-            textSPDB.setText(String.valueOf(0));
-            textHHDL.setText(String.valueOf(0));
-        } else {
-            layDS(list);
-            hinhThucThongKe = "THỐNG KÊ NHỮNG SẢN PHẨM CÒN HÀNG";
-            btnInThongKe.setEnabled(true);
+        try {
+            List<ThongKeSanPham> list = daoImpl.getSPRE();
+            if (list == null || list.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Tất cả sản phẩm đều hết.");
+                btnInThongKe.setEnabled(false);
+                textSPDB.setText(String.valueOf(0));
+                textHHDL.setText(String.valueOf(0));
+            } else {
+                layDS(list);
+                hinhThucThongKe = "THỐNG KÊ NHỮNG SẢN PHẨM CÒN HÀNG";
+                btnInThongKe.setEnabled(true);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 
     //	Tìm theo sản phẩm sắp hết hàng
     public void docDuLieuSapHet() {
-        List<ThongKeSanPham> list = daoImpl.getALMOUT();
-        if (list == null || list.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Tất cả sản phẩm đều trong tình trạng tốt.");
-            btnInThongKe.setEnabled(false);
-            textSPDB.setText(String.valueOf(0));
-            textHHDL.setText(String.valueOf(0));
-        } else {
-            layDS(list);
-            hinhThucThongKe = "THỐNG KÊ NHỮNG SẢN PHẨM SẮP HẾT HÀNG";
-            btnInThongKe.setEnabled(true);
+        try {
+            List<ThongKeSanPham> list = daoImpl.getALMOUT();
+            if (list == null || list.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Tất cả sản phẩm đều trong tình trạng tốt.");
+                btnInThongKe.setEnabled(false);
+                textSPDB.setText(String.valueOf(0));
+                textHHDL.setText(String.valueOf(0));
+            } else {
+                layDS(list);
+                hinhThucThongKe = "THỐNG KÊ NHỮNG SẢN PHẨM SẮP HẾT HÀNG";
+                btnInThongKe.setEnabled(true);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 
     //	Tìm theo sản phẩm bán ế
     public void docDuLieuOld() {
-        List<ThongKeSanPham> list = daoImpl.getOld();
-        if (list == null || list.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Tất cả sản phẩm đều trong tình trạng tốt.");
-            btnInThongKe.setEnabled(false);
-            textSPDB.setText(String.valueOf(0));
-            textHHDL.setText(String.valueOf(0));
-        } else {
-            layDS(list);
-            hinhThucThongKe = "THỐNG KÊ NHỮNG SẢN PHẨM TỒN KHO QUÁ LÂU";
-            btnInThongKe.setEnabled(true);
+        try {
+            List<ThongKeSanPham> list = daoImpl.getOld();
+            if (list == null || list.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Tất cả sản phẩm đều trong tình trạng tốt.");
+                btnInThongKe.setEnabled(false);
+                textSPDB.setText(String.valueOf(0));
+                textHHDL.setText(String.valueOf(0));
+            } else {
+                layDS(list);
+                hinhThucThongKe = "THỐNG KÊ NHỮNG SẢN PHẨM TỒN KHO QUÁ LÂU";
+                btnInThongKe.setEnabled(true);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 
     //	Tìm theo sản phẩm mới nhập theo ngày
     public void docDuLieuMoiNhap() throws ParseException {
-        int d = 1;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String ngayNhap = dateFormat.format(txtChonNgay.getDate());
-        java.util.Date ngayNhap1 = dateFormat.parse(ngayNhap);
-        Date ngayNhapsql = new Date(ngayNhap1.getTime());
+        try {
+            int d = 1;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String ngayNhap = dateFormat.format(txtChonNgay.getDate());
+            java.util.Date ngayNhap1 = dateFormat.parse(ngayNhap);
+            Date ngayNhapsql = new Date(ngayNhap1.getTime());
 
-        int day;
-        int month;
-        int year;
-        Calendar ngayCld = Calendar.getInstance();
-        ngayCld.setTime(txtChonNgay.getDate());
-        day = ngayCld.get(Calendar.DATE);
-        month = ngayCld.get(Calendar.MONTH) + 1;
-        year = ngayCld.get(Calendar.YEAR);
-        hinhThucThongKe = "THỐNG KÊ NHỮNG SẢN PHẨM MỚI NHẬP NGÀY " + day + " THÁNG " + month + " NĂM " + year;
+            int day;
+            int month;
+            int year;
+            Calendar ngayCld = Calendar.getInstance();
+            ngayCld.setTime(txtChonNgay.getDate());
+            day = ngayCld.get(Calendar.DATE);
+            month = ngayCld.get(Calendar.MONTH) + 1;
+            year = ngayCld.get(Calendar.YEAR);
+            hinhThucThongKe = "THỐNG KÊ NHỮNG SẢN PHẨM MỚI NHẬP NGÀY " + day + " THÁNG " + month + " NĂM " + year;
 
-        List<ThongKeSanPham> list = daoImpl.getNewAdd(ngayNhapsql);
-        if (list == null || list.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Không có sản phẩm nào được nhập vào ngày " + ngayNhap);
-            btnInThongKe.setEnabled(false);
-            textSPDB.setText(String.valueOf(0));
-            textHHDL.setText(String.valueOf(0));
-        } else {
-            layDS(list);
-            btnInThongKe.setEnabled(true);
+            List<ThongKeSanPham> list = daoImpl.getNewAdd(ngayNhapsql);
+            if (list == null || list.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không có sản phẩm nào được nhập vào ngày " + ngayNhap);
+                btnInThongKe.setEnabled(false);
+                textSPDB.setText(String.valueOf(0));
+                textHHDL.setText(String.valueOf(0));
+            } else {
+                layDS(list);
+                btnInThongKe.setEnabled(true);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 
@@ -535,57 +555,61 @@ public class FrmThongKeTinhTrangSP extends JFrame implements ActionListener {
 
     //	Lấy danh sách sản phẩm đã bán theo ngày
     public void sanPhamDaBan() throws ParseException {
-        int d = 1;
-        xoaAllDataTable();
+        try {
+            int d = 1;
+            xoaAllDataTable();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String ngayBan = dateFormat.format(txtChonNgay.getDate());
-        java.util.Date ngayBan1 = dateFormat.parse(ngayBan);
-        Date ngayBansql = new Date(ngayBan1.getTime());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String ngayBan = dateFormat.format(txtChonNgay.getDate());
+            java.util.Date ngayBan1 = dateFormat.parse(ngayBan);
+            Date ngayBansql = new Date(ngayBan1.getTime());
 
-        Calendar ngayCld = Calendar.getInstance();
-        ngayCld.setTime(txtChonNgay.getDate());
+            Calendar ngayCld = Calendar.getInstance();
+            ngayCld.setTime(txtChonNgay.getDate());
 
-        int day = ngayCld.get(Calendar.DATE);
-        int month = ngayCld.get(Calendar.MONTH) + 1;
-        int year = ngayCld.get(Calendar.YEAR);
+            int day = ngayCld.get(Calendar.DATE);
+            int month = ngayCld.get(Calendar.MONTH) + 1;
+            int year = ngayCld.get(Calendar.YEAR);
 
-        List<ThongKeSanPham> list = daoImpl.getSold(day, month, year);
-        String soLuongLoaiSP;
-        HashSet<String> lsp = new HashSet<>();
+            List<ThongKeSanPham> list = daoImpl.getSold(day, month, year);
+            String soLuongLoaiSP;
+            HashSet<String> lsp = new HashSet<>();
 
-        int tongSanPham = 0;
-        int tongLoai = 0;
+            int tongSanPham = 0;
+            int tongLoai = 0;
 
-        Set<String> uniqueProducts = new HashSet<>();
+            Set<String> uniqueProducts = new HashSet<>();
 
-        hinhThucThongKe = "THỐNG KÊ NHỮNG SẢN PHẨM ĐƯỢC BÁN VÀO NGÀY " + day + " THÁNG " + month + " NĂM " + year;
+            hinhThucThongKe = "THỐNG KÊ NHỮNG SẢN PHẨM ĐƯỢC BÁN VÀO NGÀY " + day + " THÁNG " + month + " NĂM " + year;
 
-        if (list == null || list.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Không có sản phẩm nào được bán vào ngày " + ngayBan);
-            btnInThongKe.setEnabled(false);
-            textSPDB.setText(String.valueOf(0));
-            textHHDL.setText(String.valueOf(0));
-        } else {
-            for (ThongKeSanPham x : list) {
-                String uniqueKey = x.getMaSP() + "|" + x.getLoai();
-                if (!uniqueProducts.contains(uniqueKey)) {
-                    uniqueProducts.add(uniqueKey);
-                    soLuongLoaiSP = x.getLoai();
-                    lsp.add(soLuongLoaiSP);
-                    int soLuongBan = daoImpl.soLuongBan(x.getMaSP(), day, month, year);
-                    tongSanPham += soLuongBan;
-                    tablemodel.addRow(new Object[]{d++, x.getMaSP(), x.getTenSP(), x.getLoai(), x.getSoLuongNhap(),
-                            x.getNgayNhap(), tien.format(x.getGiaNhap()), tien.format(x.getGiaBan()), x.getMauSac(),
-                            x.getKichThuoc(), soLuongBan});
+            if (list == null || list.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không có sản phẩm nào được bán vào ngày " + ngayBan);
+                btnInThongKe.setEnabled(false);
+                textSPDB.setText(String.valueOf(0));
+                textHHDL.setText(String.valueOf(0));
+            } else {
+                for (ThongKeSanPham x : list) {
+                    String uniqueKey = x.getMaSP() + "|" + x.getLoai();
+                    if (!uniqueProducts.contains(uniqueKey)) {
+                        uniqueProducts.add(uniqueKey);
+                        soLuongLoaiSP = x.getLoai();
+                        lsp.add(soLuongLoaiSP);
+                        int soLuongBan = daoImpl.soLuongBan(x.getMaSP(), day, month, year);
+                        tongSanPham += soLuongBan;
+                        tablemodel.addRow(new Object[]{d++, x.getMaSP(), x.getTenSP(), x.getLoai(), x.getSoLuongNhap(),
+                                x.getNgayNhap(), tien.format(x.getGiaNhap()), tien.format(x.getGiaBan()), x.getMauSac(),
+                                x.getKichThuoc(), soLuongBan});
+                    }
                 }
+                int soLuongLoai = lsp.size();
+                btnInThongKe.setEnabled(true);
+                textSPDB.setText(String.valueOf(soLuongLoai));
+                textHHDL.setText(String.valueOf(tongSanPham));
+                lblTSP.setText("Tổng số lượng sản phẩm:");
+                table_DSSP.setModel(tablemodel);
             }
-            int soLuongLoai = lsp.size();
-            btnInThongKe.setEnabled(true);
-            textSPDB.setText(String.valueOf(soLuongLoai));
-            textHHDL.setText(String.valueOf(tongSanPham));
-            lblTSP.setText("Tổng số lượng sản phẩm:");
-            table_DSSP.setModel(tablemodel);
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 
@@ -638,15 +662,20 @@ public class FrmThongKeTinhTrangSP extends JFrame implements ActionListener {
     }
 
     public CategoryDataset createDataset() {
-        final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        for (int i = 1; i <= 5; i++) {
-            double tongHoaDon = daoImpl.tongTienBan(i);
-            String sanPhamTops = daoImpl.sanPhamTop(i);
-            if (tongHoaDon != 0) {
-                dataset.addValue(tongHoaDon / 1000000, "Số tiền", sanPhamTops + "\n" + tien.format(tongHoaDon));
+        try {
+            final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            for (int i = 1; i <= 5; i++) {
+                double tongHoaDon = daoImpl.tongTienBan(i);
+                String sanPhamTops = daoImpl.sanPhamTop(i);
+                if (tongHoaDon != 0) {
+                    dataset.addValue(tongHoaDon / 1000000, "Số tiền", sanPhamTops + "\n" + tien.format(tongHoaDon));
+                }
             }
+            return dataset;
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
-        return dataset;
+        return null;
     }
 
     public void capNhatBieuDo() {

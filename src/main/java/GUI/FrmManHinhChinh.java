@@ -621,61 +621,70 @@ public class FrmManHinhChinh extends JFrame implements ActionListener, MenuListe
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
-        Object o = e.getSource();
-        if (o.equals(mntmLapHoaDon)) {
-            try {
+        try {
+            // TODO Auto-generated method stub
+            Object o = e.getSource();
+            if (o.equals(mntmLapHoaDon)) {
+                try {
 
-            } catch (Exception e2) {
-                // TODO: handle exception
+                } catch (Exception e2) {
+                    // TODO: handle exception
+
+                }
+                tabbedPane.remove(tabbedPane.getSelectedComponent());
+                tabbedPane.add(frmLHĐ.pnlThongTin);
+                tabbedPane.setSelectedComponent(frmLHĐ.pnlThongTin);
+
+            } else if (o.equals(mntmXemHoaDon)) {
+
+                tabbedPane.remove(tabbedPane.getSelectedComponent());
+                tabbedPane.add(frmXHĐ.pnlThongTin);
+                tabbedPane.setSelectedComponent(frmXHĐ.pnlThongTin);
+            } else if (o.equals(mntmThongKeDoanhThu)) {
+
+                tabbedPane.remove(tabbedPane.getSelectedComponent());
+                tabbedPane.add(frmTKDT.pnlThongTin);
+                tabbedPane.setSelectedComponent(frmTKDT.pnlThongTin);
+                frmTKDT.capNhatBieuDo();
+            } else if (o.equals(mntmThongKeHoaDonDaLap)) {
+
+                tabbedPane.remove(tabbedPane.getSelectedComponent());
+                tabbedPane.add(frmTKHĐ.pnlThongTin);
+                tabbedPane.setSelectedComponent(frmTKHĐ.pnlThongTin);
+                frmTKHĐ.capNhatBieuDo();
+
+            } else if (o.equals(mntmThongKeTTSP)) {
+
+                tabbedPane.remove(tabbedPane.getSelectedComponent());
+                tabbedPane.add(frmTKTTSP.pnlThongTin);
+                tabbedPane.setSelectedComponent(frmTKTTSP.pnlThongTin);
+                frmTKTTSP.capNhatBieuDo();
+            } else if (o.equals(btnThongTinCaNhan)) {
+                frmTTCN = new FrmThongTinCaNhan(currentUser);
+                tabbedPane.remove(tabbedPane.getSelectedComponent());
+                tabbedPane.add(frmTTCN.getContentPane());
+                tabbedPane.setSelectedComponent(frmTTCN.getContentPane());
+
+            } else if (o.equals(mntmDangXuat)) {
+                int choice = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận đăng xuất",
+                        JOptionPane.YES_NO_OPTION);
+
+                if (choice == JOptionPane.YES_OPTION) {
+                    this.setVisible(false);
+                    try {
+                        FrmDangNhap frmDN = new FrmDangNhap();
+                        frmDN.setVisible(true);
+                    } catch (RemoteException e1) {
+                        e1.printStackTrace();
+                        // Handle the exception (e.g., show an error message to the user)
+                    }
+                }
 
             }
-            tabbedPane.remove(tabbedPane.getSelectedComponent());
-            tabbedPane.add(frmLHĐ.pnlThongTin);
-            tabbedPane.setSelectedComponent(frmLHĐ.pnlThongTin);
-
-        } else if (o.equals(mntmXemHoaDon)) {
-
-            tabbedPane.remove(tabbedPane.getSelectedComponent());
-            tabbedPane.add(frmXHĐ.pnlThongTin);
-            tabbedPane.setSelectedComponent(frmXHĐ.pnlThongTin);
-        } else if (o.equals(mntmThongKeDoanhThu)) {
-
-            tabbedPane.remove(tabbedPane.getSelectedComponent());
-            tabbedPane.add(frmTKDT.pnlThongTin);
-            tabbedPane.setSelectedComponent(frmTKDT.pnlThongTin);
-            frmTKDT.capNhatBieuDo();
-        } else if (o.equals(mntmThongKeHoaDonDaLap)) {
-
-            tabbedPane.remove(tabbedPane.getSelectedComponent());
-            tabbedPane.add(frmTKHĐ.pnlThongTin);
-            tabbedPane.setSelectedComponent(frmTKHĐ.pnlThongTin);
-            frmTKHĐ.capNhatBieuDo();
-
-        } else if (o.equals(mntmThongKeTTSP)) {
-
-            tabbedPane.remove(tabbedPane.getSelectedComponent());
-            tabbedPane.add(frmTKTTSP.pnlThongTin);
-            tabbedPane.setSelectedComponent(frmTKTTSP.pnlThongTin);
-            frmTKTTSP.capNhatBieuDo();
-        } else if (o.equals(btnThongTinCaNhan)) {
-            frmTTCN = new FrmThongTinCaNhan(currentUser);
-            tabbedPane.remove(tabbedPane.getSelectedComponent());
-            tabbedPane.add(frmTTCN.getContentPane());
-            tabbedPane.setSelectedComponent(frmTTCN.getContentPane());
-
-        } else if (o.equals(mntmDangXuat)) {
-            int choice = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận đăng xuất",
-                    JOptionPane.YES_NO_OPTION);
-
-            if (choice == JOptionPane.YES_OPTION) {
-                this.setVisible(false);
-                FrmDangNhap frmDN = new FrmDangNhap();
-                frmDN.setVisible(true);
-            }
-
+        } catch (RemoteException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
         }
-
     }
 
     public static void capNhatHinh(String duongDanAnh) {

@@ -22,6 +22,7 @@ import javax.swing.JDialog;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.rmi.RemoteException;
 import javax.swing.JProgressBar;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -63,7 +64,7 @@ public class FrmQuenMatKhau extends JFrame implements ActionListener {
     /**
      * Create the frame.
      */
-    public FrmQuenMatKhau() {
+    public FrmQuenMatKhau() throws RemoteException {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 800, 400);
         contentPane = new JPanel();
@@ -166,16 +167,20 @@ public class FrmQuenMatKhau extends JFrame implements ActionListener {
                     boolean emailSent = sendMail.sendMail(email, user, newPass);
 
                     SwingUtilities.invokeLater(() -> {
-                        loadingDialog.dispose();
-                        if (emailSent) {
-                            dao.suaMK(newPass, user);
-                            FrmDangNhap frmDangNhap = new FrmDangNhap();
-                            frmDangNhap.setVisible(true);
-                            frmDangNhap.setLocationRelativeTo(null);
-                            setVisible(false);
-                            JOptionPane.showMessageDialog(null, "Thay đổi mật khẩu thành công. Hãy kiểm tra Email của bạn.");
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Lỗi khi gửi Email.");
+                        try {
+                            loadingDialog.dispose();
+                            if (emailSent) {
+                                dao.suaMK(newPass, user);
+                                FrmDangNhap frmDangNhap = new FrmDangNhap();
+                                frmDangNhap.setVisible(true);
+                                frmDangNhap.setLocationRelativeTo(null);
+                                setVisible(false);
+                                JOptionPane.showMessageDialog(null, "Thay đổi mật khẩu thành công. Hãy kiểm tra Email của bạn.");
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Lỗi khi gửi Email.");
+                            }
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
                         }
                     });
                 }).start();
@@ -185,40 +190,50 @@ public class FrmQuenMatKhau extends JFrame implements ActionListener {
 
 
         } else if (o.equals(btnQuayLai)) {
-            FrmDangNhap frmDangNhap = new FrmDangNhap();
-            frmDangNhap.setVisible(true);
-            this.setVisible(false);
+//            FrmDangNhap frmDangNhap = new FrmDangNhap();
+            try {
+                FrmDangNhap frmDangNhap = new FrmDangNhap();
+                frmDangNhap.setVisible(true);
+                frmDangNhap.setLocationRelativeTo(null);
+                setVisible(false);
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
     public boolean valiData() {
+        try {
+            if (txtUserName.getText().trim().isEmpty()) {
+                ShowErrorField("Tên đăng nhập không được rỗng", txtUserName);
+                return false;
+            } else if (dao.tenNV(txtUserName.getText()).isBlank() || dao.tenNV(txtUserName.getText()).isEmpty() || dao.tenNV(txtUserName.getText()).equalsIgnoreCase("")) {
+                ShowErrorField("Nhân viên không tồn tại", txtUserName);
+                System.out.println("Tên " + dao.tenNV(txtUserName.getText()));
+                return false;
+            } else {
+                user = txtUserName.getText().trim();
+            }
 
-        if (txtUserName.getText().trim().isEmpty()) {
-            ShowErrorField("Tên đăng nhập không được rỗng", txtUserName);
-            return false;
-        } else if (dao.tenNV(txtUserName.getText()).isBlank() || dao.tenNV(txtUserName.getText()).isEmpty() || dao.tenNV(txtUserName.getText()).equalsIgnoreCase("")) {
-            ShowErrorField("Nhân viên không tồn tại", txtUserName);
-            System.out.println("Tên " + dao.tenNV(txtUserName.getText()));
-            return false;
-        } else {
-            user = txtUserName.getText().trim();
+
+            if (txtMail.getText().trim().isEmpty()) {
+                ShowErrorField("Email không được rỗng", txtMail);
+                return false;
+            } else if (!isValidEmail(txtMail.getText().trim())) {
+                ShowErrorField("Vui lòng nhập đúng địa chỉ email hợp lệ", txtMail);
+                return false;
+            } else if (!txtMail.getText().equalsIgnoreCase(dao.mailNhanVien(user))) {
+                ShowErrorField("Mail không phải của nhân viên này.", txtMail);
+                return false;
+            } else {
+                email = txtMail.getText().trim();
+            }
+            // Nếu tất cả ràng buộc được thỏa mãn, bạn có thể trả về email hoặc mật khẩu hoặc cả hai tùy theo yêu cầu của bạn.
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
-        if (txtMail.getText().trim().isEmpty()) {
-            ShowErrorField("Email không được rỗng", txtMail);
-            return false;
-        } else if (!isValidEmail(txtMail.getText().trim())) {
-            ShowErrorField("Vui lòng nhập đúng địa chỉ email hợp lệ", txtMail);
-            return false;
-        } else if (!txtMail.getText().equalsIgnoreCase(dao.mailNhanVien(user))) {
-            ShowErrorField("Mail không phải của nhân viên này.", txtMail);
-            return false;
-        } else {
-            email = txtMail.getText().trim();
-        }
-        // Nếu tất cả ràng buộc được thỏa mãn, bạn có thể trả về email hoặc mật khẩu hoặc cả hai tùy theo yêu cầu của bạn.
-        return true;
+        return false;
     }
 
     private void ShowErrorField(String string, JTextField textField2) {

@@ -14,6 +14,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -88,7 +89,7 @@ public class FrmThongTinCaNhan extends JFrame implements ActionListener {
     /**
      * Create the frame.
      */
-    public FrmThongTinCaNhan(String username) {
+    public FrmThongTinCaNhan(String username) throws RemoteException {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 450, 300);
         setSize(1347, 843);
@@ -364,48 +365,52 @@ public class FrmThongTinCaNhan extends JFrame implements ActionListener {
     }
 
     public void load(String username) {
-        NhanVien nv = dao.getNVTHeoMa(username);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String ngaySinh = "";
-        if (nv.getNgaySinh() != null) {
-            ngaySinh += dateFormat.format(nv.getNgaySinh());
+        try {
+            NhanVien nv = dao.getNVTHeoMa(username);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String ngaySinh = "";
+            if (nv.getNgaySinh() != null) {
+                ngaySinh += dateFormat.format(nv.getNgaySinh());
+            }
+            txtNgaySinh.setText(ngaySinh);
+            txtMa.setText(nv.getMaNhanvien());
+            txtTen.setText(nv.getTenNhanVien());
+
+            txtCCCD.setText(nv.getCccd());
+            txtSDT.setText(nv.getSdt());
+            txtEmail.setText(nv.getEmail());
+            String gioiTinhText = (nv.getGioiTinh() == 1) ? "Nam" : "Nữ";
+            txtGioiTinh.setText(gioiTinhText);
+
+            String chucvuText = (nv.getChucVu() == 1) ? "Quản Lý" : "Nhân Viên";
+            txtChucVu.setText(chucvuText);
+
+            String duongDanAnh = nv.getHinhAnh();
+            String CaText = (nv.getCaLamViec() == 1) ? "Ca 1" : "Ca 2";
+            txtCa.setText(CaText);
+
+            String trangThaiText = (nv.getTrangThai() == 1) ? "Đang làm việc" : "Nghỉ việc";
+            txtTrangThai.setText(trangThaiText);
+
+            TaiKhoan tk = ttDao.loadTaiKhoan(username);
+
+            txtTenTK.setText(tk.getTenTaiKhoan().getMaNhanvien());
+            txtMauKhau.setText(tk.getMatKhau());
+            String tenNV = nv.getTenNhanVien();
+
+            if (duongDanAnh != null && !duongDanAnh.isEmpty()) {
+                ImageIcon imageIcon = new ImageIcon(duongDanAnh);
+                Image scaledImage = imageIcon.getImage().getScaledInstance(lblKhungHinh.getWidth(),
+                        lblKhungHinh.getHeight(), Image.SCALE_SMOOTH);
+                ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
+                lblKhungHinh.setIcon(scaledImageIcon);
+            } else {
+                // Xử lý khi không có hình ảnh
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        txtNgaySinh.setText(ngaySinh);
-        txtMa.setText(nv.getMaNhanvien());
-        txtTen.setText(nv.getTenNhanVien());
-
-        txtCCCD.setText(nv.getCccd());
-        txtSDT.setText(nv.getSdt());
-        txtEmail.setText(nv.getEmail());
-        String gioiTinhText = (nv.getGioiTinh() == 1) ? "Nam" : "Nữ";
-        txtGioiTinh.setText(gioiTinhText);
-
-        String chucvuText = (nv.getChucVu() == 1) ? "Quản Lý" : "Nhân Viên";
-        txtChucVu.setText(chucvuText);
-
-        String duongDanAnh = nv.getHinhAnh();
-        String CaText = (nv.getCaLamViec() == 1) ? "Ca 1" : "Ca 2";
-        txtCa.setText(CaText);
-
-        String trangThaiText = (nv.getTrangThai() == 1) ? "Đang làm việc" : "Nghỉ việc";
-        txtTrangThai.setText(trangThaiText);
-
-        TaiKhoan tk = ttDao.loadTaiKhoan(username);
-
-        txtTenTK.setText(tk.getTenTaiKhoan().getMaNhanvien());
-        txtMauKhau.setText(tk.getMatKhau());
-        String tenNV = nv.getTenNhanVien();
-
-        if (duongDanAnh != null && !duongDanAnh.isEmpty()) {
-            ImageIcon imageIcon = new ImageIcon(duongDanAnh);
-            Image scaledImage = imageIcon.getImage().getScaledInstance(lblKhungHinh.getWidth(),
-                    lblKhungHinh.getHeight(), Image.SCALE_SMOOTH);
-            ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
-            lblKhungHinh.setIcon(scaledImageIcon);
-        } else {
-            // Xử lý khi không có hình ảnh
-        }
-
     }
 
     public void sua() throws ParseException {
@@ -415,26 +420,30 @@ public class FrmThongTinCaNhan extends JFrame implements ActionListener {
         String Email = txtEmail.getText();
         // NhanVien nv = nv.validate();
         // if (nv != null) {
-        NhanVienDao dao = new NhanVienImpl();
-        boolean moi = ttDao.sua(tenNV, Sdt, Email, txtMa.getText(), folderName);
+        try {
+            NhanVienDao dao = new NhanVienImpl();
+            boolean moi = ttDao.sua(tenNV, Sdt, Email, txtMa.getText(), folderName);
 
-        if (moi == true) {
-            if (txtMatKhauMoi.getText().length() != 0) {
-                String matkhau = txtMatKhauMoi.getText();
-                ttDao.suaMK(matkhau, txtMa.getText());
-                txtMauKhau.setText(matkhau);
-                txtMatKhauMoi.setText("");
-                JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thành công");
+            if (moi == true) {
+                if (txtMatKhauMoi.getText().length() != 0) {
+                    String matkhau = txtMatKhauMoi.getText();
+                    ttDao.suaMK(matkhau, txtMa.getText());
+                    txtMauKhau.setText(matkhau);
+                    txtMatKhauMoi.setText("");
+                    JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thành công");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thành công");
+                    FrmManHinhChinh.capNhatHinh(folderName);
+                }
+
             } else {
-                JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thành công");
                 FrmManHinhChinh.capNhatHinh(folderName);
+                JOptionPane.showMessageDialog(this, "Cập nhật nhân viên không thành công!");
             }
 
-        } else {
-            FrmManHinhChinh.capNhatHinh(folderName);
-            JOptionPane.showMessageDialog(this, "Cập nhật nhân viên không thành công!");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
     // chon anh

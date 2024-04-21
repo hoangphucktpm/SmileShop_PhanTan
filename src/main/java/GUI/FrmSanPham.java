@@ -26,6 +26,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.rmi.RemoteException;
 import java.sql.Date;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -149,7 +150,7 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
     /**
      * Create the frame.
      */
-    public FrmSanPham() {
+    public FrmSanPham() throws RemoteException {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1347, 843);
         setResizable(false);
@@ -729,62 +730,72 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
      * Dùng để mở giao diện thêm loại sản phẩm
      */
     public void themLoaiSP() {
-        cboLoaiSP.setEditable(true);
-        String moi = JOptionPane.showInputDialog(this, "Thêm loại sản phẩm mới");
+        try {
+            cboLoaiSP.setEditable(true);
+            String moi = JOptionPane.showInputDialog(this, "Thêm loại sản phẩm mới");
 
-        if (moi != null && !moi.equalsIgnoreCase("")) {
-            int n = sanPhamDao.soLuongLSP() + 1;
-            String soLuongMaLoaiSP = String.format("%03d", n);
-            String deFault = soLuongMaLoaiSP;
-            LoaiSanPham loaiSanPham = new LoaiSanPham(deFault, moi);
-            boolean check = sanPhamDao.themLoaiSP(loaiSanPham);
+            if (moi != null && !moi.equalsIgnoreCase("")) {
+                int n = sanPhamDao.soLuongLSP() + 1;
+                String soLuongMaLoaiSP = String.format("%03d", n);
+                String deFault = soLuongMaLoaiSP;
+                LoaiSanPham loaiSanPham = new LoaiSanPham(deFault, moi);
+                boolean check = sanPhamDao.themLoaiSP(loaiSanPham);
 
-            if (check == true) {
-                lblLoi.setText("Thêm loại sản phẩm thành công");
+                if (check == true) {
+                    lblLoi.setText("Thêm loại sản phẩm thành công");
 
+                } else
+                    lblLoi.setText("Thêm loại sản phẩm không thành công");
             } else
                 lblLoi.setText("Thêm loại sản phẩm không thành công");
-        } else
-            lblLoi.setText("Thêm loại sản phẩm không thành công");
-        cboLoaiSP.removeAllItems();
-        listSP = sanPhamDao.getLoaiSP();
-        cboLoaiSP.setSelectedItem(moi);
-        for (LoaiSanPham l : listSP) {
-            cboLoaiSP.addItem(l.getTenLoaiSP());
-        }
+            cboLoaiSP.removeAllItems();
+            listSP = sanPhamDao.getLoaiSP();
+            cboLoaiSP.setSelectedItem(moi);
+            for (LoaiSanPham l : listSP) {
+                cboLoaiSP.addItem(l.getTenLoaiSP());
+            }
 
-        cboLoaiSP.setEditable(false);
+            cboLoaiSP.setEditable(false);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**
      * Dùng để mở giao diện thêm chất liệu mới
      */
     public void themCLSP() {
-        cboChatLieu.setEditable(true);
-        String moi = JOptionPane.showInputDialog(this, "Thêm chất liệu mới");
-        String moTa = JOptionPane.showInputDialog(this, "Mô tả");
-        if (moi != null && !moi.equalsIgnoreCase("")) {
-            int n = sanPhamDao.soLuongChatLieu() + 1;
-            String soLuongChatLieu = String.format("%03d", n);
-            String deFault = soLuongChatLieu;
-            ChatLieu chatLieu = new ChatLieu(deFault, moi, moTa);
-            boolean check = sanPhamDao.themChatLieu(chatLieu);
+        try {
+            cboChatLieu.setEditable(true);
+            String moi = JOptionPane.showInputDialog(this, "Thêm chất liệu mới");
+            String moTa = JOptionPane.showInputDialog(this, "Mô tả");
+            if (moi != null && !moi.equalsIgnoreCase("")) {
+                int n = sanPhamDao.soLuongChatLieu() + 1;
+                String soLuongChatLieu = String.format("%03d", n);
+                String deFault = soLuongChatLieu;
+                ChatLieu chatLieu = new ChatLieu(deFault, moi, moTa);
+                boolean check = sanPhamDao.themChatLieu(chatLieu);
 
-            if (check == true) {
-                lblLoi.setText("Thêm chất liệu thành công");
+                if (check == true) {
+                    lblLoi.setText("Thêm chất liệu thành công");
 
+                } else
+                    lblLoi.setText("Thêm chất liệu không thành công");
             } else
                 lblLoi.setText("Thêm chất liệu không thành công");
-        } else
-            lblLoi.setText("Thêm chất liệu không thành công");
-        cboChatLieu.removeAllItems();
-        cboChatLieu.setSelectedItem(moi + "(" + moTa + ")");
-        listCL = sanPhamDao.getChatLieu();
-        for (ChatLieu c : listCL) {
-            cboChatLieu.addItem(c.getTenChatLieu() + "(" + c.getMoTa() + ")");
-        }
-        cboChatLieu.setEditable(false);
+            cboChatLieu.removeAllItems();
+            cboChatLieu.setSelectedItem(moi + "(" + moTa + ")");
+            listCL = sanPhamDao.getChatLieu();
+            for (ChatLieu c : listCL) {
+                cboChatLieu.addItem(c.getTenChatLieu() + "(" + c.getMoTa() + ")");
+            }
+            cboChatLieu.setEditable(false);
 
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -798,56 +809,61 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
     }
 
     public void docDuLieu() {
-        int d = 1;
-        List<SanPham> list = sanPhamDao.getAllSP();
-        System.out.println(list);
+        try {
+            int d = 1;
+            List<SanPham> list = sanPhamDao.getAllSP();
+            System.out.println(list);
 
-        String sta = "";
-        String km = "";
+            String sta = "";
+            String km = "";
 
-        rdKhongVAT.setSelected(true);
+            rdKhongVAT.setSelected(true);
 
-        for (SanPham x : list) {
-            float VAT = x.getVat();
+            for (SanPham x : list) {
+                float VAT = x.getVat();
 
 
-            int pt = sanPhamDao.getKMTheoPhanTram(x.getMaSp());
-            if (x.getTinhTrang() == true) {
-                sta = "Còn hàng";
-            } else
-                sta = "Hết hàng";
-            if (sanPhamDao.vat(x.getMaSp()) == 1) {
+                int pt = sanPhamDao.getKMTheoPhanTram(x.getMaSp());
+                if (x.getTinhTrang() == true) {
+                    sta = "Còn hàng";
+                } else
+                    sta = "Hết hàng";
+                if (sanPhamDao.vat(x.getMaSp()) == 1) {
 
-                VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
-            } else
-                VAT = 0;
-            double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
-            double giaBanKM = giaBan - (float) (giaBan * (float) ((float) pt / 100));
-            if (x.getKhuyenMai() == null) {
-                km = "null";
+                    VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
+                } else
+                    VAT = 0;
+                double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
+                double giaBanKM = giaBan - (float) (giaBan * (float) ((float) pt / 100));
+                if (x.getKhuyenMai() == null) {
+                    km = "null";
 //				Không có khuyến mãi
 
-                String maCL = x.getChatLieu().getMaChatLieu();
+                    String maCL = x.getChatLieu().getMaChatLieu();
 
-                tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
-                        tien.format(x.getGianhap()), x.getSoluong(), x.getNgaynhap(),
-                        x.getNhaCungCap().getTenNhaCungCap(),
-                        sanPhamDao.getTenChatLieu(maCL) + "(" + sanPhamDao.getMoTaChatLieu(maCL) + ")", x.getSize(), x.getMauSac(),
-                        x.getDonViTinh(), km, VAT, sta, tien.format(giaBan)});
-            } else {
+                    tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
+                            tien.format(x.getGianhap()), x.getSoluong(), x.getNgaynhap(),
+                            x.getNhaCungCap().getTenNhaCungCap(),
+                            sanPhamDao.getTenChatLieu(maCL) + "(" + sanPhamDao.getMoTaChatLieu(maCL) + ")", x.getSize(), x.getMauSac(),
+                            x.getDonViTinh(), km, VAT, sta, tien.format(giaBan)});
+                } else {
 //				có khuyến mãi
 
-                String maCL = x.getChatLieu().getMaChatLieu();
+                    String maCL = x.getChatLieu().getMaChatLieu();
 
-                tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
-                        tien.format(x.getGianhap()), x.getSoluong(), x.getNgaynhap(),
-                        x.getNhaCungCap().getTenNhaCungCap(),
-                        sanPhamDao.getTenChatLieu(maCL) + "(" + sanPhamDao.getMoTaChatLieu(maCL) + ")", x.getSize(), x.getMauSac(),
-                        x.getDonViTinh(), x.getKhuyenMai().getTenKhuyenMai(), VAT, sta, tien.format(giaBanKM)});
+                    tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
+                            tien.format(x.getGianhap()), x.getSoluong(), x.getNgaynhap(),
+                            x.getNhaCungCap().getTenNhaCungCap(),
+                            sanPhamDao.getTenChatLieu(maCL) + "(" + sanPhamDao.getMoTaChatLieu(maCL) + ")", x.getSize(), x.getMauSac(),
+                            x.getDonViTinh(), x.getKhuyenMai().getTenKhuyenMai(), VAT, sta, tien.format(giaBanKM)});
+                }
+
             }
-
+            tblDSSP.setModel(tablemodel);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-        tblDSSP.setModel(tablemodel);
     }
 
     /**
@@ -859,8 +875,7 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 
     }
 
-    public void luuThayDoi() throws ParseException {
-
+    public void luuThayDoi() throws ParseException, RemoteException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String maSP = txtMaSP.getText();
         String tenSP = txtTenSP.getText();
@@ -1135,113 +1150,123 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 
     //	cập nhật các comboBox
     public void updateComboBox() {
+        try {
 
-        cboLoaiSP.removeAllItems();
-        cboChatLieu.removeAllItems();
-        cboNhaCungCap.removeAllItems();
-        cboColor.removeAllItems();
-        cboSize.removeAllItems();
-        List<SanPham> sp = sanPhamDao.getAllSP();
-
-
-        for (LoaiSanPham l : listSP) {
-            cboLoaiSP.addItem(l.getTenLoaiSP());
-        }
-
-        for (ChatLieu c : listCL) {
-            cboChatLieu.addItem(c.getTenChatLieu() + "(" + c.getMoTa() + ")");
-        }
-
-        for (NhaCungCap n : listNCC) {
-            cboNhaCungCap.addItem(n.getTenNhaCungCap());
-        }
+            cboLoaiSP.removeAllItems();
+            cboChatLieu.removeAllItems();
+            cboNhaCungCap.removeAllItems();
+            cboColor.removeAllItems();
+            cboSize.removeAllItems();
+            List<SanPham> sp = sanPhamDao.getAllSP();
 
 
-        Arrays.stream(Entities.MauSac.values()).forEach(mau -> cboColor.addItem(mau));
+            for (LoaiSanPham l : listSP) {
+                cboLoaiSP.addItem(l.getTenLoaiSP());
+            }
 
-        Arrays.stream(Entities.Size.values()).forEach(size -> cboSize.addItem(size));
-        cboDVT.removeAllItems();
-        HashSet<String> dvt = new HashSet<>();
+            for (ChatLieu c : listCL) {
+                cboChatLieu.addItem(c.getTenChatLieu() + "(" + c.getMoTa() + ")");
+            }
 
-        for (SanPham s : sp) {
-            String d = s.getDonViTinh();
-            dvt.add(d);
-        }
+            for (NhaCungCap n : listNCC) {
+                cboNhaCungCap.addItem(n.getTenNhaCungCap());
+            }
 
-        for (String donViTinh : dvt) {
-            cboDVT.addItem(donViTinh);
+
+            Arrays.stream(Entities.MauSac.values()).forEach(mau -> cboColor.addItem(mau));
+
+            Arrays.stream(Entities.Size.values()).forEach(size -> cboSize.addItem(size));
+            cboDVT.removeAllItems();
+            HashSet<String> dvt = new HashSet<>();
+
+            for (SanPham s : sp) {
+                String d = s.getDonViTinh();
+                dvt.add(d);
+            }
+
+            for (String donViTinh : dvt) {
+                cboDVT.addItem(donViTinh);
+            }
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
     public void updateCBBoxTim() {
-        cboTimKiem.removeAllItems();
+        try {
+            cboTimKiem.removeAllItems();
 //get ma san pham
-        List<SanPham> listsp = sanPhamDao.getAllSP();
-        cboTimKiem.setEditable(true);
-        for (SanPham n : listsp) {
-            if (rdTimMa.isSelected() && n.getMaSp() != null) {
-                cboTimKiem.addItem(n.getMaSp());
-            }
+            List<SanPham> listsp = sanPhamDao.getAllSP();
+            cboTimKiem.setEditable(true);
+            for (SanPham n : listsp) {
+                if (rdTimMa.isSelected() && n.getMaSp() != null) {
+                    cboTimKiem.addItem(n.getMaSp());
+                }
 //get ten san pham
-            else if (rdTen.isSelected() && n.getTensp() != null) {
-                cboTimKiem.addItem(n.getTensp());
-            }
+                else if (rdTen.isSelected() && n.getTensp() != null) {
+                    cboTimKiem.addItem(n.getTensp());
+                }
 //get loai san pham
-            else if (rdTimLoai.isSelected()) {
+                else if (rdTimLoai.isSelected()) {
 
-                HashSet<String> tenlsp = new HashSet<>();
+                    HashSet<String> tenlsp = new HashSet<>();
 
-                for (SanPham x : listsp) {
-                    String o = sanPhamDao.getTenLoaiSP(x.getMaSp());
+                    for (SanPham x : listsp) {
+                        String o = sanPhamDao.getTenLoaiSP(x.getMaSp());
 
-                    tenlsp.add(o);
+                        tenlsp.add(o);
+                    }
+                    cboTimKiem.removeAllItems();
+                    for (String loaiSP : tenlsp) {
+                        cboTimKiem.addItem(loaiSP);
+                    }
                 }
-                cboTimKiem.removeAllItems();
-                for (String loaiSP : tenlsp) {
-                    cboTimKiem.addItem(loaiSP);
+                //
+                else if (rdTimNCC.isSelected()) {
+
+                    HashSet<String> tenncc = new HashSet<>();
+
+                    for (SanPham x : listsp) {
+                        String o = sanPhamDao.getTenNhaCC(x.getMaSp());
+
+                        tenncc.add(o);
+                    }
+                    cboTimKiem.removeAllItems();
+                    for (String ncc : tenncc) {
+                        cboTimKiem.addItem(ncc);
+                    }
+                }
+                //
+                else if (rdTimChatLieu.isSelected()) {
+
+                    HashSet<String> clieu = new HashSet<>();
+
+                    for (SanPham x : listsp) {
+                        String o = sanPhamDao.getTenCL(x.getMaSp());
+
+                        clieu.add(o);
+                    }
+                    cboTimKiem.removeAllItems();
+                    for (String tenchatLieu : clieu) {
+                        cboTimKiem.addItem(tenchatLieu);
+                    }
+                }
+                //
+
+            }
+            if (rdTimSize.isSelected()) {
+                for (Entities.Size size : Entities.Size.values()) {
+                    cboTimKiem.addItem(size);
+                }
+            } else if (rdTimMau.isSelected()) {
+                for (Entities.MauSac clo : MauSac.values()) {
+                    cboTimKiem.addItem(clo);
                 }
             }
-            //
-            else if (rdTimNCC.isSelected()) {
-
-                HashSet<String> tenncc = new HashSet<>();
-
-                for (SanPham x : listsp) {
-                    String o = sanPhamDao.getTenNhaCC(x.getMaSp());
-
-                    tenncc.add(o);
-                }
-                cboTimKiem.removeAllItems();
-                for (String ncc : tenncc) {
-                    cboTimKiem.addItem(ncc);
-                }
-            }
-            //
-            else if (rdTimChatLieu.isSelected()) {
-
-                HashSet<String> clieu = new HashSet<>();
-
-                for (SanPham x : listsp) {
-                    String o = sanPhamDao.getTenCL(x.getMaSp());
-
-                    clieu.add(o);
-                }
-                cboTimKiem.removeAllItems();
-                for (String tenchatLieu : clieu) {
-                    cboTimKiem.addItem(tenchatLieu);
-                }
-            }
-            //
-
-        }
-        if (rdTimSize.isSelected()) {
-            for (Entities.Size size : Entities.Size.values()) {
-                cboTimKiem.addItem(size);
-            }
-        } else if (rdTimMau.isSelected()) {
-            for (Entities.MauSac clo : MauSac.values()) {
-                cboTimKiem.addItem(clo);
-            }
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
@@ -1254,10 +1279,16 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 
     //Tạo mã sản phẩm mặc định
     public String deFaultID() {
-        int n = sanPhamDao.soLuong() + 1;
-        String soLuongMa = String.format("%03d", n);
-        String deFault = "SP" + soLuongMa;
-        return deFault;
+        try {
+            int n = sanPhamDao.soLuong() + 1;
+            String soLuongMa = String.format("%03d", n);
+            String deFault = "SP" + soLuongMa;
+            return deFault;
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 
     //	Bắt các sự kiện
@@ -1321,7 +1352,7 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
         } else if (o.equals(btnLuu)) {
             try {
                 luuThayDoi();
-            } catch (ParseException e1) {
+            } catch (ParseException | RemoteException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
@@ -1333,50 +1364,55 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
     //BẮt sự kiện click màn vào bảng
     @Override
     public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
-        btnThem.setEnabled(false);
-        int d = 1;
+        try {
+            // TODO Auto-generated method stub
+            btnThem.setEnabled(false);
+            int d = 1;
 
-        int row = tblDSSP.getSelectedRow();
-        txtMaSP.setText(tablemodel.getValueAt(row, 1).toString());
-        txtTenSP.setText(tablemodel.getValueAt(row, 2).toString());
-        cboLoaiSP.setSelectedItem(tablemodel.getValueAt(row, 3));
-        txtGiaNhap.setText(tablemodel.getValueAt(row, 4).toString());
-        txtSoLuong.setText(tablemodel.getValueAt(row, 5).toString());
+            int row = tblDSSP.getSelectedRow();
+            txtMaSP.setText(tablemodel.getValueAt(row, 1).toString());
+            txtTenSP.setText(tablemodel.getValueAt(row, 2).toString());
+            cboLoaiSP.setSelectedItem(tablemodel.getValueAt(row, 3));
+            txtGiaNhap.setText(tablemodel.getValueAt(row, 4).toString());
+            txtSoLuong.setText(tablemodel.getValueAt(row, 5).toString());
 //		Date ngayNhap = (Date) tablemodel.getValueAt(row, 6);
-        cboNhaCungCap.setSelectedItem(tablemodel.getValueAt(row, 7));
-        cboChatLieu.setSelectedItem(tablemodel.getValueAt(row, 8));
-        cboSize.setSelectedItem(tablemodel.getValueAt(row, 9));
-        cboColor.setSelectedItem(tablemodel.getValueAt(row, 10));
-        cboDVT.setSelectedItem(tablemodel.getValueAt(row, 11));
+            cboNhaCungCap.setSelectedItem(tablemodel.getValueAt(row, 7));
+            cboChatLieu.setSelectedItem(tablemodel.getValueAt(row, 8));
+            cboSize.setSelectedItem(tablemodel.getValueAt(row, 9));
+            cboColor.setSelectedItem(tablemodel.getValueAt(row, 10));
+            cboDVT.setSelectedItem(tablemodel.getValueAt(row, 11));
 
 //	    txtkhuyenmai.setText(tablemodel.getValueAt(row, 12).toString());
-        txtKhuyenMai.setText(String.valueOf(sanPhamDao.getKMTheoPhanTram(tablemodel.getValueAt(row, 1).toString())));
+            txtKhuyenMai.setText(String.valueOf(sanPhamDao.getKMTheoPhanTram(tablemodel.getValueAt(row, 1).toString())));
 
-        // txtChonNgaynhap.setDate(ngayNhap);
-        txtChonNgaynhap.setDate(sanPhamDao.getAllSP().get(row).getNgaynhap());
-        txtDonGia.setText(tablemodel.getValueAt(row, 15).toString());
-        List<SanPham> list = sanPhamDao.getAllSP();
+            // txtChonNgaynhap.setDate(ngayNhap);
+            txtChonNgaynhap.setDate(sanPhamDao.getAllSP().get(row).getNgaynhap());
+            txtDonGia.setText(tablemodel.getValueAt(row, 15).toString());
+            List<SanPham> list = sanPhamDao.getAllSP();
 
-        for (SanPham x : list) {
-            if (x.getMaSp().equals(tablemodel.getValueAt(row, 1).toString())) {
-                if (sanPhamDao.vat(x.getMaSp()) == 1) {
-                    rdCoVAT.setSelected(true);
-                } else {
-                    rdKhongVAT.setSelected(true);
+            for (SanPham x : list) {
+                if (x.getMaSp().equals(tablemodel.getValueAt(row, 1).toString())) {
+                    if (sanPhamDao.vat(x.getMaSp()) == 1) {
+                        rdCoVAT.setSelected(true);
+                    } else {
+                        rdKhongVAT.setSelected(true);
+                    }
+                    if (x.getTinhTrang() == true) {
+                        rdConHang.setSelected(true);
+                    } else
+                        rdHetHang.setSelected(true);
+
                 }
-                if (x.getTinhTrang() == true) {
-                    rdConHang.setSelected(true);
-                } else
-                    rdHetHang.setSelected(true);
-
+                ImageIcon imageIcon = new ImageIcon(
+                        new ImageIcon(sanPhamDao.getMa(tablemodel.getValueAt(row, 1).toString()).getHinhanh()).getImage()
+                                .getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH));
+                label.setIcon(imageIcon);
             }
-            ImageIcon imageIcon = new ImageIcon(
-                    new ImageIcon(sanPhamDao.getMa(tablemodel.getValueAt(row, 1).toString()).getHinhanh()).getImage()
-                            .getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH));
-            label.setIcon(imageIcon);
-        }
 
+        } catch (RemoteException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
     }
 
     @Override
@@ -1473,208 +1509,22 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
 
     // tim
     public void tim() {
-        xoaAllDataTable();
-        String tim = "";
+        try {
+            xoaAllDataTable();
+            String tim = "";
 
-        List<SanPham> list = sanPhamDao.getAllSP();
-        float VAT = 0;
-        String sta = "";
-        // int km = 0;
-        rdKhongVAT.setSelected(true);
+            List<SanPham> list = sanPhamDao.getAllSP();
+            float VAT = 0;
+            String sta = "";
+            // int km = 0;
+            rdKhongVAT.setSelected(true);
 
-        for (SanPham sp : list) {
-            int d = 1;
-            if (rdTimGia.isSelected()) {
-                double gia1 = Double.parseDouble(txtGiaDau.getText());
-                double gia2 = Double.parseDouble(txtGiaSau.getText());
-                List<SanPham> listsp = sanPhamDao.timTheoGia(gia1, gia2);
-                xoaAllDataTable();
-
-                for (SanPham x : listsp) {
-                    String km = "";
-                    if (x.getKhuyenMai() != null) {
-                        km = x.getKhuyenMai().getTenKhuyenMai();
-                        if (x.getTinhTrang() == true) {
-                            sta = "Còn hàng";
-                        } else
-                            sta = "Hết hàng";
-                        if (sanPhamDao.vat(x.getMaSp()) == 1) {
-
-                            VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
-                        } else
-                            VAT = 0;
-                        double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
-                        giaBan = x.getGiaBan();
-                        tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
-                                x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
-                                x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
-                                x.getGiaBan()});
-                    } else {
-                        km = "null";
-                        if (x.getTinhTrang() == true) {
-                            sta = "Còn hàng";
-                        } else
-                            sta = "Hết hàng";
-                        if (sanPhamDao.vat(x.getMaSp()) == 1) {
-
-                            VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
-                        } else
-                            VAT = 0;
-                        double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
-                        giaBan = x.getGiaBan();
-                        tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
-                                x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
-                                x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
-                                x.getGiaBan()});
-                    }
-
-                }
-
-            } else {
-                try {
-                    tim = cboTimKiem.getSelectedItem().toString();
-
-                } catch (Exception e) {
-                    // TODO: handle exception
-                }
-                if (tim.equalsIgnoreCase("")) {
-                    lblLoi.setText("Rỗng!");
-                    return;
-                }
-                if (rdTimMa.isSelected()) {
-                    SanPham x = sanPhamDao.getMa(tim);
-                    xoaAllDataTable();
-                    String km = "";
-                    if (x.getKhuyenMai() != null) {
-                        km = x.getKhuyenMai().getTenKhuyenMai();
-                        if (x.getTinhTrang() == true) {
-                            sta = "Còn hàng";
-                        } else
-                            sta = "Hết hàng";
-                        if (sanPhamDao.vat(x.getMaSp()) == 1) {
-
-                            VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
-                        } else
-                            VAT = 0;
-                        double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
-                        giaBan = x.getGiaBan();
-                        tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
-                                x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
-                                x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
-                                x.getGiaBan()});
-                    } else {
-                        km = "null";
-                        if (x.getTinhTrang() == true) {
-                            sta = "Còn hàng";
-                        } else
-                            sta = "Hết hàng";
-                        if (sanPhamDao.vat(x.getMaSp()) == 1) {
-
-                            VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
-                        } else
-                            VAT = 0;
-                        double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
-                        giaBan = x.getGiaBan();
-                        tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
-                                x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
-                                x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
-                                x.getGiaBan()});
-                    }
-
-                }
-                if (rdTen.isSelected()) {
-
-                    SanPham x = sanPhamDao.getTenSP(tim);
-
-                    xoaAllDataTable();
-                    String km = "";
-                    if (x.getKhuyenMai() != null) {
-                        km = x.getKhuyenMai().getTenKhuyenMai();
-                        if (x.getTinhTrang() == true) {
-                            sta = "Còn hàng";
-                        } else
-                            sta = "Hết hàng";
-                        if (sanPhamDao.vat(x.getMaSp()) == 1) {
-
-                            VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
-                        } else
-                            VAT = 0;
-                        double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
-                        giaBan = x.getGiaBan();
-                        tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
-                                x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
-                                x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
-                                x.getGiaBan()});
-                    } else {
-                        km = "null";
-                        if (x.getTinhTrang() == true) {
-                            sta = "Còn hàng";
-                        } else
-                            sta = "Hết hàng";
-                        if (sanPhamDao.vat(x.getMaSp()) == 1) {
-
-                            VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
-                        } else
-                            VAT = 0;
-                        double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
-                        giaBan = x.getGiaBan();
-                        tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
-                                x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
-                                x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
-                                x.getGiaBan()});
-                    }
-
-                }
-                if (rdTimLoai.isSelected()) {
-
-                    List<SanPham> listsp = sanPhamDao.getlistTenLoaiSP(tim);
-                    xoaAllDataTable();
-
-
-                    for (SanPham x : listsp) {
-                        String km = "";
-                        if (x.getKhuyenMai() != null) {
-                            km = x.getKhuyenMai().getTenKhuyenMai();
-                            if (x.getTinhTrang() == true) {
-                                sta = "Còn hàng";
-                            } else
-                                sta = "Hết hàng";
-                            if (sanPhamDao.vat(x.getMaSp()) == 1) {
-
-                                VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
-                            } else
-                                VAT = 0;
-                            double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
-                            giaBan = x.getGiaBan();
-                            tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
-                                    x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
-                                    x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
-                                    x.getGiaBan()});
-                        } else {
-                            km = "null";
-                            if (x.getTinhTrang() == true) {
-                                sta = "Còn hàng";
-                            } else
-                                sta = "Hết hàng";
-                            if (sanPhamDao.vat(x.getMaSp()) == 1) {
-
-                                VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
-                            } else
-                                VAT = 0;
-                            double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
-                            giaBan = x.getGiaBan();
-                            tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
-                                    x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
-                                    x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
-                                    x.getGiaBan()});
-                        }
-
-
-                    }
-                }
-                if (rdTimNCC.isSelected()) {
-
-                    List<SanPham> listsp = sanPhamDao.getlistTenNCC(tim);
+            for (SanPham sp : list) {
+                int d = 1;
+                if (rdTimGia.isSelected()) {
+                    double gia1 = Double.parseDouble(txtGiaDau.getText());
+                    double gia2 = Double.parseDouble(txtGiaSau.getText());
+                    List<SanPham> listsp = sanPhamDao.timTheoGia(gia1, gia2);
                     xoaAllDataTable();
 
                     for (SanPham x : listsp) {
@@ -1716,13 +1566,21 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
                         }
 
                     }
-                }
-                if (rdTimChatLieu.isSelected()) {
 
-                    List<SanPham> listsp = sanPhamDao.getlistTenCL(tim);
-                    xoaAllDataTable();
+                } else {
+                    try {
+                        tim = cboTimKiem.getSelectedItem().toString();
 
-                    for (SanPham x : listsp) {
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                    }
+                    if (tim.equalsIgnoreCase("")) {
+                        lblLoi.setText("Rỗng!");
+                        return;
+                    }
+                    if (rdTimMa.isSelected()) {
+                        SanPham x = sanPhamDao.getMa(tim);
+                        xoaAllDataTable();
                         String km = "";
                         if (x.getKhuyenMai() != null) {
                             km = x.getKhuyenMai().getTenKhuyenMai();
@@ -1761,15 +1619,11 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
                         }
 
                     }
-                }
-                if (rdTimMau.isSelected()) {
+                    if (rdTen.isSelected()) {
 
-                    Entities.MauSac mauSac = (Entities.MauSac) cboTimKiem.getSelectedItem();
-                    List<SanPham> listsp = sanPhamDao.getlistTenMauSac(MauSac.valueOf(String.valueOf(mauSac)));
+                        SanPham x = sanPhamDao.getTenSP(tim);
 
-                    xoaAllDataTable();
-
-                    for (SanPham x : listsp) {
+                        xoaAllDataTable();
                         String km = "";
                         if (x.getKhuyenMai() != null) {
                             km = x.getKhuyenMai().getTenKhuyenMai();
@@ -1807,59 +1661,246 @@ public class FrmSanPham extends JFrame implements ActionListener, MouseListener,
                                     x.getGiaBan()});
                         }
 
-
                     }
-                }
-                if (rdTimSize.isSelected()) {
+                    if (rdTimLoai.isSelected()) {
+
+                        List<SanPham> listsp = sanPhamDao.getlistTenLoaiSP(tim);
+                        xoaAllDataTable();
+
+
+                        for (SanPham x : listsp) {
+                            String km = "";
+                            if (x.getKhuyenMai() != null) {
+                                km = x.getKhuyenMai().getTenKhuyenMai();
+                                if (x.getTinhTrang() == true) {
+                                    sta = "Còn hàng";
+                                } else
+                                    sta = "Hết hàng";
+                                if (sanPhamDao.vat(x.getMaSp()) == 1) {
+
+                                    VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
+                                } else
+                                    VAT = 0;
+                                double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
+                                giaBan = x.getGiaBan();
+                                tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
+                                        x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
+                                        x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
+                                        x.getGiaBan()});
+                            } else {
+                                km = "null";
+                                if (x.getTinhTrang() == true) {
+                                    sta = "Còn hàng";
+                                } else
+                                    sta = "Hết hàng";
+                                if (sanPhamDao.vat(x.getMaSp()) == 1) {
+
+                                    VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
+                                } else
+                                    VAT = 0;
+                                double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
+                                giaBan = x.getGiaBan();
+                                tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
+                                        x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
+                                        x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
+                                        x.getGiaBan()});
+                            }
+
+
+                        }
+                    }
+                    if (rdTimNCC.isSelected()) {
+
+                        List<SanPham> listsp = sanPhamDao.getlistTenNCC(tim);
+                        xoaAllDataTable();
+
+                        for (SanPham x : listsp) {
+                            String km = "";
+                            if (x.getKhuyenMai() != null) {
+                                km = x.getKhuyenMai().getTenKhuyenMai();
+                                if (x.getTinhTrang() == true) {
+                                    sta = "Còn hàng";
+                                } else
+                                    sta = "Hết hàng";
+                                if (sanPhamDao.vat(x.getMaSp()) == 1) {
+
+                                    VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
+                                } else
+                                    VAT = 0;
+                                double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
+                                giaBan = x.getGiaBan();
+                                tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
+                                        x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
+                                        x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
+                                        x.getGiaBan()});
+                            } else {
+                                km = "null";
+                                if (x.getTinhTrang() == true) {
+                                    sta = "Còn hàng";
+                                } else
+                                    sta = "Hết hàng";
+                                if (sanPhamDao.vat(x.getMaSp()) == 1) {
+
+                                    VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
+                                } else
+                                    VAT = 0;
+                                double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
+                                giaBan = x.getGiaBan();
+                                tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
+                                        x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
+                                        x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
+                                        x.getGiaBan()});
+                            }
+
+                        }
+                    }
+                    if (rdTimChatLieu.isSelected()) {
+
+                        List<SanPham> listsp = sanPhamDao.getlistTenCL(tim);
+                        xoaAllDataTable();
+
+                        for (SanPham x : listsp) {
+                            String km = "";
+                            if (x.getKhuyenMai() != null) {
+                                km = x.getKhuyenMai().getTenKhuyenMai();
+                                if (x.getTinhTrang() == true) {
+                                    sta = "Còn hàng";
+                                } else
+                                    sta = "Hết hàng";
+                                if (sanPhamDao.vat(x.getMaSp()) == 1) {
+
+                                    VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
+                                } else
+                                    VAT = 0;
+                                double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
+                                giaBan = x.getGiaBan();
+                                tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
+                                        x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
+                                        x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
+                                        x.getGiaBan()});
+                            } else {
+                                km = "null";
+                                if (x.getTinhTrang() == true) {
+                                    sta = "Còn hàng";
+                                } else
+                                    sta = "Hết hàng";
+                                if (sanPhamDao.vat(x.getMaSp()) == 1) {
+
+                                    VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
+                                } else
+                                    VAT = 0;
+                                double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
+                                giaBan = x.getGiaBan();
+                                tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
+                                        x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
+                                        x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
+                                        x.getGiaBan()});
+                            }
+
+                        }
+                    }
+                    if (rdTimMau.isSelected()) {
+
+                        Entities.MauSac mauSac = (Entities.MauSac) cboTimKiem.getSelectedItem();
+                        List<SanPham> listsp = sanPhamDao.getlistTenMauSac(MauSac.valueOf(String.valueOf(mauSac)));
+
+                        xoaAllDataTable();
+
+                        for (SanPham x : listsp) {
+                            String km = "";
+                            if (x.getKhuyenMai() != null) {
+                                km = x.getKhuyenMai().getTenKhuyenMai();
+                                if (x.getTinhTrang() == true) {
+                                    sta = "Còn hàng";
+                                } else
+                                    sta = "Hết hàng";
+                                if (sanPhamDao.vat(x.getMaSp()) == 1) {
+
+                                    VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
+                                } else
+                                    VAT = 0;
+                                double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
+                                giaBan = x.getGiaBan();
+                                tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
+                                        x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
+                                        x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
+                                        x.getGiaBan()});
+                            } else {
+                                km = "null";
+                                if (x.getTinhTrang() == true) {
+                                    sta = "Còn hàng";
+                                } else
+                                    sta = "Hết hàng";
+                                if (sanPhamDao.vat(x.getMaSp()) == 1) {
+
+                                    VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
+                                } else
+                                    VAT = 0;
+                                double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
+                                giaBan = x.getGiaBan();
+                                tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
+                                        x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
+                                        x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
+                                        x.getGiaBan()});
+                            }
+
+
+                        }
+                    }
+                    if (rdTimSize.isSelected()) {
 //					Entities.MauSac mauSac = (Entities.MauSac) cboTimKiem.getSelectedItem();
 //					List<SanPham> listsp = sanPhamDao.getlistTenMauSac(String.valueOf(mauSac));
-                    Entities.Size size = (Entities.Size) cboTimKiem.getSelectedItem();
-                    List<SanPham> listsp = sanPhamDao.getlistSize(Size.valueOf(String.valueOf(size)));
-                    xoaAllDataTable();
+                        Entities.Size size = (Entities.Size) cboTimKiem.getSelectedItem();
+                        List<SanPham> listsp = sanPhamDao.getlistSize(Size.valueOf(String.valueOf(size)));
+                        xoaAllDataTable();
 
-                    for (SanPham x : listsp) {
-                        String km = "";
-                        if (x.getKhuyenMai() != null) {
-                            km = x.getKhuyenMai().getTenKhuyenMai();
-                            if (x.getTinhTrang() == true) {
-                                sta = "Còn hàng";
-                            } else
-                                sta = "Hết hàng";
-                            if (sanPhamDao.vat(x.getMaSp()) == 1) {
+                        for (SanPham x : listsp) {
+                            String km = "";
+                            if (x.getKhuyenMai() != null) {
+                                km = x.getKhuyenMai().getTenKhuyenMai();
+                                if (x.getTinhTrang() == true) {
+                                    sta = "Còn hàng";
+                                } else
+                                    sta = "Hết hàng";
+                                if (sanPhamDao.vat(x.getMaSp()) == 1) {
 
-                                VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
-                            } else
-                                VAT = 0;
-                            double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
-                            giaBan = x.getGiaBan();
-                            tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
-                                    x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
-                                    x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
-                                    x.getGiaBan()});
-                        } else {
-                            km = "null";
-                            if (x.getTinhTrang() == true) {
-                                sta = "Còn hàng";
-                            } else
-                                sta = "Hết hàng";
-                            if (sanPhamDao.vat(x.getMaSp()) == 1) {
+                                    VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
+                                } else
+                                    VAT = 0;
+                                double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
+                                giaBan = x.getGiaBan();
+                                tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
+                                        x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
+                                        x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
+                                        x.getGiaBan()});
+                            } else {
+                                km = "null";
+                                if (x.getTinhTrang() == true) {
+                                    sta = "Còn hàng";
+                                } else
+                                    sta = "Hết hàng";
+                                if (sanPhamDao.vat(x.getMaSp()) == 1) {
 
-                                VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
-                            } else
-                                VAT = 0;
-                            double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
-                            giaBan = x.getGiaBan();
-                            tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
-                                    x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
-                                    x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
-                                    x.getGiaBan()});
+                                    VAT = (float) (tinhGiaBan(x.getGianhap()) * 0.05);
+                                } else
+                                    VAT = 0;
+                                double giaBan = tinhGiaBan(x.getGianhap()) + VAT;
+                                giaBan = x.getGiaBan();
+                                tablemodel.addRow(new Object[]{d++, x.getMaSp(), x.getTensp(), x.getLoaiSanPham().getTenLoaiSP(),
+                                        x.getGianhap(), x.getSoluong(), x.getNgaynhap(), x.getNhaCungCap().getTenNhaCungCap(),
+                                        x.getChatLieu().getTenChatLieu(), x.getSize(), x.getMauSac(), x.getDonViTinh(), km, VAT, sta,
+                                        x.getGiaBan()});
+                            }
+
+
                         }
-
-
                     }
-                }
 
+                }
             }
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
