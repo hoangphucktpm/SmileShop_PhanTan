@@ -1,6 +1,5 @@
 package DAOTest.impl;
 
-import Database.ConnectDatabase;
 import Entities.NhanVien;
 import Entities.TaiKhoan;
 import jakarta.persistence.*;
