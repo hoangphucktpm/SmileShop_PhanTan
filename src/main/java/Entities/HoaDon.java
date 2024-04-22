@@ -30,11 +30,11 @@ public class HoaDon implements Serializable {
     @Column(name = "TienKhachDua", nullable = false)
     private Double tienKhachDua;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "KhachHang", nullable = false)
     private KhachHang khachHang;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "NhanVien", nullable = false)
     private NhanVien nhanVien;
 

@@ -21,8 +21,7 @@ public class SanPhamImpl extends UnicastRemoteObject implements SanPhamDao {
 
     @Override
     public List<SanPham> getAllSP() throws RemoteException {
-        List<SanPham> list = em.createNamedQuery("SanPham.getAllProducts", SanPham.class).getResultList();
-        return list;
+       return em.createNamedQuery("SanPham.findAllSP", SanPham.class).getResultList();
     }
 
     @Override
@@ -92,23 +91,14 @@ public class SanPhamImpl extends UnicastRemoteObject implements SanPhamDao {
     public boolean sua(SanPham sanPham) throws RemoteException {
         // Check if chatLieu is null and handle it
         if (sanPham.getChatLieu() == null) {
-            // Skip saving the SanPham entity if chatLieu is null
             return false;
         }
 
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-
-            // Merge the detached entity
-            SanPham managedSanPham = em.merge(sanPham);
-
-            // Commit the transaction
+            em.merge(sanPham);
             tx.commit();
-
-            // Refresh the managed entity
-            em.refresh(managedSanPham);
-
             return true;
         } catch (Exception e) {
             if (tx.isActive()) {

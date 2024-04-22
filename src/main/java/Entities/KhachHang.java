@@ -52,7 +52,7 @@ public class KhachHang implements Serializable {
     @Column(name = "GioiTinh", columnDefinition = "tinyint not null")
     private int gioiTinh;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "LoaiKH", nullable = false)
     private LoaiKhachHang loaiKH;
 

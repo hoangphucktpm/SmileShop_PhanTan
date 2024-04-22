@@ -5,6 +5,7 @@ import DAOTest.KhuyenMaiDao;
 import Entities.KhuyenMai;
 import Entities.SanPham;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 
@@ -101,17 +102,19 @@ public class KhuyenMaiImpl extends UnicastRemoteObject implements KhuyenMaiDao {
     @Override
     public boolean adDSPKM(String maSP, String maKM) throws RemoteException {
         KhuyenMai khuyenMai = em.find(KhuyenMai.class, maKM);
-        if (khuyenMai != null) {
-            Query query = em.createQuery("UPDATE SanPham sp SET sp.khuyenMai = :khuyenMai WHERE sp.maSp = :maSP");
-            query.setParameter("maSP", maSP);
-            query.setParameter("khuyenMai", khuyenMai);
-            em.getTransaction().begin();
-            int updatedRows = query.executeUpdate();
-            em.getTransaction().commit();
-            return updatedRows > 0;
-        } else {
-            return false;
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            SanPham sanPham = em.find(SanPham.class, maSP);
+            sanPham.setKhuyenMai(khuyenMai);
+            em.merge(sanPham);
+            tx.commit();
+            return true;
+        } catch (Exception e) {
+            tx.rollback();
+            e.printStackTrace();
         }
+return false;
     }
 
     @Override

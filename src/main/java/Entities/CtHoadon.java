@@ -12,12 +12,12 @@ public class CtHoadon implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "MaHoaDon", nullable = false)
     private HoaDon maHoaDon;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "MaSanPham", nullable = false)
     private SanPham maSanPham;
 
