@@ -68,9 +68,7 @@ public interface SanPhamDao extends Remote {
 
     public int soLuong() throws RemoteException;
 
-    ;
-
-    ;
+    ;;
 
     public boolean themLoaiSP(Entities.LoaiSanPham loaiSanPham) throws RemoteException;
 
@@ -104,7 +102,7 @@ public interface SanPhamDao extends Remote {
 
     ;
 
-    public SanPham getTenSP(String Ten) throws RemoteException;
+    public List<SanPham> getListTenSP(String Ten) throws RemoteException;
 
     ;
 

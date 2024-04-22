@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 @Entity
 public class ChatLieu implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "MaChatLieu", nullable = false, length = 50)
     private String maChatLieu;

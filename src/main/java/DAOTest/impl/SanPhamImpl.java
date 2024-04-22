@@ -41,7 +41,7 @@ public class SanPhamImpl extends UnicastRemoteObject implements SanPhamDao {
         EntityTransaction tx = em.getTransaction();
         NhaCungCap ncc = getMaOne(nhaCungCap);
         KhuyenMai km1 = em.find(KhuyenMai.class, km);
-        ChatLieu cl = em.find(ChatLieu.class, chatLieu);
+        ChatLieu cl = getChatLieuOne(chatLieu);
         LoaiSanPham lsp = em.find(LoaiSanPham.class, loaiSP);
         boolean tt = false;
         if (tinhTrang == 1) {
@@ -299,11 +299,11 @@ public class SanPhamImpl extends UnicastRemoteObject implements SanPhamDao {
     }
 
     @Override
-    public SanPham getTenSP(String Ten) throws RemoteException {
-        SanPham sp = em.createNamedQuery("SanPham.getTenSP", SanPham.class)
+    public List<SanPham> getListTenSP(String Ten) throws RemoteException {
+        List<SanPham> list = em.createNamedQuery("SanPham.getTenSP", SanPham.class)
                 .setParameter("Ten", Ten)
-                .getSingleResult();
-        return sp;
+                .getResultList();
+        return list;
     }
 
     @Override
