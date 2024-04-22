@@ -16,6 +16,8 @@ import java.io.Serializable;
         @NamedQuery(name = "LoaiKhachHang.findAll", query = "SELECT lkh FROM LoaiKhachHang lkh"),
 })
 public class LoaiKhachHang implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @Column(name = "MaLoaiKH", nullable = false, length = 50)
     private String maLoaiKH;

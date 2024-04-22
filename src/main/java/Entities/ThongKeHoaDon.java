@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class ThongKeHoaDon implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String maHoaDon;
     private String maNhanVien;
     private int caLamViec;

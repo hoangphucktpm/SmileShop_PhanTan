@@ -8,6 +8,8 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor
 @Entity
@@ -17,6 +19,7 @@ import java.time.LocalDate;
         @NamedQuery(name = "KhuyenMai.getPercent", query = "SELECT km.phanTramKhuyenMai FROM KhuyenMai km WHERE km.maKhuyenMai = :maKhuyenMai")
 })
 public class KhuyenMai implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "MaKhuyenMai", nullable = false, length = 50)
     private String maKhuyenMai;
@@ -38,6 +41,10 @@ public class KhuyenMai implements Serializable {
 
     @Column(name = "SoLuongSanPhamKM", nullable = false)
     private Integer soLuongSanPhamKM;
+
+    @OneToMany(mappedBy = "khuyenMai", fetch = FetchType.LAZY)
+    private Set<SanPham> sanPhams = new HashSet<>();
+
 
     public String getMaKhuyenMai() {
         return maKhuyenMai;

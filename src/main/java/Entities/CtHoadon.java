@@ -9,6 +9,8 @@ import java.io.Serializable;
 @Entity
 @Table(name = "CT_HoaDon")
 public class CtHoadon implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "MaHoaDon", nullable = false)

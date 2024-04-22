@@ -3,11 +3,13 @@ package Entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.io.Serializable;
 
 @NoArgsConstructor
 @Entity
 public class TaiKhoan implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "TenTaiKhoan", nullable = false)

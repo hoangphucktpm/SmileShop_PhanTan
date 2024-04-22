@@ -10,6 +10,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 public class LoaiSanPham implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @Column(name = "MaLoaiSP", nullable = false, length = 50)
     private String maLoaiSP;

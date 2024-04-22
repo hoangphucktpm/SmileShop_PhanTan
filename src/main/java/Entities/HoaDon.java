@@ -21,6 +21,8 @@ import java.util.Date;
 
 
 public class HoaDon implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @Column(name = "MaHoaDon", nullable = false, length = 50)
     private String maHoaDon;
