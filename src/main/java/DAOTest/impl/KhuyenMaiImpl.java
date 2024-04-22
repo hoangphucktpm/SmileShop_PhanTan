@@ -99,22 +99,23 @@ public class KhuyenMaiImpl extends UnicastRemoteObject implements KhuyenMaiDao {
         return query.getResultList();
     }
 
-    @Override
     public boolean adDSPKM(String maSP, String maKM) throws RemoteException {
-        KhuyenMai khuyenMai = em.find(KhuyenMai.class, maKM);
-        EntityTransaction tx = em.getTransaction();
+        KhuyenMai khuyenMai = (KhuyenMai)this.em.find(KhuyenMai.class, maKM);
+        EntityTransaction tx = this.em.getTransaction();
+
         try {
             tx.begin();
-            SanPham sanPham = em.find(SanPham.class, maSP);
+            SanPham sanPham = (SanPham)this.em.find(SanPham.class, maSP);
             sanPham.setKhuyenMai(khuyenMai);
-            em.merge(sanPham);
+            this.em.merge(sanPham);
             tx.commit();
             return true;
-        } catch (Exception e) {
+        } catch (Exception var6) {
+            Exception e = var6;
             tx.rollback();
             e.printStackTrace();
+            return false;
         }
-return false;
     }
 
     @Override
@@ -140,6 +141,13 @@ return false;
     @Override
     public String layKhuyenMaiTuSanPham(String ma) throws RemoteException {
         Query query = em.createQuery("SELECT sp.khuyenMai.maKhuyenMai FROM SanPham sp WHERE sp.maSp = :ma", String.class);
+        query.setParameter("ma", ma);
+        return (String) query.getSingleResult();
+    }
+
+    @Override
+    public String layTenKMTheoMa(String ma) throws RemoteException {
+        Query query = em.createQuery("SELECT km.tenKhuyenMai FROM KhuyenMai km WHERE km.maKhuyenMai = :ma", String.class);
         query.setParameter("ma", ma);
         return (String) query.getSingleResult();
     }

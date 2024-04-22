@@ -21,7 +21,9 @@ public class SanPhamImpl extends UnicastRemoteObject implements SanPhamDao {
 
     @Override
     public List<SanPham> getAllSP() throws RemoteException {
-       return em.createNamedQuery("SanPham.findAllSP", SanPham.class).getResultList();
+       Query query = em.createQuery("SELECT sp FROM SanPham sp", SanPham.class);
+         List<SanPham> list = query.getResultList();
+        return list;
     }
 
     @Override
