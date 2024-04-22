@@ -42,8 +42,6 @@ public class KhuyenMai implements Serializable {
     @Column(name = "SoLuongSanPhamKM", nullable = false)
     private Integer soLuongSanPhamKM;
 
-    @OneToMany(mappedBy = "khuyenMai", fetch = FetchType.LAZY)
-    private Set<SanPham> sanPhams = new HashSet<>();
 
 
     public String getMaKhuyenMai() {

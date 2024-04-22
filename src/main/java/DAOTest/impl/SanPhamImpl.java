@@ -40,9 +40,18 @@ public class SanPhamImpl extends UnicastRemoteObject implements SanPhamDao {
                         double giaBanRa) throws RemoteException {
         EntityTransaction tx = em.getTransaction();
         NhaCungCap ncc = getMaOne(nhaCungCap);
-        KhuyenMai km1 = em.find(KhuyenMai.class, km);
-        ChatLieu cl = em.find(ChatLieu.class, chatLieu);
-        LoaiSanPham lsp = em.find(LoaiSanPham.class, loaiSP);
+        KhuyenMai km1 = km != null ? (KhuyenMai)this.em.find(KhuyenMai.class, km) : null;
+        ChatLieu cl = chatLieu != null ? (ChatLieu)this.em.find(ChatLieu.class, chatLieu) : null;
+        LoaiSanPham lsp = loaiSP != null ? (LoaiSanPham)this.em.find(LoaiSanPham.class, loaiSP) : null;
+
+
+        //public boolean them(String maSP, String tenSP, String nhaCungCap, String km, double giaBan, int soluong, Date ngayNhap, String color, String size, String img, String chatLieu, int tinhTrang, String dvt, String loaiSP, int VAT, double giaBanRa) throws RemoteException {
+        //    // ...
+        //    KhuyenMai km1 = km != null ? (KhuyenMai)this.em.find(KhuyenMai.class, km) : null;
+        //    ChatLieu cl = chatLieu != null ? (ChatLieu)this.em.find(ChatLieu.class, chatLieu) : null;
+        //    LoaiSanPham lsp = loaiSP != null ? (LoaiSanPham)this.em.find(LoaiSanPham.class, loaiSP) : null;
+        //    // ...
+        //}
         boolean tt = false;
         if (tinhTrang == 1) {
             tt = true;
@@ -83,9 +92,17 @@ public class SanPhamImpl extends UnicastRemoteObject implements SanPhamDao {
 
     @Override
     public NhaCungCap getMaOne(String MaNCC) throws RemoteException {
-        return em.createNamedQuery("NhaCungCap.getMa", NhaCungCap.class)
+        List<NhaCungCap> results = em.createNamedQuery("NhaCungCap.getMa", NhaCungCap.class)
                 .setParameter("MaNCC", MaNCC)
-                .getSingleResult();
+                .getResultList();
+
+        if (!results.isEmpty()) {
+            // Return the first result if there are results
+            return results.get(0);
+        } else {
+            // Return null if there are no results
+            return null;
+        }
     }
 
     @Override
@@ -134,9 +151,8 @@ public class SanPhamImpl extends UnicastRemoteObject implements SanPhamDao {
 
     @Override
     public ChatLieu getChatLieuOne(String ma) throws RemoteException {
-        return em.createNamedQuery("SanPham.getChatLieuOne", ChatLieu.class)
-                .setParameter("ma", ma)
-                .getSingleResult();
+        List<ChatLieu> results = this.em.createNamedQuery("SanPham.getChatLieuOne", ChatLieu.class).setParameter("ma", ma).getResultList();
+        return results.isEmpty() ? null : results.get(0);
     }
 
     @Override
@@ -362,13 +378,22 @@ public class SanPhamImpl extends UnicastRemoteObject implements SanPhamDao {
         return ten;
     }
 
+
+
     @Override
-    public String getMaChatLieu(String ten, String moTa) throws RemoteException {
-        String ma = (String) em.createNamedQuery("SanPham.getMaChatLieu")
+    public String getMaChatLieu(String ten, String moTa) {
+        List<String> results = em.createNamedQuery("SanPham.getMaChatLieu", String.class)
                 .setParameter("ten", ten)
                 .setParameter("moTa", moTa)
-                .getSingleResult();
-        return ma;
+                .getResultList();
+
+        if (!results.isEmpty()) {
+            // Trả về kết quả đầu tiên nếu có
+            return results.get(0);
+        } else {
+            // Trả về null hoặc một giá trị mặc định nếu không có kết quả
+            return null;
+        }
     }
 
 

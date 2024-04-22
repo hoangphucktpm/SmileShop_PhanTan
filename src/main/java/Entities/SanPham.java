@@ -41,8 +41,6 @@ import java.util.Date;
 
         @NamedQuery(name = "SanPham.sua", query = "UPDATE SanPham s SET s.tensp = :tenSP, s.nhaCungCap = :nhaCungCap, s.khuyenMai = :km, s.giaBan = :giaBan, s.soluong = :soluong, s.ngaynhap = :ngayNhap, s.hinhanh = :hinhAnh, s.mauSac = :color, s.size = :size, s.chatLieu = :chatLieu, s.tinhTrang = :tinhTrang, s.donViTinh = :dvt, s.loaiSanPham = :loaiSP, s.vat = :VAT, s.giaBan = :giaBanRa WHERE s.maSp = :maSP"),
         @NamedQuery(name = "SanPham.getAllProducts", query = "SELECT s FROM SanPham s"),
-
-//        @NamedQuery(name = "SanPham.sua", query = "UPDATE SanPham s SET s.tensp = :tenSP, s.nhaCungCap = :nhaCungCap, s.khuyenMai = :km, s.giaBan = :giaBan, s.soluong = :soluong, s.ngaynhap = :ngayNhap, s.hinhanh = :hinhAnh, s.mauSac = :color, s.size = :size, s.chatLieu = :chatLieu, s.tinhTrang = :tinhTrang, s.donViTinh = :dvt, s.loaiSanPham = :loaiSP, s.vat = :VAT, s.giaBan = :giaBanRa WHERE s.maSp = :maSP"),
         @NamedQuery(name = "SanPham.findAllSP", query = "SELECT s FROM SanPham s"),
 
         @NamedQuery(name = "SanPham.suaKhongAnh", query = "UPDATE SanPham s SET s.tensp = :tenSP, s.nhaCungCap = :nhaCungCap, s.khuyenMai = :km, s.giaBan = :giaBan, s.soluong = :soluong, s.ngaynhap = :ngayNhap, s.mauSac = :color, s.size = :size, s.chatLieu = :chatLieu, s.tinhTrang = :tinhTrang, s.donViTinh = :dvt, s.loaiSanPham = :loaiSP, s.vat = :VAT, s.giaBan = :giaBanRa WHERE s.maSp = :maSP"),
@@ -64,11 +62,11 @@ public class SanPham implements Serializable {
     @Column(name = "Tensp", nullable = false, length = 50)
     private String tensp;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "NhaCungCap", nullable = false)
     private NhaCungCap nhaCungCap;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "KhuyenMai")
     private KhuyenMai khuyenMai;
 
@@ -92,7 +90,7 @@ public class SanPham implements Serializable {
     @Enumerated(EnumType.STRING)
     private Size size;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "ChatLieu", nullable = false)
     private ChatLieu chatLieu;
 
@@ -268,6 +266,9 @@ public class SanPham implements Serializable {
         this.ngaynhap = ngayNhap;
     }
 
+
+
+
     @Override
     public String toString() {
         return "SanPham{" +
@@ -279,8 +280,8 @@ public class SanPham implements Serializable {
                 ", soluong=" + soluong +
                 ", ngaynhap=" + ngaynhap +
                 ", hinhanh='" + hinhanh + '\'' +
-                ", mauSac='" + mauSac + '\'' +
-                ", size='" + size + '\'' +
+                ", mauSac=" + mauSac +
+                ", size=" + size +
                 ", chatLieu=" + chatLieu +
                 ", tinhTrang=" + tinhTrang +
                 ", donViTinh='" + donViTinh + '\'' +
