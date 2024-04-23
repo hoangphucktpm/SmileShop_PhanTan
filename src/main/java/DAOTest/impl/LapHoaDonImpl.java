@@ -290,4 +290,12 @@ public class LapHoaDonImpl extends UnicastRemoteObject implements LapHoaDonDao {
         return phanTram;
     }
 
+    @Override
+    public int layPhanTramKMTheoMa(String ma) throws RemoteException {
+        Query query = em.createNativeQuery("SELECT PhanTramKhuyenMai FROM dbo.KhuyenMai WHERE MaKhuyenMai = ?");
+        query.setParameter(1, ma);
+        return (int) query.getSingleResult();
+    }
+
+
 }

@@ -44,6 +44,7 @@ public class KhuyenMai implements Serializable {
 
 
 
+
     public String getMaKhuyenMai() {
         return maKhuyenMai;
     }

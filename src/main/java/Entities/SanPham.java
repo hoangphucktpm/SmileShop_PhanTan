@@ -36,7 +36,7 @@ import java.util.Date;
         @NamedQuery(name = "SanPham.getKMTheoTenOne", query = "SELECT km FROM KhuyenMai km WHERE km.maKhuyenMai = :ma"),
         @NamedQuery(name = "SanPham.getKMTheoPhanTram", query = "SELECT sp.khuyenMai.phanTramKhuyenMai FROM SanPham sp WHERE sp.maSp = :maSP"),
         @NamedQuery(name = "SanPham.getTenNCC", query = "SELECT sp.nhaCungCap FROM SanPham sp"),
-        @NamedQuery(name = "SanPham.getTen", query = "SELECT ncc FROM NhaCungCap  ncc where ncc.tinhTrang = 1"),
+        @NamedQuery(name = "SanPham.getTen", query = "SELECT ncc FROM NhaCungCap ncc where ncc.tinhTrang = 1"),
         @NamedQuery(name = "SanPham.getChatLieu", query = "SELECT DISTINCT sp.chatLieu FROM SanPham sp"),
         @NamedQuery(name = "SanPham.getLoaiSP", query = "SELECT DISTINCT sp.loaiSanPham FROM SanPham sp"),
 

@@ -100,6 +100,7 @@ public class KhuyenMaiImpl extends UnicastRemoteObject implements KhuyenMaiDao {
     }
 
     public boolean adDSPKM(String maSP, String maKM) throws RemoteException {
+
         KhuyenMai khuyenMai = (KhuyenMai)this.em.find(KhuyenMai.class, maKM);
         EntityTransaction tx = this.em.getTransaction();
 
@@ -150,6 +151,13 @@ public class KhuyenMaiImpl extends UnicastRemoteObject implements KhuyenMaiDao {
         Query query = em.createQuery("SELECT km.tenKhuyenMai FROM KhuyenMai km WHERE km.maKhuyenMai = :ma", String.class);
         query.setParameter("ma", ma);
         return (String) query.getSingleResult();
+    }
+
+    @Override
+    public int layPhanTramKMTheoMa(String ma) throws RemoteException {
+        Query query = em.createQuery("SELECT km.phanTramKhuyenMai FROM KhuyenMai km WHERE km.maKhuyenMai = :ma", Integer.class);
+        query.setParameter("ma", ma);
+        return (int) query.getSingleResult();
     }
 
 }

@@ -37,6 +37,7 @@ public interface KhuyenMaiDao extends Remote {
 
     public String layKhuyenMaiTuSanPham(String ma) throws RemoteException;
     public String layTenKMTheoMa (String ma) throws RemoteException;
+    public int layPhanTramKMTheoMa (String ma) throws RemoteException;
 
     ;
 }

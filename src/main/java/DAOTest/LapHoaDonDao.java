@@ -42,6 +42,7 @@ public interface LapHoaDonDao extends Remote {
     public HoaDon getHoaDon(String mahd) throws RemoteException;
 
     public SanPham getSanPham(String masp) throws RemoteException;
+    public int layPhanTramKMTheoMa(String ma) throws RemoteException;
 
     ;
 }
