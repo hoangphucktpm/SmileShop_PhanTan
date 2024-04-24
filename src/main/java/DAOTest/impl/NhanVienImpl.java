@@ -58,28 +58,43 @@ public class NhanVienImpl extends UnicastRemoteObject implements NhanVienDao {
 
     @Override
     public boolean sua(String maBanDau, String tenNV, Date ngaySinh, String CCCD, String sdt, int gend, int sta, int ca, int chuc, String hinh, String Email, String DiaChi, String maNV) throws RemoteException {
+        EntityTransaction transaction = null;
         try {
-            em.getTransaction().begin();
-            NhanVien nhanVien = em.find(NhanVien.class, maBanDau);
-            if (nhanVien != null) {
-                nhanVien.setMaNhanvien(maNV);
-                nhanVien.setTenNhanVien(tenNV);
-                nhanVien.setNgaySinh(ngaySinh);
-                nhanVien.setCccd(CCCD);
-                nhanVien.setSdt(sdt);
-                nhanVien.setGioiTinh(gend);
-                nhanVien.setTrangThai(sta);
-                nhanVien.setCaLamViec(ca);
-                nhanVien.setHinhAnh(hinh);
-                nhanVien.setEmail(Email);
-                nhanVien.setDiaChi(DiaChi);
-                em.persist(nhanVien);
-                em.getTransaction().commit();
-                return true;
+            transaction = em.getTransaction();
+            transaction.begin();
+
+            // Find and remove the old NhanVien
+            NhanVien nhanVienCu = em.find(NhanVien.class, maBanDau);
+            if (nhanVienCu != null) {
+                em.remove(nhanVienCu);
             }
+
+            // Create and persist the new NhanVien
+            NhanVien nhanVienMoi = new NhanVien();
+            nhanVienMoi.setMaNhanvien(maNV);
+            nhanVienMoi.setTenNhanVien(tenNV);
+            nhanVienMoi.setNgaySinh(ngaySinh);
+            nhanVienMoi.setCccd(CCCD);
+            nhanVienMoi.setSdt(sdt);
+            nhanVienMoi.setGioiTinh(gend);
+            nhanVienMoi.setTrangThai(sta);
+            nhanVienMoi.setCaLamViec(ca);
+            nhanVienMoi.setChucVu(chuc);
+            nhanVienMoi.setHinhAnh(hinh);
+            nhanVienMoi.setEmail(Email);
+            nhanVienMoi.setDiaChi(DiaChi);
+            em.persist(nhanVienMoi);
+
+            transaction.commit();
+            return true;
         } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (transaction != null && transaction.isActive()) {
+                transaction.commit();
             }
         }
         return false;
@@ -87,28 +102,42 @@ public class NhanVienImpl extends UnicastRemoteObject implements NhanVienDao {
 
     @Override
     public boolean suakhonganh(String maBanDau, String tenNV, Date ngaySinh, String CCCD, String sdt, int gend, int sta, int ca, int chuc, String Email, String DiaChi, String maNV) throws RemoteException {
+        EntityTransaction transaction = null;
         try {
-            em.getTransaction().begin();
-            NhanVien nhanVien = em.find(NhanVien.class, maBanDau);
-            if (nhanVien != null) {
-                nhanVien.setMaNhanvien(maNV);
-                nhanVien.setTenNhanVien(tenNV);
-                nhanVien.setNgaySinh(ngaySinh);
-                nhanVien.setCccd(CCCD);
-                nhanVien.setSdt(sdt);
-                nhanVien.setGioiTinh(gend);
-                nhanVien.setTrangThai(sta);
-                nhanVien.setCaLamViec(ca);
-                nhanVien.setChucVu(chuc);
-                nhanVien.setEmail(Email);
-                nhanVien.setDiaChi(DiaChi);
-                em.persist(nhanVien);
-                em.getTransaction().commit();
-                return true;
+            transaction = em.getTransaction();
+            transaction.begin();
+
+            // Find and remove the old NhanVien
+            NhanVien nhanVienCu = em.find(NhanVien.class, maBanDau);
+            if (nhanVienCu != null) {
+                em.remove(nhanVienCu);
             }
+
+            // Create and persist the new NhanVien
+            NhanVien nhanVienMoi = new NhanVien();
+            nhanVienMoi.setMaNhanvien(maNV);
+            nhanVienMoi.setTenNhanVien(tenNV);
+            nhanVienMoi.setNgaySinh(ngaySinh);
+            nhanVienMoi.setCccd(CCCD);
+            nhanVienMoi.setSdt(sdt);
+            nhanVienMoi.setGioiTinh(gend);
+            nhanVienMoi.setTrangThai(sta);
+            nhanVienMoi.setCaLamViec(ca);
+            nhanVienMoi.setChucVu(chuc);
+            nhanVienMoi.setEmail(Email);
+            nhanVienMoi.setDiaChi(DiaChi);
+            em.persist(nhanVienMoi);
+
+            transaction.commit();
+            return true;
         } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (transaction != null && transaction.isActive()) {
+                transaction.commit();
             }
         }
         return false;
@@ -198,7 +227,7 @@ public class NhanVienImpl extends UnicastRemoteObject implements NhanVienDao {
     }
 
     @Override
-    public boolean addTaiKhoan(String tk) throws RemoteException {
+    public boolean addTaiKhoan(String tk, String mk) throws RemoteException {
         try {
             em.getTransaction().begin();
             TaiKhoan taiKhoan = new TaiKhoan();
@@ -211,7 +240,7 @@ public class NhanVienImpl extends UnicastRemoteObject implements NhanVienDao {
                 em.persist(nhanVien);
             }
             taiKhoan.setTenTaiKhoan(nhanVien);
-            taiKhoan.setMatKhau("12345678"); // default password
+            taiKhoan.setMatKhau(mk); // default password
             em.persist(taiKhoan);
             em.getTransaction().commit();
             return true;

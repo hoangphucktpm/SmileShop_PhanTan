@@ -56,7 +56,7 @@ public class Server {
             if (nhanVienDao.getAllNV().size() == 0) {
                 nhanVienDao.them("NV111", "Hoàng Phúc", ngaySinh, "CCCD001", "0123456789",
                         1, 1, 1, 1, "hinhAnh.png", "email@example.com", "Dia Chi");
-                nhanVienDao.addTaiKhoan(TenDangNhap);
+                nhanVienDao.addTaiKhoan(TenDangNhap, "12345678");
             }
             System.out.println("Server is running...");
         } catch (Exception e) {
