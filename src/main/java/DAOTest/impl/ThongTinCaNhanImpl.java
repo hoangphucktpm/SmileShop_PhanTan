@@ -39,8 +39,8 @@ public class ThongTinCaNhanImpl extends UnicastRemoteObject implements ThongTinC
     @Override
     public TaiKhoan loadTaiKhoan(String ma) throws RemoteException {
         try {
-            Query query = em.createQuery("SELECT t FROM TaiKhoan t WHERE t.tenTaiKhoan.maNhanvien LIKE :ma", TaiKhoan.class);
-            query.setParameter("ma", "%" + ma + "%");
+            Query query = em.createQuery("SELECT t FROM TaiKhoan t WHERE t.tenTaiKhoan.maNhanvien = :ma", TaiKhoan.class);
+            query.setParameter("ma", ma);
             TaiKhoan tk = (TaiKhoan) query.getSingleResult();
             return tk;
         } catch (Exception e) {
