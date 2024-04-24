@@ -58,6 +58,7 @@ public class Server {
                         1, 1, 1, 1, "hinhAnh.png", "email@example.com", "Dia Chi");
                 nhanVienDao.addTaiKhoan(TenDangNhap);
             }
+
             System.out.println("Server is running...");
         } catch (Exception e) {
             e.printStackTrace();

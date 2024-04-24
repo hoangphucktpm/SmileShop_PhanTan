@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class TaiKhoan implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne()
     @JoinColumn(name = "TenTaiKhoan", nullable = false)
     private NhanVien tenTaiKhoan;
 

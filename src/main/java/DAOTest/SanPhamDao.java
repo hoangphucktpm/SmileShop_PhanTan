@@ -140,7 +140,10 @@ public interface SanPhamDao extends Remote {
 
     public NhaCungCap getMaOne(String MaNCC) throws RemoteException;
 
+
     ;
+
+    public int getSoluongSP(String maSP) throws RemoteException;
 
 
 }

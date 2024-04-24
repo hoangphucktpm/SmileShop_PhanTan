@@ -369,5 +369,14 @@ public class SanPhamImpl extends UnicastRemoteObject implements SanPhamDao {
         return ma;
     }
 
+    @Override
+    public int getSoluongSP(String maSP) throws RemoteException{
+        int sl = (int) em.createQuery("SELECT sp.soluong FROM SanPham sp WHERE sp.maSp = :maSP")
+                .setParameter("maSP", maSP)
+                .getSingleResult();
+        return sl;
+
+    }
+
 
 }
