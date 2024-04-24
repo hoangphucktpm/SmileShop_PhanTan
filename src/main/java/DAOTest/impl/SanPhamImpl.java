@@ -117,6 +117,12 @@ public class SanPhamImpl extends UnicastRemoteObject implements SanPhamDao {
         List<Entities.LoaiSanPham> list = em.createNamedQuery("SanPham.getLoaiSP", Entities.LoaiSanPham.class).getResultList();
         return list;
     }
+    @Override
+    public List<ChatLieu> getAllChatLieu() throws RemoteException {
+        Query query = em.createQuery("SELECT cl FROM ChatLieu cl", ChatLieu.class);
+        List<ChatLieu> list = query.getResultList();
+        return list;
+    }
 
     @Override
     public List<Entities.ChatLieu> getChatLieu() throws RemoteException {

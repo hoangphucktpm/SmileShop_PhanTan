@@ -89,10 +89,10 @@ public interface SanPhamDao extends Remote {
 //    public String getTenLoaiSP(String maSP) throws RemoteException;
 //
 //    ;
+    public List<ChatLieu> getAllChatLieu() throws RemoteException;
 
     public String getTenNhaCC(String maSP) throws RemoteException;
 
-    ;
 
     public String getTenCL(String maSP) throws RemoteException;
 
