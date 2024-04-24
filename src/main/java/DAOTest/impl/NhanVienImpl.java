@@ -227,7 +227,7 @@ public class NhanVienImpl extends UnicastRemoteObject implements NhanVienDao {
     }
 
     @Override
-    public boolean addTaiKhoan(String tk, String mk) throws RemoteException {
+    public boolean addTaiKhoan(String tk) throws RemoteException {
         try {
             em.getTransaction().begin();
             TaiKhoan taiKhoan = new TaiKhoan();
@@ -240,7 +240,7 @@ public class NhanVienImpl extends UnicastRemoteObject implements NhanVienDao {
                 em.persist(nhanVien);
             }
             taiKhoan.setTenTaiKhoan(nhanVien);
-            taiKhoan.setMatKhau(mk); // default password
+            taiKhoan.setMatKhau("12345678"); // default password
             em.persist(taiKhoan);
             em.getTransaction().commit();
             return true;

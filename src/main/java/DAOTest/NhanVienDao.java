@@ -38,7 +38,8 @@ public interface NhanVienDao extends Remote {
 
     ;
 
-    public boolean addTaiKhoan(String tk, String mk) throws RemoteException;
+    public boolean addTaiKhoan(String tk) throws RemoteException;
+
     ;
 
 
